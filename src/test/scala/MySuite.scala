@@ -1,5 +1,3 @@
-// For more information on writing tests, see
-// https://scalameta.org/munit/docs/getting-started.html
 import org.scalatest.flatspec.AnyFlatSpec
 
 class FirstSpec extends AnyFlatSpec {
