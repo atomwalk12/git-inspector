@@ -1,5 +1,6 @@
-@main def hello(): Unit =
-  println("Hello world!")
-  println(msg)
+import java.io.File
 
-def msg = "I was compiled by Scala 3. :)"
+
+@main
+def gitInspector(args: String*): Unit =
+  println("Git Inspector v0.1")
