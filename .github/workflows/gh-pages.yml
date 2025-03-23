@@ -3,23 +3,17 @@ name: Deploy Hugo PaperMod Demo to Pages
 on:
   push:
     paths-ignore:
-      - "images/**"
-      - "LICENSE"
-      - "README.md"
+      - images/**
+      - LICENSE
+      - README.md
     branches:
       - master
       - exampleSite
   workflow_dispatch:
-    # manual run
-    inputs:
-      hugoVersion:
-        description: "Hugo Version"
-        required: false
-        default: "0.112.4"
 
 # Allow one concurrent deployment
 concurrency:
-  group: "pages"
+  group: pages
   cancel-in-progress: true
 
 # Default to bash
@@ -38,19 +32,19 @@ jobs:
   build:
     runs-on: ubuntu-latest
     env:
-      HUGO_VERSION: ${{ github.event.inputs.hugoVersion || '0.112.4' }}
+      HUGO_VERSION: 0.112.4
     steps:
       - name: Install Hugo CLI
         run: |
           wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_${HUGO_VERSION}_linux-amd64.deb \
           && sudo dpkg -i ${{ runner.temp }}/hugo.deb
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           ref: exampleSite
       - name: Setup Pages
         id: pages
-        uses: actions/configure-pages@v3
+        uses: actions/configure-pages@v4
       - name: Get Theme
         run: git submodule update --init --recursive
       - name: Update theme to Latest commit
@@ -64,14 +58,17 @@ jobs:
         uses: actions/upload-pages-artifact@v2
         with:
           path: ./public
-  # Deployment job
+
   deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      pages: write
+      id-token: write
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/deploy-pages@v4
