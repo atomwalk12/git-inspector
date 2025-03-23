@@ -1,0 +1,45 @@
+name: Make new release
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+env:
+  JAVA_VERSION: 21
+
+permissions:
+    contents: read
+
+jobs:
+  release:
+    concurrency:
+        group: release-${{ github.event.number || github.ref }}
+        cancel-in-progress: true
+    name: Release
+    runs-on: ubuntu-22.04
+    permissions:
+        contents: write # to be able to publish a GitHub release
+        issues: write # to be able to comment on released issues
+        pull-requests: write # to be able to comment on released pull requests
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+            fetch-depth: 0
+      - uses: actions/setup-java@v4
+        with:
+          java-version: ${{ env.JAVA_VERSION }}
+          distribution: temurin
+      - name: Build JAR
+        run: sbt assembly
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+      - name: Install dependencies
+        run: npm clean-install
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: npx semantic-release
