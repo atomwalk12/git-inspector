@@ -15,10 +15,12 @@ echo "Running scalafmt..."
 sbt scalafmtAll
 
 # Optional: Run lightweight tests only
-# sbt "testOnly -- -l org.scalatest.tags.Slow" # Exclude slow tests
+sbt "testOnly -- -l org.scalatest.tags.Slow" # Exclude slow tests
 
 # Include only fast and medium tests only
-sbt "testOnly -- -n com.example.tags.Fast,com.example.tags.Medium"
+# This serves as an example on how to run specific tests.
+# Since we run all tests besides slow tests above, we don't need to use this.
+# sbt "testOnly -- -n com.example.tags.Fast,com.example.tags.Medium"
 
 # Get the list of modified files
 modified_files=$(git diff --name-only)
