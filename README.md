@@ -1,13 +1,6 @@
-## sbt project compiled with Scala 3
+# Git Inspector
 
-### Usage
-
-This is a normal sbt project. You can compile code with `sbt compile`, run it with `sbt run`, and `sbt console` will start a Scala 3 REPL.
-
-For more information on the sbt-dotty plugin, see the
-[scala3-example-project](https://github.com/scala/scala3-example-project/blob/main/README.md).
-
-### SBT Commands
+## SBT Commands
 
 Here are some useful SBT commands you can run:
 
@@ -31,3 +24,6 @@ Here are some useful SBT commands you can run:
 
 - **Generate Coverage Report**: `sbt coverageReport`
   - This command generates a report of the code coverage from the tests.
+
+- **Generate Assembly Jar**: `sbt assembly`
+  - This command generates a jar file of the project.
