@@ -27,7 +27,8 @@ modified_files=$(git diff --name-only)
 if [[ -n ${modified_files} ]]; then
     git add "${modified_files}"
 else
-    echo "No modified files to add."
+    echo "No modified files to add." >&2
+    echo "Current branch: $(git branch --show-current || true)" >&2
 fi
 
 echo "All checks passed!" 
