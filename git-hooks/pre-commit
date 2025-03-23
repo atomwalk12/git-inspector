@@ -1,0 +1,25 @@
+#!/bin/bash
+set -e  # Exit immediately if any command fails
+
+echo "Running pre-commit checks..."
+
+# Fast compile
+sbt "Test / compile"
+
+# Keep only fast checks in pre-commit hooks
+sbt scalafmt
+sbt scalafix
+
+# Optional: Run lightweight tests only
+# sbt "testOnly -- -l org.scalatest.tags.Slow"
+
+# Get the list of modified files
+modified_files=$(git diff --name-only)
+
+# Check if there are any modified files before adding
+if [[ -n "${modified_files}" ]]; then
+  git add "${modified_files}"
+  echo "Added modified files to staging area: ${modified_files}"
+fi
+
+echo "All checks passed!" 
