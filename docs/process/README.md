@@ -12,4 +12,4 @@ Each sprint folder contains:
 - `sprint_backlog.md`: Tasks planned for the sprint
 - `sprint_goal.md`: Goal and objectives for the sprint
 - `daily_updates/`: Daily progress updates
-- `retrospective.md`: Sprint retrospective (added at the end of the sprint) 
+- `retrospective.md`: Sprint retrospective (added at the end of the sprint)
