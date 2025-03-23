@@ -4,21 +4,30 @@ val scala3Version = "3.6.4"
 
 // ------ Git hooks ------
 // Change git hooks path to a tracked folder
-val hooks = taskKey[Unit]("change git hooks path to a tracked folder")
+val hooks = taskKey[Unit](
+  "change git hooks path to a tracked folder"
+)
 
 hooks := {
-  val currentHooksPath = "git config --get core.hooksPath".!!.trim
+  val currentHooksPath =
+    "git config --get core.hooksPath".!!.trim
   if (currentHooksPath != "git-hooks") {
-    val command = "git config core.hooksPath git-hooks"
-    println(s"Setting git hooks path... Command exited with code: ${command.!}")
+    val command =
+      "git config core.hooksPath git-hooks"
+    println(
+      s"Setting git hooks path... Command exited with code: ${command.!}"
+    )
   } else {
-    println("Git hooks path is already set.")
+    println(
+      "Git hooks path is already set."
+    )
   }
 }
 
 // Ensure that the hook path is set before compiling
-Compile / compile := (Compile / compile).dependsOn(hooks).value
-
+Compile / compile := (Compile / compile)
+  .dependsOn(hooks)
+  .value
 
 // ------ Scalafmt ------
 scalafmtOnCompile := true
