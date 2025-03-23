@@ -5,7 +5,7 @@ val scala3Version = "3.6.4"
 // ------ Git hooks ------
 // Change git hooks path to a tracked folder
 val hooks = taskKey[Unit](
-  "change git hooks path to a tracked folder"
+  "change git hooks path to a tracked folder (run 'sbt hooks' to configure)"
 )
 
 hooks := {
@@ -23,11 +23,6 @@ hooks := {
     )
   }
 }
-
-// Ensure that the hook path is set before compiling
-Compile / compile := (Compile / compile)
-  .dependsOn(hooks)
-  .value
 
 // ------ Scalafmt ------
 scalafmtOnCompile := true
