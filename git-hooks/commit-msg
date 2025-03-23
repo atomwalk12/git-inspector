@@ -7,8 +7,10 @@ COMMIT_MSG_FILE=${1}
 COMMIT_MSG=$(head -n 1 "${COMMIT_MSG_FILE}")
 
 # Define a regex for semantic commit messages
-SEMANTIC_REGEX="^(build|chore|ci|docs|style|refactor|feat|fix|test)(\([a-zA-Z0-9:_-]+\))?(\!\))?: .{1,100}$"
-
+# - Make scope mandatory for all types except 'docs' and 'chore'
+# - Limit scope length to a maximum of 20 characters
+# - Keep overall message between 10 and 300 characters
+SEMANTIC_REGEX="^(docs|chore)(\([a-zA-Z0-9:_-]{1,20}\))?: .{1,100}$|^(build|ci|style|refactor|feat|fix|test)\([a-zA-Z0-9:_-]{1,20}\)(\!)?: .{1,300}$"
 
 if [[ ! ${COMMIT_MSG} =~ ${SEMANTIC_REGEX} ]]; then
     echo "ERROR: Commit message does not follow the Semantic Commit Message convention."
@@ -17,8 +19,12 @@ if [[ ! ${COMMIT_MSG} =~ ${SEMANTIC_REGEX} ]]; then
     echo "  feat(parser): add ability to parse arrays"
     echo "  fix(login): handle edge case for password validation"
     echo "  docs: update README with usage examples"
+    echo "  chore: update dependencies"
     echo ""
     echo "Please use the format: <type>(<scope>): <description>"
-    echo "Valid types: feat, fix, docs, style, refactor, test, chore"
+    echo "- Types requiring scope: feat, fix, refactor, test, style, build, ci"
+    echo "- Types where scope is optional: docs, chore"
+    echo "- Maximum scope length: 20 characters"
+    echo "- Commit message length: 10-100 characters"
     exit 1
 fi

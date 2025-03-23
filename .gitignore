@@ -32,3 +32,6 @@ metals.sbt
 /.worksheet/
 rules
 !.trunk
+
+# Node
+node_modules/

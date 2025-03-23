@@ -9,22 +9,25 @@ val hooks = taskKey[Unit](
 )
 
 hooks := {
-  val currentHooksPath = "git config --get core.hooksPath".!!.trim
+  val log = sLog.value
+
   try {
+    val currentHooksPath = "git config --get core.hooksPath".!!.trim
     if (currentHooksPath != "git-hooks") {
       val command = "git config core.hooksPath git-hooks"
-      val exitCode = command.! // Capture the exit code
+      val exitCode = Process(command).run().exitValue()
       if (exitCode == 0) {
-        println("Successfully set git hooks path.")
+        log.info("Successfully set git hooks path.")
       } else {
-        println(s"Failed to set git hooks path. Command exited with code: $exitCode")
+        log.error(s"Failed to set git hooks path. Command exited with code: $exitCode")
       }
     } else {
-      println("Git hooks path is already set.")
+      log.info("Git hooks path is already set.")
     }
   } catch {
     case e: Exception =>
-      println(s"An error occurred while setting git hooks path: ${e.getMessage}")
+      log.error(s"An error occurred while setting git hooks path: ${e.getMessage}")
+      e.printStackTrace()
   }
 }
 

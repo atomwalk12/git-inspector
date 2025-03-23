@@ -15,9 +15,15 @@ echo "Running scalafmt..."
 sbt scalafmtAll
 
 # Optional: Run lightweight tests only
-# sbt "testOnly -- -l org.scalatest.tags.Slow"
+# sbt "testOnly -- -l org.scalatest.tags.Slow" # Exclude slow tests
+
+# Include only fast and medium tests only
+sbt "testOnly -- -n com.example.tags.Fast,com.example.tags.Medium"
 
 # Get the list of modified files
-git add $(git diff --name-only)
+modified_files=$(git diff --name-only)
+
+# Add the modified files to the staging area
+git add "${modified_files}"
 
 echo "All checks passed!" 
