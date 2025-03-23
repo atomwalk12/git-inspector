@@ -55,9 +55,9 @@ lazy val root = project
       // Options for Scalafix
       "-Wunused:imports"
     ),
-    libraryDependencies += "org.scalatest"              %% "scalatest"       % "3.2.19" % Test,
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % Test,
 
     // Logging
-    //libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.5",
-    //libraryDependencies += "ch.qos.logback"              % "logback-classic" % "1.5.18"
+    libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.5", // Logging library
+    libraryDependencies += "ch.qos.logback"              % "logback-classic" % "1.5.18" // Engine for logging
   )
