@@ -21,7 +21,7 @@ Compile / compile := (Compile / compile).dependsOn(hooks).value
 
 
 // ------ Scalafmt ------
-// scalafmtOnCompile := true
+scalafmtOnCompile := true
 
 // // ------ Wartremover ------
 // wartremoverWarnings ++= Warts.all
