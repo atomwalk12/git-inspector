@@ -117,7 +117,7 @@ def hashPassword(password: String): Try[String] = {
 
 # Tooling
 * **Code formatter:**  Scalafmt - Enforces consistent formatting automatically. Configure Scalafmt to align with this style guide.
-* **Linter/Static Analysis:**  Scalastyle - Identifies potential issues, style violations, and enforce coding best practices. Configure Scalastyle to align with this style guide and functional programming principles.
+* **Linter/Static Analysis:**  Scalafix - Identifies potential issues, style violations, and enforce coding best practices.
 
 # Example
 

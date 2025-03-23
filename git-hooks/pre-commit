@@ -1,0 +1,23 @@
+#!/bin/bash
+set -e  # Exit immediately if any command fails
+
+echo "Running pre-commit checks..."
+
+# Fast compile
+sbt "Test / compile"
+
+# Run scalafix to fix any other issues
+echo "Running scalafix..."
+sbt scalafix
+
+# Format Scala files using scalafmt
+echo "Running scalafmt..."
+sbt scalafmtAll
+
+# Optional: Run lightweight tests only
+# sbt "testOnly -- -l org.scalatest.tags.Slow"
+
+# Get the list of modified files
+git add $(git diff --name-only)
+
+echo "All checks passed!" 

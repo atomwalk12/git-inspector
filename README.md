@@ -1,8 +1,20 @@
-## sbt project compiled with Scala 3
+# Git Inspector
 
-### Usage
+## SBT Commands
 
-This is a normal sbt project. You can compile code with `sbt compile`, run it with `sbt run`, and `sbt console` will start a Scala 3 REPL.
+**SBT Commands & Tools:**
 
-For more information on the sbt-dotty plugin, see the
-[scala3-example-project](https://github.com/scala/scala3-example-project/blob/main/README.md).
+- **Scalafix**: Lints & refactors code (unused imports). Command: `sbt scalafixAll`.
+- **Scalafmt**: Formats Scala code. Command: `sbt scalafmtAll`.
+- **Wartremover**: Checks for code issues (final case classes). Command: `sbt wartremover`.
+- **Scoverage**: Checks code coverage (report). Commands: `sbt clean coverage test`, `sbt coverageReport`.
+- **sbt-assembly**: Creates project jar. Command: `sbt assembly`.
+
+**Other SBT Commands:**
+
+- `sbt test`: Runs tests.
+- `sbt doc`: Generates documentation.
+
+**Code Style Tool:**
+
+- **Trunk**: Checks code style (trailing spaces).
