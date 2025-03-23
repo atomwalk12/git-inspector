@@ -23,18 +23,18 @@ Compile / compile := (Compile / compile).dependsOn(hooks).value
 // ------ Scalafmt ------
 scalafmtOnCompile := true
 
-// // ------ Wartremover ------
-// wartremoverWarnings ++= Warts.all
-// wartremoverWarnings --= Seq(
-//   Wart.ImplicitParameter,
-//   Wart.Nothing,
-//   Wart.Equals
-// )
+// ------ Wartremover ------
+wartremoverWarnings ++= Warts.all
+wartremoverWarnings --= Seq(
+  Wart.ImplicitParameter,
+  Wart.Nothing,
+  Wart.Equals
+)
 
-// wartremoverErrors ++= Warts.unsafe
-// wartremoverErrors --= Seq(
-//   Wart.Any
-// )
+wartremoverErrors ++= Warts.unsafe
+wartremoverErrors --= Seq(
+  Wart.Any
+)
 
 // ------ Scalafix ------
 ThisBuild / semanticdbEnabled := true
