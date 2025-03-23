@@ -32,6 +32,7 @@ scalafmtOnCompile := true
 coverageEnabled := true
 
 // ------ Wartremover ------
+// finds potential bugs,(i.e. case classes must be final)
 wartremoverWarnings ++= Warts.all
 wartremoverWarnings --= Seq(
   Wart.ImplicitParameter,
@@ -44,7 +45,11 @@ wartremoverErrors --= Seq(
   Wart.Any,
 )
 
+// ------ Trunk ------
+// Code style violations (i.e. trailing spaces)
+
 // ------ Scalafix ------
+// i.e. unused imports
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
 

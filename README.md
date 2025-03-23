@@ -2,28 +2,19 @@
 
 ## SBT Commands
 
-Here are some useful SBT commands you can run:
+**SBT Commands & Tools:**
 
-- **Run Scalafix**: `sbt scalafixAll`
-  - This command applies all Scalafix rules to the codebase.
+- **Scalafix**: Lints & refactors code (unused imports). Command: `sbt scalafixAll`.
+- **Scalafmt**: Formats Scala code. Command: `sbt scalafmtAll`.
+- **Wartremover**: Checks for code issues (final case classes). Command: `sbt wartremover`.
+- **Scoverage**: Checks code coverage (report). Commands: `sbt clean coverage test`, `sbt coverageReport`.
+- **sbt-assembly**: Creates project jar. Command: `sbt assembly`.
 
-- **Format Code**: `sbt scalafmtAll`
-  - This command formats the Scala code according to the Scalafmt configuration.
+**Other SBT Commands:**
 
-- **Run Wartremover**: `sbt wartremover`
-  - This command checks the code for potential issues and anti-patterns as defined by the Wartremover rules.
+- `sbt test`: Runs tests.
+- `sbt doc`: Generates documentation.
 
-- **Run Tests**: `sbt test`
-  - This command runs all the tests in the project.
+**Code Style Tool:**
 
-- **Generate Documentation**: `sbt doc`
-  - This command generates documentation for the project based on the comments in the code.
-
-- **Clean and Run Coverage Tests**: `sbt clean coverage test`
-  - This command cleans the project, runs tests, and collects code coverage information.
-
-- **Generate Coverage Report**: `sbt coverageReport`
-  - This command generates a report of the code coverage from the tests.
-
-- **Generate Assembly Jar**: `sbt assembly`
-  - This command generates a jar file of the project.
+- **Trunk**: Checks code style (trailing spaces).
