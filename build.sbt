@@ -27,6 +27,9 @@ hooks := {
 // ------ Scalafmt ------
 scalafmtOnCompile := true
 
+// ------ Scoverage ------
+coverageEnabled := true
+
 // ------ Wartremover ------
 wartremoverWarnings ++= Warts.all
 wartremoverWarnings --= Seq(
