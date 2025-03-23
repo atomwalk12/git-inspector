@@ -18,6 +18,8 @@ sbt scalafmtAll
 sbt "testOnly -- -l org.scalatest.tags.Slow" # Exclude slow tests
 
 # Include only fast and medium tests only
+# This serves as an example on how to run specific tests.
+# Since we run all tests besides slow tests above, we don't need to use this.
 # sbt "testOnly -- -n com.example.tags.Fast,com.example.tags.Medium"
 
 # Get the list of modified files
