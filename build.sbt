@@ -5,7 +5,7 @@ val scala3Version = "3.6.4"
 // ------ Git hooks ------
 // Change git hooks path to a tracked folder
 val hooks = taskKey[Unit](
-  "change git hooks path to a tracked folder (run 'sbt hooks' to configure)"
+  "change git hooks path to a tracked folder (run 'sbt hooks' to configure)",
 )
 
 hooks := {
@@ -15,11 +15,12 @@ hooks := {
     val command =
       "git config core.hooksPath git-hooks"
     println(
-      s"Setting git hooks path... Command exited with code: ${command.!}"
+      s"Setting git hooks path... Command exited with code: ${command.!}",
     )
-  } else {
+  }
+  else {
     println(
-      "Git hooks path is already set."
+      "Git hooks path is already set.",
     )
   }
 }
@@ -35,17 +36,32 @@ wartremoverWarnings ++= Warts.all
 wartremoverWarnings --= Seq(
   Wart.ImplicitParameter,
   Wart.Nothing,
-  Wart.Equals
+  Wart.Equals,
 )
 
 wartremoverErrors ++= Warts.unsafe
 wartremoverErrors --= Seq(
-  Wart.Any
+  Wart.Any,
 )
 
 // ------ Scalafix ------
 ThisBuild / semanticdbEnabled := true
 ThisBuild / semanticdbVersion := scalafixSemanticdb.revision
+
+// ------ Tests ------
+Test / fork := true // provides isolation between test runs and the build tool
+Test / javaOptions ++= Seq(
+  "-Xmx4G", // increase memory for tests
+)
+
+// ------ Assembly ------
+enablePlugins(AssemblyPlugin)
+Compile / mainClass := Some("gitinsp.Main")
+assembly / assemblyMergeStrategy := {
+  case PathList("META-INF", _*) => MergeStrategy.discard // Metadata is discarded to avoid conflicts
+  case _                        => MergeStrategy.first
+}
+assembly / assemblyJarName := "gitinsp.jar"
 
 // ------ Dependencies ------
 lazy val root = project
@@ -60,11 +76,11 @@ lazy val root = project
       "-indent",
       "-source:3.3",
       // Options for Scalafix
-      "-Wunused:imports"
+      "-Wunused:imports",
     ),
     libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % Test,
 
     // Logging
-    libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging"   % "3.9.5", // Logging library
-    libraryDependencies += "ch.qos.logback"              % "logback-classic" % "1.5.18" // Engine for logging
+    libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5", // Logging library
+    libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.5.18", // Engine for logging
   )
