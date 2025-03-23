@@ -24,6 +24,10 @@ sbt "testOnly -- -n com.example.tags.Fast,com.example.tags.Medium"
 modified_files=$(git diff --name-only)
 
 # Add the modified files to the staging area
-git add "${modified_files}"
+if [[ -n ${modified_files} ]]; then
+    git add "${modified_files}"
+else
+    echo "No modified files to add."
+fi
 
 echo "All checks passed!" 
