@@ -10,19 +10,19 @@ env:
   JAVA_VERSION: 21
 
 permissions:
-  contents: read
+    contents: read
 
 jobs:
   release:
     concurrency:
-      group: release-${{ github.event.number || github.ref }}
-      cancel-in-progress: true
-
+        group: release-${{ github.event.number || github.ref }}
+        cancel-in-progress: true
+    name: Release
     runs-on: ubuntu-22.04
     permissions:
-      contents: read
-      pull-requests: write
-      issues: write
+        contents: write # to be able to publish a GitHub release
+        issues: write # to be able to comment on released issues
+        pull-requests: write # to be able to comment on released pull requests
     steps:
       - name: Generate a token
         id: generate-token
