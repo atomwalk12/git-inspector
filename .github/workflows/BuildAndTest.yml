@@ -17,7 +17,7 @@ jobs:
         java-version: [ 17, 21 ]
     runs-on: ${{ matrix.os }}
     concurrency:
-      group: build-${{ github.workflow }}-${{ matrix.os }}-${{ matrix.java-version }}-${{ matrix.java-distribution }}-${{ (github.event_name == 'pull_request' && github.event.number) || github.ref }}
+      group: build-${{ github.workflow }}-${{ matrix.os }}-${{ matrix.java-version }}-${{ matrix.java-distribution }}-${{ github.event.pull_request.number || github.ref }}
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4.2.2

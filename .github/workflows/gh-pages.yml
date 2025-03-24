@@ -58,7 +58,7 @@ jobs:
         run: git submodule update --remote --merge
 
       - name: Generate ScalaDoc
-        run: sbt doc
+        run: sbt doc& & echo "ScalaDoc generation successful" || (echo "ScalaDoc generation failed" && exit 1)
 
       - name: Move ScalaDoc to docs/public/scaladoc
         run: |
@@ -69,7 +69,7 @@ jobs:
         run: |
           sbt 'set coverageEnabled := true'
           sbt clean coverage test
-          sbt coverageReport
+          sbt coverageReport && echo "Scoverage report generation successful" || (echo "Scoverage report generation failed" && exit 1)
 
       - name: Move Scoverage Report to docs/public/coverage
         run: |
