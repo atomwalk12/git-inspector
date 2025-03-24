@@ -17,8 +17,8 @@ jobs:
         java-version: [ 17, 21 ]
     runs-on: ${{ matrix.os }}
     concurrency:
-      group: build-${{ github.workflow }}-${{ matrix.os }}-${{ matrix.java-version }}-${{ matrix.java-distribution }}-${{ github.run_id }}
-      cancel-in-progress: true
+      group: build-ci
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4.2.2
       - name: Set up JDK
@@ -34,15 +34,19 @@ jobs:
         run: sbt test
 
   check-code-formatting:
+    strategy:
+      matrix:
+        java-distribution: [temurin]
+        java-version: [ 17, 21 ]
     needs: build
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4.2.2
-      - name: Set up JDK 21
+      - name: Set up JDK for scalafmt
         uses: actions/setup-java@v4
         with:
-          java-version: 21
-          distribution: temurin
+          java-version: ${{ matrix.java-version }}
+          distribution: ${{ matrix.java-distribution }}
           cache: sbt
       - name: Check scalafmt format
         run: sbt scalafmtCheckAll
