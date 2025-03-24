@@ -24,24 +24,29 @@ jobs:
         issues: write # to be able to comment on released issues
         pull-requests: write # to be able to comment on released pull requests
     steps:
+      - name: Generate a token
+        id: generate-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ vars.RELEASER_APP_ID }}
+          private-key: ${{ secrets.RELEASER_APP_PRIVATE_KEY }}
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-            fetch-depth: 0
+          token: ${{ steps.generate-token.outputs.token }}
       - uses: actions/setup-java@v4
         with:
           java-version: ${{ env.JAVA_VERSION }}
           distribution: temurin
       - name: Build JAR
         run: sbt assembly
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: lts/*
       - name: Install dependencies
-        run: npm clean-install
-      - name: Release
+        run: npm install
+      - name: Run semantic-release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }}
         run: npx semantic-release
