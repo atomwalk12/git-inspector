@@ -97,8 +97,8 @@ jobs:
           hugo \
             --buildDrafts --gc \
             --minify \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
-            --source .
+            --baseURL "${{ steps.pages.outputs.base_url }}/" \
+            --source . \
             --destination public
 
       - name: Upload artifact
