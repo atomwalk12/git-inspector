@@ -10,12 +10,16 @@
     "lint": "trunk check",
     "fmt": "trunk fmt"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/atomwalk12/PPS-22-git-insp.git"
+  },
   "release": {
     "branches": [
       "main",
       {
-        "name": "develop",
-        "prerelease": true
+        "name": "tools/semantic-release",
+        "prerelease": false
       }
     ],
     "preset": "conventionalcommits",
