@@ -32,7 +32,7 @@
         {
           "assets": [
             {
-              "path": "target/scala-*/ulisse.jar",
+              "path": "target/scala-*/gitinsp.jar",
               "label": "Executable JAR"
             }
           ]
