@@ -6,8 +6,7 @@ name: Deploy Hugo Site, ScalaDoc and Scoverage Report to Pages
 on:
   # Runs on pushes targeting the default branch
   push:
-    branches: [$default-branch]
-
+    branches: [ main, docs/website ]
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
@@ -21,7 +20,7 @@ permissions:
 # However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
 concurrency:
   group: pages
-  cancel-in-progress: false
+  cancel-in-progress: true
 
 # Default to bash
 defaults:
@@ -38,6 +37,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: main
           submodules: recursive
 
       - name: Set up JDK 21
@@ -50,6 +50,12 @@ jobs:
       - name: Setup Pages
         id: pages
         uses: actions/configure-pages@v5
+
+      - name: Get Theme
+        run: git submodule update --init --recursive
+
+      - name: Update theme to Latest commit
+        run: git submodule update --remote --merge
 
       - name: Generate ScalaDoc
         run: sbt doc
@@ -79,21 +85,26 @@ jobs:
         run: sudo snap install dart-sass
 
       - name: Install Node.js dependencies
+        working-directory: ./docs/website
         run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
 
       - name: Build with Hugo
+        working-directory: ./docs/website
         env:
           HUGO_CACHEDIR: ${{ runner.temp }}/hugo_cache
           HUGO_ENVIRONMENT: production
         run: |
           hugo \
+            --buildDrafts --gc \
             --minify \
             --baseURL "${{ steps.pages.outputs.base_url }}/"
+            --source .
+            --destination public
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./public
+          path: docs/website/public
 
   # Deployment job
   deploy:
