@@ -30,7 +30,7 @@ defaults:
 jobs:
   # Build job
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       HUGO_VERSION: 0.145.0
     steps:
@@ -58,7 +58,7 @@ jobs:
         run: git submodule update --remote --merge
 
       - name: Generate ScalaDoc
-        run: sbt doc& & echo "ScalaDoc generation successful" || (echo "ScalaDoc generation failed" && exit 1)
+        run: sbt doc && echo "ScalaDoc generation successful" || (echo "ScalaDoc generation failed" && exit 1)
 
       - name: Move ScalaDoc to docs/public/scaladoc
         run: |
@@ -97,8 +97,8 @@ jobs:
           hugo \
             --buildDrafts --gc \
             --minify \
-            --baseURL "${{ steps.pages.outputs.base_url }}/"
-            --source .
+            --baseURL "${{ steps.pages.outputs.base_url }}/" \
+            --source . \
             --destination public
 
       - name: Upload artifact
@@ -111,7 +111,7 @@ jobs:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       - name: Deploy to GitHub Pages
