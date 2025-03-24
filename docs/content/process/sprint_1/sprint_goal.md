@@ -16,4 +16,4 @@
 - Working GitHub Actions for CI/CD
 - Initial documentation including README and project guidelines
 - Basic implementation that demonstrates loading a Git repository
-- Completed process documentation for Sprint 1 
+- Completed process documentation for Sprint 1
