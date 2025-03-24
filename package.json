@@ -16,11 +16,7 @@
   },
   "release": {
     "branches": [
-      "main",
-      {
-        "name": "tools/semantic-release",
-        "prerelease": false
-      }
+      "main"
     ],
     "preset": "conventionalcommits",
     "plugins": [
