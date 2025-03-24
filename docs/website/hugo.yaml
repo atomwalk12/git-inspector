@@ -6,7 +6,7 @@ copyright: © [PaperMod Contributors](https://atomwalk12.github.io/pps-22-git-in
 pagination:
   pagerSize: 5
 theme: [papermod]
-contentDir: ../process
+contentDir: ../content
 
 enableInlineShortcodes: true
 enableRobotsTXT: true
@@ -15,7 +15,7 @@ buildFuture: false
 buildExpired: false
 enableEmoji: true
 pygmentsUseClasses: true
-mainsections: [posts, papermod]
+mainsections: [papermod, process]
 
 minify:
   disableXML: true
@@ -32,7 +32,10 @@ languages:
     menu:
       main:
         - name: Process
-          url: /
+          url: process
+          weight: 1
+        - name: Archive
+          url: archives
           weight: 5
         - name: Search
           url: search/

@@ -49,4 +49,4 @@
 - [ ] Document the development process
 - [ ] Create initial architectural design documentation
 - [ ] Complete sprint retrospective documentation
-- [ ] Plan for next sprint 
+- [ ] Plan for next sprint
