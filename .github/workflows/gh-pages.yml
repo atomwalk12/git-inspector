@@ -58,7 +58,7 @@ jobs:
         run: git submodule update --remote --merge
 
       - name: Generate ScalaDoc
-        run: sbt doc& & echo "ScalaDoc generation successful" || (echo "ScalaDoc generation failed" && exit 1)
+        run: sbt doc && echo "ScalaDoc generation successful" || (echo "ScalaDoc generation failed" && exit 1)
 
       - name: Move ScalaDoc to docs/public/scaladoc
         run: |
