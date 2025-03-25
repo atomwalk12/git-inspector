@@ -1,7 +1,7 @@
 # Partially modified from https://github.com/actions/starter-workflows/blob/main/pages/hugo.yml
 
 # Sample workflow for building and deploying a Hugo site to GitHub Pages
-name: Deploy Hugo Site, ScalaDoc and Scoverage Report to Pages
+name: Docs CI
 
 on:
   # Runs on pushes targeting the default branch

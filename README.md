@@ -1,3 +1,7 @@
+[![Code CI](https://github.com/DiamondLightSource/pytac/actions/workflows/code.yml/badge.svg)](https://github.com/DiamondLightSource/pytac/actions/workflows/code.yml)
+[![Docs CI](https://github.com/atomwalk12/PPS-22-git-insp/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/atomwalk12/PPS-22-git-insp/actions/workflows/gh-pages.yml)
+[![codecov](https://codecov.io/gh/atomwalk12/pps-22-git-insp/branch/main/graph/badge.svg)](https://codecov.io/gh/atomwalk12/pps-22-git-insp)
+
 # Git Inspector
 
 [![codecov](https://codecov.io/gh/atomwalk12/pps-22-git-insp/branch/main/graph/badge.svg)](https://codecov.io/gh/atomwalk12/pps-22-git-insp)
