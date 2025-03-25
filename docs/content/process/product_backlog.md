@@ -6,4 +6,5 @@ summary: "A summary of the product backlog."
 aliases: []
 ShowToc: true
 weight: 1
+tags: ["product_backlog"]
 ---

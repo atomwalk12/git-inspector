@@ -5,6 +5,7 @@ date: "2025-03-24"
 description: "Detailed description of the first sprint."
 aliases: ["sprint1"]
 ShowToc: true
+tags: ["sprint1", "backlog"]
 weight: 2
 ShowBreadCrumbs: true
 summary: "The tasks that were completed during the first sprint."

@@ -6,6 +6,7 @@ description: "Detailed description of the first sprint."
 aliases: ["sprint1"]
 ShowToc: true
 TocOpen: true
+tags: ["sprint1", "overview"]
 weight: 1
 ShowBreadCrumbs: true
 summary: "Detailed description of the first sprint."
