@@ -32,10 +32,10 @@ languages:
     menu:
       main:
         - name: Process
-          url: process
+          url: process/
           weight: 1
         - name: Archive
-          url: archives
+          url: archives/
           weight: 5
         - name: Search
           url: search/
@@ -43,8 +43,12 @@ languages:
         - name: Tags
           url: tags/
           weight: 10
-        - name: WiKi
-          url: https://github.com/adityatelange/hugo-PaperMod/wiki/
+        - name: ScalaDoc
+          url: scaladoc/
+          weight: 15
+        - name: Coverage
+          url: coverage/
+          weight: 16
 
 outputs:
   home:
