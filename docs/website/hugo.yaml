@@ -47,7 +47,7 @@ languages:
           url: scaladoc
           weight: 15
         - name: Coverage
-          url: coverage
+          url: https://app.codecov.io/gh/atomwalk12/pps-22-git-insp
           weight: 16
 
 outputs:

@@ -1,15 +1,15 @@
 ---
+title: "Sprint 1 Overview: Project Infrastructure Setup"
 author: "Razvan"
-title: "Overview"
-date: "2025-03-24"
-description: "Detailed description of the first sprint."
-aliases: ["sprint1"]
+date: 2025-03-24
+description: "First sprint focusing on establishing project foundations, development environment, and CI/CD pipelines"
+aliases: ["sprint1", "sprint1-overview", "infrastructure-sprint"]
+tags: ["sprint1", "overview", "project-setup", "ci-cd", "infrastructure"]
 ShowToc: true
 TocOpen: true
-tags: ["sprint1", "overview"]
 weight: 1
 ShowBreadCrumbs: true
-summary: "Detailed description of the first sprint."
+summary: "First sprint (March 24-30, 2025) dedicated to setting up the project's foundational infrastructure, including Scala 3 environment, development tools, automated checks, testing framework, and CI/CD pipeline."
 ---
 
 
