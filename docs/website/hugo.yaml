@@ -38,13 +38,17 @@ languages:
           url: archives
           weight: 5
         - name: Search
-          url: search/
+          url: search
           weight: 10
         - name: Tags
-          url: tags/
+          url: tags
           weight: 10
-        - name: WiKi
-          url: https://github.com/adityatelange/hugo-PaperMod/wiki/
+        - name: ScalaDoc
+          url: scaladoc
+          weight: 15
+        - name: Coverage
+          url: coverage
+          weight: 16
 
 outputs:
   home:
