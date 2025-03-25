@@ -35,7 +35,7 @@ summary: "Comprehensive list of tasks and deliverables for Sprint 1 (March 24-30
 - [x] Configure assembly plugin for JAR creation
 - [x] Set up test environment with ScalaTest
 - [x] Configure memory settings for tests
-- [x] Enable code coverage with Codecov and build online report ([Coveralls](https://github.com/scoverage/sbt-coveralls))
+- [x] Enable code coverage with Codecov and build online report ([Codecov](https://app.codecov.io/gh/atomwalk12/pps-22-git-insp))
 - [x] Automatic documentation generation from code comments
 - [ ] Configure [Dependabot](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions) for dependency security updates
 - [x] Set up website that showcases the process and project architecture
