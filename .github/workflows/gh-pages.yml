@@ -60,10 +60,10 @@ jobs:
       - name: Generate ScalaDoc
         run: sbt doc && echo "ScalaDoc generation successful" || (echo "ScalaDoc generation failed" && exit 1)
 
-      - name: Move ScalaDoc to docs/public/scaladoc
+      - name: Move ScalaDoc to docs/website/public/scaladoc
         run: |
-          mkdir -p ./docs/public/scaladoc
-          cp -r target/scala-*/api/* ./docs/public/scaladoc
+          mkdir -p ./docs/website/public/scaladoc
+          cp -r target/scala-*/api/* ./docs/website/public/scaladoc
 
       - name: Generate Scoverage Report
         run: |
@@ -71,10 +71,10 @@ jobs:
           sbt clean coverage test
           sbt coverageReport && echo "Scoverage report generation successful" || (echo "Scoverage report generation failed" && exit 1)
 
-      - name: Move Scoverage Report to docs/public/coverage
+      - name: Move Scoverage Report to docs/website/public/coverage
         run: |
-          mkdir -p ./docs/public/coverage
-          cp -r target/scala-*/scoverage-report/* ./docs/public/coverage
+          mkdir -p ./docs/website/public/coverage
+          cp -r target/scala-*/scoverage-report/* ./docs/website/public/coverage
 
       - name: Install Hugo CLI
         run: |
