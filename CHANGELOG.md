@@ -1,3 +1,9 @@
+## [1.0.1](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.0.0...v1.0.1) (2025-03-25)
+
+### Bug Fixes
+
+* **github-pages:** update concurrency settings in GitHub Actions workflow to prevent canceling in-progress deployments ([3948291](https://github.com/atomwalk12/PPS-22-git-insp/commit/3948291ea1a84af8a67fd6d6a8a0d182940dd94c))
+
 ## 1.0.0 (2025-03-24)
 
 ### Features
