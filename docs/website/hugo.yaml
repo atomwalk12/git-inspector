@@ -32,22 +32,22 @@ languages:
     menu:
       main:
         - name: Process
-          url: process/
+          url: process
           weight: 1
         - name: Archive
-          url: archives/
+          url: archives
           weight: 5
         - name: Search
-          url: search/
+          url: search
           weight: 10
         - name: Tags
           url: tags/
           weight: 10
         - name: ScalaDoc
-          url: scaladoc/
+          url: scaladoc
           weight: 15
         - name: Coverage
-          url: coverage/
+          url: coverage
           weight: 16
 
 outputs:
