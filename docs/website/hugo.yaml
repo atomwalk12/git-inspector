@@ -6,7 +6,7 @@ copyright: © [PaperMod Contributors](https://atomwalk12.github.io/pps-22-git-in
 pagination:
   pagerSize: 5
 theme: [papermod]
-contentDir: ../content
+#contentDir: ../content
 
 enableInlineShortcodes: true
 enableRobotsTXT: true
