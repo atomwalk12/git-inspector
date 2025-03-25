@@ -1,3 +1,10 @@
+---
+_build:
+  render: true
+  list: false # This prevents the page from being listed
+  publishResources: false
+---
+
 # Git Inspector Development Process
 
 This folder contains documentation of the development process, including product backlog, sprint backlogs, and retrospectives.
@@ -9,7 +16,6 @@ This folder contains documentation of the development process, including product
 - (Additional sprint folders will be added as the project progresses)
 
 Each sprint folder contains:
+- `overview.md`: Overview of the sprint
 - `sprint_backlog.md`: Tasks planned for the sprint
-- `sprint_goal.md`: Goal and objectives for the sprint
 - `daily_updates/`: Daily progress updates
-- `retrospective.md`: Sprint retrospective (added at the end of the sprint)

@@ -57,6 +57,7 @@ params:
   description: Theme PaperMod - https://atomwalk12.github.io/pps-22-git-insp/
   author: Theme PaperMod
   # author: ["Me", "You"] # multiple authors
+  mainSections: []
 
   defaultTheme: auto
   # disableThemeToggle: true
@@ -70,6 +71,7 @@ params:
   ShowRssButtonInSectionTermList: true
   ShowAllPagesInArchive: true
   ShowPageNums: true
+  BreadcrumbDivider: ">"
   ShowToc: true
   # comments: false
   images: [images/papermod-cover.png]
