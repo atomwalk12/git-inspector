@@ -5,8 +5,6 @@
 
 # Git Inspector
 
-[![codecov](https://codecov.io/gh/atomwalk12/pps-22-git-insp/branch/main/graph/badge.svg)](https://codecov.io/gh/atomwalk12/pps-22-git-insp)
-
 ## SBT Commands
 
 **SBT Commands & Tools:**
