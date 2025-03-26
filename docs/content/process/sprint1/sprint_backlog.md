@@ -71,7 +71,7 @@ summary: "Comprehensive list of tasks and deliverables for Sprint 1 (March 24-30
   - Set up GitHub Actions workflow
   - Configure automated releases
   - Set up artifact publishing
-- [ ] Think about what the project architecture should look like
+- [ ] Define the high-level project architecture and component interactions
 
 
 #### Core Domain Model (1 day)
