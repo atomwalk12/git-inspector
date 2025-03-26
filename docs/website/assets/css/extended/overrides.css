@@ -1,0 +1,4 @@
+:root {
+    --main-width: 900px; /* 900px */
+    --nav-width: 1278px; /* main-width * 1.42. Could you also 1278px. */
+}
