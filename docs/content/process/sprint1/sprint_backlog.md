@@ -1,14 +1,14 @@
 ---
+title: "Sprint 1 Backlog: Infrastructure Tasks"
 author: "Razvan"
-title: "Backlog"
-date: "2025-03-24"
-description: "Detailed description of the first sprint."
-aliases: ["sprint1"]
+date: 2025-03-24
+description: "Detailed breakdown of tasks and user stories for Sprint 1's infrastructure setup phase"
+aliases: ["sprint1-backlog", "infrastructure-tasks", "sprint1-tasks"]
 ShowToc: true
-tags: ["sprint1", "backlog"]
+tags: ["sprint1", "backlog", "project-setup", "planning", "infrastructure"]
 weight: 2
 ShowBreadCrumbs: true
-summary: "The tasks that were completed during the first sprint."
+summary: "Comprehensive list of tasks and deliverables for Sprint 1 (March 24-30, 2025), focusing on establishing project infrastructure, development environment, and CI/CD pipeline setup."
 ---
 
 
@@ -35,11 +35,11 @@ summary: "The tasks that were completed during the first sprint."
 - [x] Configure assembly plugin for JAR creation
 - [x] Set up test environment with ScalaTest
 - [x] Configure memory settings for tests
-- [ ] Enable code coverage with Scoverage and build online report ([Coveralls](https://github.com/scoverage/sbt-coveralls))
-- [ ] Automatic documentation generation from code comments
+- [x] Enable code coverage with Codecov and build online report ([Codecov](https://app.codecov.io/gh/atomwalk12/pps-22-git-insp))
+- [x] Automatic documentation generation from code comments
 - [ ] Configure [Dependabot](https://docs.github.com/en/code-security/dependabot/working-with-dependabot/automating-dependabot-with-github-actions) for dependency security updates
-- [X] Set up website that showcases the process and project architecture
-- [ ] Code quality badges
+- [x] Set up website that showcases the process and project architecture
+- [x] Code quality badges
 
 #### Code Quality Tools (3 story points)
 - [x] Set up Scalafmt for code formatting
@@ -71,7 +71,7 @@ summary: "The tasks that were completed during the first sprint."
   - Set up GitHub Actions workflow
   - Configure automated releases
   - Set up artifact publishing
-- [ ] Think about how the project architecture should look like
+- [ ] Define the high-level project architecture and component interactions
 
 
 #### Core Domain Model (1 day)
@@ -90,6 +90,5 @@ summary: "The tasks that were completed during the first sprint."
 
 #### Documentation and Process (1 day)
 - [X] Document the development process
-- [ ] Create initial architectural design documentation
 - [ ] Complete sprint retrospective documentation
 - [ ] Plan for next sprint

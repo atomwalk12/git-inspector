@@ -1,4 +1,4 @@
-name: Test workflow
+name: Deploy to Codecov
 
 permissions:
   contents: read
