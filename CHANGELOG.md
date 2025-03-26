@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.0.1...v1.1.0) (2025-03-26)
+
+### Features
+
+* **docs:** enhance documentation and CI/CD setup for Sprint 1 ([#20](https://github.com/atomwalk12/PPS-22-git-insp/issues/20)) ([52b3cee](https://github.com/atomwalk12/PPS-22-git-insp/commit/52b3cee5b15ce303262e1f1a1dfde3a5ccabf679))
+
 ## [1.0.1](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.0.0...v1.0.1) (2025-03-25)
 
 ### Bug Fixes
