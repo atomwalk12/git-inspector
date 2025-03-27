@@ -98,10 +98,18 @@ params:
     Content: >
       👋 Welcome to demo page of 'Git Inspector' project! Here are listed the main resources for this project:
 
-        <table>
-          <tr>
-            <td><strong>Source code</strong></td>
-            <td><a href="https://github.com/atomwalk12/pps-22-git-insp">https://github.com/atomwalk12/pps-22-git-insp/</a></td>
+
+        <table style="display: table">
+          <thead>
+            <tr style="text-align: left;">
+              <th><strong>Resource</strong></th>
+              <th><strong>Link</strong></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="text-align: left;">
+              <td><strong>Source code</strong></td>
+              <td><a href="https://github.com/atomwalk12/pps-22-git-insp">https://github.com/atomwalk12/pps-22-git-insp/</a></td>
           </tr>
           <tr>
             <td><strong>Report</strong></td>
@@ -113,8 +121,9 @@ params:
           </tr>
           <tr>
             <td><strong>Coverage</strong></td>
-            <td><a href="https://app.codecov.io/gh/atomwalk12/pps-22-git-insp">https://app.codecov.io/gh/atomwalk12/pps-22-git-insp/</a></td>
-          </tr>
+              <td><a href="https://app.codecov.io/gh/atomwalk12/pps-22-git-insp">https://app.codecov.io/gh/atomwalk12/pps-22-git-insp/</a></td>
+            </tr>
+          </tbody>
         </table>
 
   socialIcons:

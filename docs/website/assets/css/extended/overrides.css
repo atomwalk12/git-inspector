@@ -5,6 +5,8 @@
 }
 
 /* Table settings */
+/*
+This is replaced by the code from responsive-table.html
 body.list tr:hover {background-color: #D6EEEE;}
 body.dark tr:hover {background-color: #6432bd;}
 
@@ -17,3 +19,4 @@ table {
 th, td {
     padding: 8px;
 }
+*/
