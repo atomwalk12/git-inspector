@@ -96,13 +96,26 @@ params:
   homeInfoParams:
     Title: Git Inspector
     Content: >
-      👋 Welcome to demo page of Hugo's theme PaperMod!
+      👋 Welcome to demo page of 'Git Inspector' project! Here are listed the main resources for this project:
 
-      - **PaperMod**  is designed to be clean and simple but fast and responsive theme with useful feature-set that enhances UX.
-
-      - Feel free to show your support by giving us a star 🌟 on GitHub and sharing with your friends and social media .
-
-      - PaperMod is based on theme [Paper](https://github.com/nanxiaobei/hugo-paper/tree/4330c8b12aa48bfdecbcad6ad66145f679a430b3).
+        <table>
+          <tr>
+            <td><strong>Source code</strong></td>
+            <td><a href="https://github.com/atomwalk12/pps-22-git-insp">https://github.com/atomwalk12/pps-22-git-insp/</a></td>
+          </tr>
+          <tr>
+            <td><strong>Report</strong></td>
+            <td><a href="https://github.com/atomwalk12/pps-22-git-insp/releases/">https://github.com/atomwalk12/pps-22-git-insp/releases/</a></td>
+          </tr>
+          <tr>
+            <td><strong>ScalaDoc</strong></td>
+            <td><a href="https://atomwalk12.github.io/PPS-22-git-insp/scaladoc/">https://atomwalk12.github.io/PPS-22-git-insp/scaladoc/</a></td>
+          </tr>
+          <tr>
+            <td><strong>Coverage</strong></td>
+            <td><a href="https://app.codecov.io/gh/atomwalk12/pps-22-git-insp">https://app.codecov.io/gh/atomwalk12/pps-22-git-insp/</a></td>
+          </tr>
+        </table>
 
   socialIcons:
     - name: github
