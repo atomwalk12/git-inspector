@@ -43,7 +43,8 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: docs/report/report.tex
+          working_directory: docs/report
+          root_file: report.tex
 
       - name: Check for LaTeX errors and warnings
         run: |
