@@ -96,8 +96,10 @@ params:
   homeInfoParams:
     Title: Git Inspector
     Content: >
-      👋 Welcome to demo page of 'Git Inspector' project! Here are listed the main resources for this project:
+      - Git Inspector is a tool that inspects a Git repository, fetches relevant files and allows a user to search the codebase using natural language.
+        This websites documents the development process. To get started inspect the [process](process) directory.
 
+      - Here are other relevant resources for this project:
 
         <table style="display: table">
           <thead>
