@@ -31,3 +31,11 @@
 * **package:** update JAR file path in package.json ([7a2790b](https://github.com/atomwalk12/PPS-22-git-insp/commit/7a2790b8742385e109db7ced723830d3ca370046))
 * **pre-commit:** cherry pick [#c1011c50](https://github.com/atomwalk12/PPS-22-git-insp/issues/c1011c50) from main to hotfix/pre-commit. ([c4058a5](https://github.com/atomwalk12/PPS-22-git-insp/commit/c4058a520ed427d32ef52148059139410e4df08e))
 * **website:** correct syntax error in ScalaDoc generation command in GitHub Actions workflow ([1737c0a](https://github.com/atomwalk12/PPS-22-git-insp/commit/1737c0ad4e64110ef94d411d6b8a97cf5b117e35))
+
+
+[submodule "docs/website/themes/hugo-cite"]
+	path = docs/website/themes/hugo-cite
+	url = https://github.com/rdnfn/hugo-cite.git
+[submodule "docs/website/themes/papermod"]
+	path = docs/website/themes/papermod
+	url = git@github.com:atomwalk12/hugo-PaperMod.git
