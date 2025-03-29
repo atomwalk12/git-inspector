@@ -1,0 +1,3 @@
+[submodule "docs/website/themes/papermod"]
+	path = docs/website/themes/papermod
+	url = https://github.com/atomwalk12/hugo-PaperMod.git
