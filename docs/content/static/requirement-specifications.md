@@ -276,13 +276,13 @@ Ollama Integration Requirement (IR3)
 ```md
 Layered Architecture Requirement (IR4)
 
-- Choice: Implement system using a layered architecture approach.
-  - Rationale: Layered architecture promotes separation of concerns and modularity required for the system.
+- Choice: Implement system using a layered architecture approach with Langchain4j AIService abstraction.
+  - Rationale: Layered architecture promotes separation of concerns and modularity required for the system, while Langchain4j reduces boilerplate code.
   - Implementation Considerations:
     - Define clear boundaries between Presentation, Application, Domain, and Infrastructure layers.
     - Implement dependency injection for layer communication.
     - Ensure unidirectional dependencies between layers.
-    - Create robust modules within each layer.
+    - Document how the AIService abstractions implement conceptual modules.
   - Related Requirements:
     - All Functional Requirements
     - NFR1 (Performance)

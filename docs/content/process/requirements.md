@@ -7,13 +7,19 @@ aliases: ["requirements"]
 tocopen: true
 tags: ["requirements"]
 summary: "The requirements engineering step where we define all 5 requirement types: Business, Functional (user and system), Non-Functional, Implementation."
+bibFile: /assets/bibliography.json
+useCitationFooter: true
 ---
+
+<!-- markdownlint-disable MD051 -->
 
 ## Workflow
 
 ![PPS Workflow](../../static/figures/PPS-workflow.svg)
 
-## Requirements Definition
+## Requirements Engineering
+
+### Requirements Definition
 
 For more details on the requirements engineering process, please refer to [day 4](sprint1/daily_updates/2025-03-27.md) of the first sprint.
 
@@ -25,19 +31,24 @@ Hardware specification:
 - RAM: 64GB
 - Storage: SSD
 
-## Design Representation
-
 ### Domain Model
+
+#### Class Diagram
 
 The domain model is a diagram that shows the relationships between the different entities in the system.
 
-![Domain Model](../../static/figures/PPS-domain-model.svg)
+![Class Diagram](../../static/figures/PPS-domain-model-class-diagram.svg)
 
-### Architectural Diagram
+#### Sequence Diagram
 
-The architectural diagram is a diagram that shows the different components of the system and their interactions.
+Figure [fig:sequence-diagram-indexing](#fig:sequence-diagram-indexing) shows the interactions between the different entities in the system.
 
-![Architectural Diagram](../../static/figures/PPS-architecture.svg)
+{{< numbered-figure id="fig:sequence-diagram-indexing" align="center" src="../../static/figures/PPS-domain-model-sequence-diagram-indexing.svg" caption="Sequence Diagram that illustrates the repository indexing process" >}}
+
+
+Figure [fig:sequence-diagram-chat](#fig:sequence-diagram-chat) shows the sequence diagram for the code search process.
+
+{{< numbered-figure id="fig:sequence-diagram-chat" align="center" src="../../static/figures/PPS-domain-model-sequence-diagram-chat.svg" caption="Sequence Diagram that illustrates the code search process" >}}
 
 ### Design choices
 
@@ -49,7 +60,7 @@ Below, I refine the requirements presented in Section [Requirements Definition](
 
 {{< insert-text "requirement-specifications.md" >}}
 
-## Reference Requirements in Code
+### Code References
 
 - The requirements should be referenced in the code comments.
 
@@ -58,9 +69,9 @@ Below, I refine the requirements presented in Section [Requirements Definition](
 def inspectGitRepository(url: String): List[Requirement] = ???
 ```
 
-## Traceability Matrix
+### Traceability Matrix
 
-[TODO] To trace the requirements to the design elements, I will use a traceability matrix. This matrix will be 
+[TODO] To trace the requirements to the design elements, I will use a traceability matrix. This matrix will be
 populated by running unit tests, which will populate a table with the following format:
 
 <!-- markdownlint-disable MD033 -->
@@ -95,3 +106,18 @@ populated by running unit tests, which will populate a table with the following 
     </tr>
   </tbody>
 </table>
+
+## Design
+
+### Architectural Diagram
+
+The architectural diagram is a diagram that shows the different components of the system and their interactions. See sprint 1, [day 3](sprint1/daily_updates/2025-03-26.md) for more details.
+
+![Architectural Diagram](../../static/figures/PPS-architecture.svg)
+
+### Detailed Design
+
+Detailed design includes more implementation specifics like private methods, framework-specific elements, etc.
+
+{{< cite "DNN1" >}}
+{{< bibliography cited >}}
