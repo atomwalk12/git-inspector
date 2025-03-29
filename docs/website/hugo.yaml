@@ -5,7 +5,7 @@ title: Git Inspector
 copyright: © [PaperMod Contributors](https://atomwalk12.github.io/pps-22-git-insp/graphs/contributors)
 pagination:
   pagerSize: 5
-theme: [papermod]
+theme: [papermod, hugo-cite]
 contentDir: ../content
 
 enableInlineShortcodes: true
@@ -61,7 +61,7 @@ params:
   description: Theme PaperMod - https://atomwalk12.github.io/pps-22-git-insp/
   author: Theme PaperMod
   # author: ["Me", "You"] # multiple authors
-  mainSections: []
+  mainSections: [] # [process]
 
   defaultTheme: auto
   # disableThemeToggle: true
