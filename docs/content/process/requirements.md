@@ -6,7 +6,7 @@ description: "Defining the requirements for the Git Inspector project"
 aliases: ["requirements"]
 tocopen: true
 tags: ["requirements"]
-summary: "The requirements engineering step where we define all 5 requirement types: Business, Functional (user and system), Non-Functional, Implementation."
+summary: "I define all 5 requirement types: Business, Functional (user and system), Non-Functional, Implementation."
 bibFile: /assets/bibliography.json
 useCitationFooter: true
 ---
@@ -35,13 +35,13 @@ Hardware specification:
 
 #### Class Diagram
 
-The domain model is a diagram that shows the relationships between the different entities in the system.
+The domain model is a diagram that shows the relationships between the different domain entities.
 
 ![Class Diagram](../../static/figures/PPS-domain-model-class-diagram.svg)
 
 #### Sequence Diagram
 
-Figure [fig:sequence-diagram-indexing](#fig:sequence-diagram-indexing) shows the interactions between the different entities in the system.
+Figure [fig:sequence-diagram-indexing](#fig:sequence-diagram-indexing) shows the how the indexing process works.
 
 {{< numbered-figure id="fig:sequence-diagram-indexing" align="center" src="../../static/figures/PPS-domain-model-sequence-diagram-indexing.svg" caption="Sequence Diagram that illustrates the repository indexing process" >}}
 
@@ -71,41 +71,7 @@ def inspectGitRepository(url: String): List[Requirement] = ???
 
 ### Traceability Matrix
 
-[TODO] To trace the requirements to the design elements, I will use a traceability matrix. This matrix will be
-populated by running unit tests, which will populate a table with the following format:
-
-<!-- markdownlint-disable MD033 -->
-<table style="display: table;">
-  <thead>
-    <tr>
-      <th>Requirement</th>
-      <th>Design element</th>
-      <th>Implementation Evidence</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>FR1.1</td>
-      <td>inspectGitRepository</td>
-      <td>inspectGitRepository.scala</td>
-    </tr>
-    <tr>
-      <td>FR1.2</td>
-      <td>searchCode</td>
-      <td>searchCode.scala</td>
-    </tr>
-    <tr>
-      <td>FR2.1</td>
-      <td>buildVectorDatabase</td>
-      <td>buildVectorDatabase.scala</td>
-    </tr>
-    <tr>
-      <td>FR2.2</td>
-      <td>optimizeSearch</td>
-      <td>optimizeSearch.scala</td>
-    </tr>
-  </tbody>
-</table>
+{{< insert-text "traceability-matrix.md" >}}
 
 ## Design
 

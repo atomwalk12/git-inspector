@@ -5,7 +5,7 @@ date: 2025-03-24
 description: "Detailed breakdown of tasks and user stories for Sprint 1's infrastructure setup phase"
 aliases: ["sprint1-backlog", "infrastructure-tasks", "sprint1-tasks"]
 ShowToc: true
-tags: ["sprint1", "backlog", "project-setup", "planning", "infrastructure"]
+tags: ["sprint1", "planning", "infrastructure", "requirements"]
 weight: 299
 ShowBreadCrumbs: true
 TocOpen: true

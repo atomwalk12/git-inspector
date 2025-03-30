@@ -4,7 +4,7 @@ baseURL: https://atomwalk12.github.io/pps-22-git-insp/
 title: Git Inspector
 copyright: © [PaperMod Contributors](https://atomwalk12.github.io/pps-22-git-insp/graphs/contributors)
 pagination:
-  pagerSize: 5
+  pagerSize: 7
 theme: [papermod, hugo-cite]
 contentDir: ../content
 

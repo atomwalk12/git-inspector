@@ -5,6 +5,9 @@ date: "2025-03-24"
 summary: "A summary of the product backlog."
 aliases: []
 ShowToc: true
+tocopen: true
 weight: 300
 tags: ["product_backlog"]
 ---
+
+{{< insert-text "product-backlog.md" >}}
