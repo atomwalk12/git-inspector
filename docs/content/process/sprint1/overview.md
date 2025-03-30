@@ -85,12 +85,12 @@ Main completed tasks:
 - Learnt about semantic versioning and how it can be used to manage the release of new versions of the project.
 
 *What could be improved?*
-- Some planned tasks remain incomplete, including Dependabot configuration. This will be removed from the product backlog.
+- Some planned tasks remain incomplete, including Dependabot configuration. This will be removed from the product backlog. I prefer not to use it, to avoid build stability issues.
 - Wartremover rules need to be fine-tuned, as they will likely lead to accumulating technical debt if I rely too much on excluded rules.
-- Repository loading functionality is not yet implemented. This will be remedied in the next sprint.
+- Repository loading functionality is not yet implemented (see [Sprint Backlog](./sprint_backlog.md)). This will be remedied in the next sprint.
 
 *What did I learn?*
-- I need to pay special attention to the Wartremover rules, as if I rely too much on excluded rules, this will likely end up in accumulating technical debt.
+- I need to pay special attention to the Wartremover rules, as if I rely too much on excluded rules, this will likely end up in accumulating technical debt. Used `Wart.Any`, `Wart.Throw` and `Wart.Var`.
 - Early investment in development infrastructure may pay off in the long run. This will have to be proven in the forthcoming sprints.
 - Setting up automated checks from the beginning helps maintain consistent code quality standards.
 - Breaking down infrastructure tasks into smaller, more manageable pieces makes the development process more straightforward.
