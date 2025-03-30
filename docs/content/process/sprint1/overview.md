@@ -68,4 +68,29 @@ Checkout the [daily progress updates](./daily_updates/) folder for detailed day-
 
 ## Sprint Retrospective
 
-[TODO: include retrospective content]
+The following tools will help maintain code quality and automate tasks, freeing up time for more
+complex tasks.
+
+Main completed tasks:
+- Successfully set up the project infrastructure using Scala 3
+- Added tools to ensure code quality: Scalafmt, Wartremover, Scalafix and Trunk
+- Set up complete CI/CD pipeline with Github Actions and artifact publishing
+- Configured automatic semantic versioning and release management
+- Implemented git hooks with pre-commit checks
+- Added Gemini bot for automated pull request reviews
+
+*What went well?*
+- This approach to setting up the requirements is likely to save time in future sprints, as it makes it easier to track requirements and choose tasks to focus on.
+- The documentation process was fairly smooth. During the forthcoming sprints, it will become much more easier to maintain the documentation.
+- Learnt about semantic versioning and how it can be used to manage the release of new versions of the project.
+
+*What could be improved?*
+- Some planned tasks remain incomplete, including Dependabot configuration. This will be removed from the product backlog. I prefer not to use it, to avoid build stability issues.
+- Wartremover rules need to be fine-tuned, as they will likely lead to accumulating technical debt if I rely too much on excluded rules.
+- Repository loading functionality is not yet implemented (see [Sprint Backlog](./sprint_backlog.md)). This will be remedied in the next sprint.
+
+*What did I learn?*
+- I need to pay special attention to the Wartremover rules, as if I rely too much on excluded rules, this will likely end up in accumulating technical debt. Used `Wart.Any`, `Wart.Throw` and `Wart.Var`.
+- Early investment in development infrastructure may pay off in the long run. This will have to be proven in the forthcoming sprints.
+- Setting up automated checks from the beginning helps maintain consistent code quality standards.
+- Breaking down infrastructure tasks into smaller, more manageable pieces makes the development process more straightforward.

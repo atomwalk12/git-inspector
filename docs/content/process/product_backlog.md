@@ -8,7 +8,6 @@ tocopen: true
 tags: ["requirements", "product-backlog"]
 summary: "A summary of the product backlog."
 bibFile: /assets/bibliography.json
-useCitationFooter: true
 ---
 
 ## Product Backlog
