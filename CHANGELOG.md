@@ -1,3 +1,11 @@
+## [1.1.1](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.1.0...v1.1.1) (2025-03-31)
+
+### Bug Fixes
+
+* **docs:** correct file path for Layered Architecture diagram in product backlog ([d0953e4](https://github.com/atomwalk12/PPS-22-git-insp/commit/d0953e4912b948b5855b272bd21ce8a85dea6db6))
+* **docs:** update file path for Layered Architecture diagram in product backlog ([93ea150](https://github.com/atomwalk12/PPS-22-git-insp/commit/93ea15004a6d559566ae7c97bb0ecb58594bd11d))
+* **Github-Actions:** update GitHub Pages workflow to clean destination directory during build ([033d08c](https://github.com/atomwalk12/PPS-22-git-insp/commit/033d08c6105c8e05e86d5edcd514897b2b6dec55))
+
 ## [1.1.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.0.1...v1.1.0) (2025-03-26)
 
 ### Features
