@@ -94,7 +94,7 @@ jobs:
           HUGO_ENVIRONMENT: production
         run: |
           hugo \
-            --buildDrafts --gc \
+            --buildDrafts --gc --cleanDestinationDir \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
 
       - name: Upload artifact
