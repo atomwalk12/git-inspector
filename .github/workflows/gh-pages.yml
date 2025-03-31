@@ -94,7 +94,7 @@ jobs:
           HUGO_ENVIRONMENT: production
         run: |
           hugo \
-            --buildDrafts --gc \
+            --buildDrafts --gc --cleanDestinationDir \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
 
       - name: Upload artifact
@@ -109,7 +109,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-22.04
     needs: build
-    if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch' # Condition for main branch or manual trigger
+    # if: github.ref == 'refs/heads/main' || github.event_name == 'workflow_dispatch'  Condition for main branch or manual trigger
     steps:
       - name: Deploy to GitHub Pages
         id: deployment

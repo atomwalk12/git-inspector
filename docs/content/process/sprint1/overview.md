@@ -36,34 +36,12 @@ Deliverables:
 
 ## Sprint Backlog
 
-[TODO: include summary of sprint backlog]
-
 For detailed sprint backlog items, see [Sprint Backlog](./sprint_backlog.md)
 
-## Sprint Progress
 
-### Daily Updates
+## Daily Updates
 
 Checkout the [daily progress updates](./daily_updates/) folder for detailed day-by-day developments.
-
-## Key Takeaways
-
-- Established Scala 3 project with modern build tools
-- Implemented multiple layers of code quality checks
-- Set up automated release management
-- Created robust testing infrastructure
-
-### Technical Debt
-
-- Need to fine-tune Wartremover rules
-- Consider adding more specific Scalafmt configurations
-- May need to optimize test memory settings
-
-### Lessons Learned
-
-- Early investment in development infrastructure pays off
-- Automated checks help maintain code quality
-- Semantic versioning helps track changes effectively
 
 
 ## Sprint Retrospective
@@ -89,7 +67,7 @@ Main completed tasks:
 - Wartremover rules need to be fine-tuned, as they will likely lead to accumulating technical debt if I rely too much on excluded rules.
 - Repository loading functionality is not yet implemented (see [Sprint Backlog](./sprint_backlog.md)). This will be remedied in the next sprint.
 
-*What did I learn?*
+*What I learned?*
 - I need to pay special attention to the Wartremover rules, as if I rely too much on excluded rules, this will likely end up in accumulating technical debt. Used `Wart.Any`, `Wart.Throw` and `Wart.Var`.
 - Early investment in development infrastructure may pay off in the long run. This will have to be proven in the forthcoming sprints.
 - Setting up automated checks from the beginning helps maintain consistent code quality standards.
