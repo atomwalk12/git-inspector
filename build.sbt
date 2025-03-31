@@ -41,18 +41,12 @@ coverageEnabled := true
 // finds potential bugs,(i.e. case classes must be final)
 wartremoverWarnings ++= Warts.all
 wartremoverWarnings --= Seq(
-  Wart.ImplicitParameter,
+  Wart.Overloading,
   Wart.Nothing,
-  Wart.Equals,
-  Wart.Throw,
-  Wart.Var,
 )
 
 wartremoverErrors ++= Warts.unsafe
 wartremoverErrors --= Seq(
-  Wart.Any,
-  Wart.Throw,
-  Wart.Var,
 )
 
 // ------ Trunk ------
@@ -94,9 +88,18 @@ lazy val root = project
       // Options for Scalafix
       "-Wunused:imports",
     ),
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % Test,
 
-    // Logging
-    libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5", // Logging library
-    libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.5.18", // Engine for logging
+    libraryDependencies ++= Seq(
+      // Testing
+      "org.scalatest" %% "scalatest" % "3.2.19" % Test,
+
+      // Logging
+      "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5", // Logging library
+      "ch.qos.logback" % "logback-classic" % "1.5.18", // Engine for logging
+
+      // Langchain4j dependencies
+      "dev.langchain4j" % "langchain4j" % "1.0.0-beta1" % Test,
+      "dev.langchain4j" % "langchain4j-ollama" % "1.0.0-beta1",
+      "dev.langchain4j" % "langchain4j-qdrant" % "1.0.0-beta1",
+    ),
   )
