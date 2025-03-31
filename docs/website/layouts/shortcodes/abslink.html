@@ -1,0 +1,7 @@
+{{ $url := .Get "url" }}
+{{ $text := .Get "text" }}
+{{ $target := .Get "target" }}
+
+{{ $fullURL := printf "/pps-22-git-insp%s" $url }}
+
+<a href="{{ absURL $fullURL }}" {{ with $target }}target="{{ . }}"{{ end }}>{{ $text }}</a>
