@@ -4,7 +4,7 @@ The following tasks build on the [Requirements Specifications](../../static/requ
 
 ## Core Features
 
-1. **Utilize a [Layered Architecture](../../../../static/figures/PPS-architecture.svg) layout** (IR4)
+1. **Utilize a [Layered Architecture](../../static/figures/PPS-architecture.svg) layout** (IR4)
 
    - Implement the modules present in the architecture diagram
    - Use design patterns presented in the lectures (IR1)
