@@ -1,3 +1,9 @@
+## [1.1.2](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.1.1...v1.1.2) (2025-03-31)
+
+### Bug Fixes
+
+* **docs:** correct URL path in abslink shortcode for consistency ([e981a96](https://github.com/atomwalk12/PPS-22-git-insp/commit/e981a9697e80be07e11d6af13c324201dea997c6))
+
 ## [1.1.1](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.1.0...v1.1.1) (2025-03-31)
 
 ### Bug Fixes
