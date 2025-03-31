@@ -101,5 +101,6 @@ lazy val root = project
       "dev.langchain4j" % "langchain4j" % "1.0.0-beta1" % Test,
       "dev.langchain4j" % "langchain4j-ollama" % "1.0.0-beta1",
       "dev.langchain4j" % "langchain4j-qdrant" % "1.0.0-beta1",
+      "dev.langchain4j" % "langchain4j-easy-rag" % "1.0.0-beta1",
     ),
   )
