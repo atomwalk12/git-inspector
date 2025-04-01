@@ -1,8 +1,19 @@
 package gitinsp.analysis
 
-class NaturalLanguageStrategy extends AnalysisStrategy:
+import akka.NotUsed
+import akka.stream.scaladsl.Source
+import gitinsp.utils.StreamingAssistant
 
-  override def analyze(code: String): Unit =
-    println("Analyzing code")
+import scala.concurrent.Future
 
-  override def name: String = "NaturalLanguageStrategy"
+@SuppressWarnings(Array("org.wartremover.warts.ImplicitParameter"))
+/** Strategy implementation for analyzing natural language.
+  * Specifically, it is optimized for analyzing markdown text.
+  */
+class NaturalLanguageStrategy(assistant: StreamingAssistant) extends AnalysisStrategy {
+  override def analyze(query: String, codeContext: String): Future[Source[String, NotUsed]] = {
+    Future.successful(Source.empty)
+  }
+
+  override def strategyName: String = "Markdown Analysis"
+}

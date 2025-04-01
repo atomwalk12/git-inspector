@@ -102,5 +102,9 @@ lazy val root = project
       "dev.langchain4j" % "langchain4j-ollama" % "1.0.0-beta1",
       "dev.langchain4j" % "langchain4j-qdrant" % "1.0.0-beta1",
       "dev.langchain4j" % "langchain4j-easy-rag" % "1.0.0-beta1",
+
+      // Akka dependencies
+      "com.typesafe.akka" %% "akka-http" % "10.5.3",
+      "com.typesafe.akka" %% "akka-stream" % "2.8.8",
     ),
   )
