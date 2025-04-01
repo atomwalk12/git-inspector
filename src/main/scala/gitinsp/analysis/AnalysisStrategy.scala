@@ -8,7 +8,7 @@ import scala.concurrent.Future
 /** Base trait defining the contract for different code analysis strategies.
   * Implements the Strategy pattern for handling different types of code analysis.
   */
-trait AnalysisStrategy {
+trait AnalysisStrategy:
 
   /** Analyzes the given query in the context of provided code.
     *
@@ -20,4 +20,3 @@ trait AnalysisStrategy {
 
   /** Returns the name/identifier of this strategy */
   def strategyName: String
-}

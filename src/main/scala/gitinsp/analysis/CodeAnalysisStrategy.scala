@@ -10,11 +10,9 @@ import scala.concurrent.Future
 /** Strategy implementation specialized for code analysis.
   * This strategy assumes that the underlying text represents a codebase.
   */
-class CodeAnalysisStrategy(assistant: StreamingAssistant) extends AnalysisStrategy {
+class CodeAnalysisStrategy(assistant: StreamingAssistant) extends AnalysisStrategy:
 
-  override def analyze(query: String, codeContext: String): Future[Source[String, NotUsed]] = {
+  override def analyze(query: String, codeContext: String): Future[Source[String, NotUsed]] =
     Future.successful(Source.empty)
-  }
 
   override def strategyName: String = "Code Analysis"
-}

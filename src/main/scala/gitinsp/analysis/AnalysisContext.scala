@@ -13,7 +13,7 @@ import scala.concurrent.Future
   */
 final case class AnalysisContext(
   strategy: Option[AnalysisStrategy],
-) {
+):
 
   /** Returns a new context with the specified strategy
     *
@@ -30,28 +30,22 @@ final case class AnalysisContext(
     * @return Future containing the analysis result as a streaming Source
     * @throws IllegalStateException if no strategy is set
     */
-  def analyzeCode(query: String, codeContext: String): Future[Source[String, NotUsed]] = {
-    strategy match {
+  def analyzeCode(query: String, codeContext: String): Future[Source[String, NotUsed]] =
+    strategy match
       case Some(s) => s.analyze(query, codeContext)
       case None    => Future.failed(new IllegalStateException("No analysis strategy set"))
-    }
-  }
-}
 
 /** Companion object providing factory methods to create contexts with specific strategies */
-object AnalysisContext {
+object AnalysisContext:
 
   /** Creates an empty context with no strategy */
   def apply(): AnalysisContext =
     new AnalysisContext(None)
 
   /** Factory method to create a new context with natural language strategy */
-  def withNaturalLanguageStrategy(assistant: StreamingAssistant): AnalysisContext = {
+  def withNaturalLanguageStrategy(assistant: StreamingAssistant): AnalysisContext =
     apply().withStrategy(new NaturalLanguageStrategy(assistant))
-  }
 
   /** Factory method to create a new context with code analysis strategy */
-  def withCodeAnalysisStrategy(assistant: StreamingAssistant): AnalysisContext = {
+  def withCodeAnalysisStrategy(assistant: StreamingAssistant): AnalysisContext =
     apply().withStrategy(new CodeAnalysisStrategy(assistant))
-  }
-}

@@ -10,10 +10,8 @@ import scala.concurrent.Future
 /** Strategy implementation for analyzing natural language.
   * Specifically, it is optimized for analyzing markdown text.
   */
-class NaturalLanguageStrategy(assistant: StreamingAssistant) extends AnalysisStrategy {
-  override def analyze(query: String, codeContext: String): Future[Source[String, NotUsed]] = {
+class NaturalLanguageStrategy(assistant: StreamingAssistant) extends AnalysisStrategy:
+  override def analyze(query: String, codeContext: String): Future[Source[String, NotUsed]] =
     Future.successful(Source.empty)
-  }
 
   override def strategyName: String = "Markdown Analysis"
-}

@@ -14,8 +14,7 @@ object QueryRoutingStrategyFactory:
     * @return A QueryRoutingStrategy implementation
     */
   def createStrategy(strategyType: String, modelRouter: OllamaChatModel): QueryRoutingStrategy =
-    strategyType.toLowerCase(Locale.ROOT) match {
+    strategyType.toLowerCase(Locale.ROOT) match
       case "conditional" => ConditionalQueryStrategy(modelRouter)
       case "default"     => DefaultQueryStrategy()
       case _             => DefaultQueryStrategy() // Default fallback
-    }

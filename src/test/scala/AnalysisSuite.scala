@@ -46,14 +46,13 @@ class AnalysisTest
   val mockConfig = mock[Config]
 
   // Create a mock configuration
-  override def beforeEach(): Unit = {
+  override def beforeEach(): Unit =
     super.beforeEach()
     org.mockito.Mockito.reset(mockConfig)
 
     // Config mock setup
     when(mockConfig.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
     when(mockConfig.getString("gitinsp.models.default-model")).thenReturn("llama3.1")
-  }
 
   "The Analysis Context" should "be able to analyze code" in:
     val analysis = AnalysisContext.withCodeAnalysisStrategy(StreamingAssistant())

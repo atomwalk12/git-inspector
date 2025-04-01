@@ -11,7 +11,7 @@ import gitinsp.utils.Language
 /** Factory trait for creating components of the Retrieval Augmented Generation (RAG) pipeline.
   * This interface allows for different implementations and configurations of RAG components.
   */
-trait RAGComponentFactory {
+trait RAGComponentFactory:
 
   /** Creates a QueryRouter based on the provided retrievers
     *
@@ -50,4 +50,3 @@ trait RAGComponentFactory {
     * @return An OllamaStreamingChatModel
     */
   def createStreamingChatModel(): OllamaStreamingChatModel
-}

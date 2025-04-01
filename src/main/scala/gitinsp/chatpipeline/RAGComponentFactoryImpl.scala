@@ -90,7 +90,7 @@ class RAGComponentFactoryImpl(
     * @return An OllamaEmbeddingModel
     */
   override def createEmbeddingModel(language: Language): OllamaEmbeddingModel =
-    language match {
+    language match
       case Language.MARKDOWN =>
         OllamaEmbeddingModel
           .builder()
@@ -103,7 +103,6 @@ class RAGComponentFactoryImpl(
           .baseUrl(config.getString("gitinsp.ollama.url"))
           .modelName(config.getString("gitinsp.code-embedding.model"))
           .build()
-    }
 
 /** A custom router that uses a query routing strategy.
   * This is an adapter that bridges the gap between the QueryRouter interface and the
