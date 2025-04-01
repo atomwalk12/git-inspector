@@ -5,6 +5,7 @@ import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
 import dev.langchain4j.model.scoring.ScoringModel
+import dev.langchain4j.rag.DefaultRetrievalAugmentor
 import dev.langchain4j.rag.content.aggregator.ReRankingContentAggregator
 import dev.langchain4j.rag.content.retriever.ContentRetriever
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
@@ -55,6 +56,22 @@ class RAGComponentFactoryImpl(
       // Use the default router. This means that all retrievers are used without relying on
       // an external LLM.
       new DefaultQueryRouter(retrievers.asJava)
+
+  /** Creates a retrieval augmentor that combines the router and aggregator.
+    *
+    * @param router The query router
+    * @param aggregator The content aggregator
+    * @return A DefaultRetrievalAugmentor
+    */
+  override def createRetrievalAugmentor(
+    router: QueryRouter,
+    aggregator: ReRankingContentAggregator,
+  ): DefaultRetrievalAugmentor =
+    DefaultRetrievalAugmentor
+      .builder()
+      .queryRouter(router)
+      .contentAggregator(aggregator)
+      .build()
 
   /** Creates a streaming chat model.
     *

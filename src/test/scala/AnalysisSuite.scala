@@ -12,10 +12,12 @@ import dev.langchain4j.model.ollama.OllamaEmbeddingModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
 import dev.langchain4j.model.output.Response
 import dev.langchain4j.model.scoring.ScoringModel
+import dev.langchain4j.rag.DefaultRetrievalAugmentor
 import dev.langchain4j.rag.content.aggregator.ReRankingContentAggregator
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
 import dev.langchain4j.rag.query.router.DefaultQueryRouter
+import dev.langchain4j.rag.query.router.QueryRouter
 import gitinsp.analysis.*
 import gitinsp.chatpipeline.ConditionalQueryStrategy
 import gitinsp.chatpipeline.DefaultQueryStrategy
@@ -250,3 +252,19 @@ class AnalysisTest
 
     // Verify the content aggregator type
     contentAggregator shouldBe a[ReRankingContentAggregator]
+
+  it should "create a retrieval augmentor" in:
+    // Setup
+    val mockChat         = mock[OllamaChatModel]
+    val mockScoringModel = mock[ScoringModel]
+    val factory          = new RAGComponentFactoryImpl(mockConfig, mockChat, mockScoringModel)
+
+    // Configure parameters
+    val mockRouter            = mock[QueryRouter]
+    val mockContentAggregator = mock[ReRankingContentAggregator]
+
+    // Execute
+    val retrievalAugmentor = factory.createRetrievalAugmentor(mockRouter, mockContentAggregator)
+
+    // Verify
+    retrievalAugmentor shouldBe a[DefaultRetrievalAugmentor]

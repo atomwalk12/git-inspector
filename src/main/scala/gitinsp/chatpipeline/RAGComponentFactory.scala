@@ -2,6 +2,7 @@ package gitinsp.chatpipeline
 
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
+import dev.langchain4j.rag.DefaultRetrievalAugmentor
 import dev.langchain4j.rag.content.aggregator.ReRankingContentAggregator
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.router.QueryRouter
@@ -12,6 +13,13 @@ import gitinsp.utils.Language
   */
 trait RAGComponentFactory {
 
+  /** Creates a QueryRouter based on the provided retrievers
+    *
+    * @param retrievers List of content retrievers to use
+    * @return A configured QueryRouter
+    */
+  def createQueryRouter(retrievers: List[EmbeddingStoreContentRetriever]): QueryRouter
+
   /** Creates a content aggregator for ranking and filtering retrieved content.
     * This allows to rerank results, potentially yielding more relevant content.
     *
@@ -19,12 +27,16 @@ trait RAGComponentFactory {
     */
   def createContentAggregator(): ReRankingContentAggregator
 
-  /** Creates a QueryRouter based on the provided retrievers
+  /** Creates a RetrievalAugmentor that combines router and aggregator
     *
-    * @param retrievers List of content retrievers to use
-    * @return A configured QueryRouter
+    * @param router The QueryRouter to use
+    * @param aggregator The ContentAggregator to use
+    * @return A configured DefaultRetrievalAugmentor
     */
-  def createQueryRouter(retrievers: List[EmbeddingStoreContentRetriever]): QueryRouter
+  def createRetrievalAugmentor(
+    router: QueryRouter,
+    aggregator: ReRankingContentAggregator,
+  ): DefaultRetrievalAugmentor
 
   /** Creates an embedding model for the given language.
     *
