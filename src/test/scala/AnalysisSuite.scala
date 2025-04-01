@@ -13,11 +13,13 @@ import dev.langchain4j.model.ollama.OllamaStreamingChatModel
 import dev.langchain4j.model.output.Response
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
+import dev.langchain4j.rag.query.router.DefaultQueryRouter
 import gitinsp.analysis.*
 import gitinsp.chatpipeline.ConditionalQueryStrategy
 import gitinsp.chatpipeline.DefaultQueryStrategy
 import gitinsp.chatpipeline.QueryRoutingStrategyFactory
 import gitinsp.chatpipeline.RAGComponentFactoryImpl
+import gitinsp.chatpipeline.RouterWithStrategy
 import gitinsp.utils.Language
 import gitinsp.utils.StreamingAssistant
 import org.mockito.ArgumentMatchers
@@ -45,8 +47,8 @@ class AnalysisTest
     org.mockito.Mockito.reset(mockConfig)
 
     // Config mock setup
-    when(mockConfig.getString("tinygpt.ollama.url")).thenReturn("http://localhost:11434")
-    when(mockConfig.getString("tinygpt.models.default-model")).thenReturn("llama3.1")
+    when(mockConfig.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
+    when(mockConfig.getString("gitinsp.models.default-model")).thenReturn("llama3.1")
   }
 
   "The Analysis Context" should "be able to analyze code" in:
@@ -192,3 +194,42 @@ class AnalysisTest
     result.size() should be(2)
     result.contains(retriever1) should be(true)
     result.contains(retriever2) should be(true)
+
+  "The RAGComponentFactoryImpl" should "create DefaultQueryRouter when conditional RAG is disabled" in:
+    // Setup
+    val mockChat = mock[OllamaChatModel]
+    val factory  = new RAGComponentFactoryImpl(mockConfig, mockChat)
+
+    // Create mock retrievers
+    val retriever1 = mock[EmbeddingStoreContentRetriever]
+    val retriever2 = mock[EmbeddingStoreContentRetriever]
+    val retrievers = List(retriever1, retriever2)
+
+    // Configure the mock to return false for conditional RAG
+    when(mockConfig.getBoolean("gitinsp.rag.use-conditional-rag")).thenReturn(false)
+
+    // Execute the method
+    val router = factory.createQueryRouter(retrievers)
+
+    // Verify the router type
+    router shouldBe a[DefaultQueryRouter]
+
+  it should "create RouterWithStrategy when conditional RAG is enabled" in:
+    // Setup
+    val mockChat   = mock[OllamaChatModel]
+    val mockConfig = mock[Config]
+    val factory    = new RAGComponentFactoryImpl(mockConfig, mockChat)
+
+    // Create mock retrievers
+    val retriever1 = mock[EmbeddingStoreContentRetriever]
+    val retriever2 = mock[EmbeddingStoreContentRetriever]
+    val retrievers = List(retriever1, retriever2)
+
+    // Configure the mock to return true for conditional RAG
+    when(mockConfig.getBoolean("gitinsp.rag.use-conditional-rag")).thenReturn(true)
+
+    // Execute the method
+    val router = factory.createQueryRouter(retrievers)
+
+    // Verify the router type
+    router shouldBe a[RouterWithStrategy]
