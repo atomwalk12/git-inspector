@@ -8,7 +8,7 @@ sbt "Test / compile"
 
 # Run scalafix to fix any other issues
 echo "Running scalafix..."
-sbt scalafix
+sbt scalafixAll
 
 # Format Scala files using scalafmt
 echo "Running scalafmt..."

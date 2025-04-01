@@ -12,6 +12,11 @@ import com.typesafe.config.Config
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
 import org.scalatest.Tag
+import gitinsp.utils.Language
+import dev.langchain4j.model.ollama.OllamaEmbeddingModel
+import dev.langchain4j.data.segment.TextSegment
+import dev.langchain4j.model.output.Response
+import dev.langchain4j.data.embedding.Embedding
 
 object Slow extends Tag("org.scalatest.tags.Slow")
 
@@ -26,10 +31,9 @@ class AnalysisTest
   // Create a mock configuration
   override def beforeEach(): Unit = {
     super.beforeEach()
-    // Reset mocks before each test
     org.mockito.Mockito.reset(mockConfig)
 
-    // Config mock setup - moved error-throwing configuration out of here
+    // Config mock setup
     when(mockConfig.getString("tinygpt.ollama.url")).thenReturn("http://localhost:11434")
     when(mockConfig.getString("tinygpt.models.default-model")).thenReturn("llama2")
   }
@@ -44,21 +48,52 @@ class AnalysisTest
     analysis.strategy.map(_.strategyName) should be(Some("Markdown Analysis"))
   }
 
-  it should "be able to chat with the streaming chat model" in {
+  "The RAG Component Factory" should "be able to create a streaming chat model" in {
     val mockFactory = mock[DefaultRAGComponentFactory]
     val mockChat    = mock[OllamaStreamingChatModel]
 
-    // Set up expectations
+    // Expectations
     when(mockFactory.createStreamingChatModel()).thenReturn(mockChat)
 
-    // Test with mocked handler
+    // Mock objects
     val handler = mock[StreamingChatResponseHandler]
 
-    // Perform the chat operation
+    // Chat with the model
     val chatModel = mockFactory.createStreamingChatModel()
     mockChat.chat("Hello, how are you?", handler)
 
-    // Verify the interaction happened as expected
+    // Verify interactions
     verify(mockFactory).createStreamingChatModel()
     verify(mockChat).chat("Hello, how are you?", handler)
+  }
+
+  it should "be able to create an embedding model" in {
+    val mockFactory        = mock[DefaultRAGComponentFactory]
+    val mockEmbeddingModel = mock[OllamaEmbeddingModel]
+
+    // Create test data
+    val expectedArray     = Array(0.1f, 0.2f, 0.3f)
+    val textSegment       = TextSegment.from("Hello, world!")
+    val embeddingVector   = Embedding.from(expectedArray)
+    val embeddingResponse = Response.from(embeddingVector)
+
+    // Expectations
+    when(mockFactory.createEmbeddingModel(Language.JAVA)).thenReturn(mockEmbeddingModel)
+    when(mockEmbeddingModel.embed(textSegment)).thenReturn(embeddingResponse)
+
+    // Attempt to embed code
+    val embeddingModel = mockFactory.createEmbeddingModel(Language.JAVA)
+    val result         = embeddingModel.embed(textSegment)
+
+    // Verify interactions and result
+    verify(mockFactory).createEmbeddingModel(Language.JAVA)
+    verify(embeddingModel).embed(textSegment)
+    result should be(embeddingResponse)
+
+    // Verify the embedding values
+    val embedding = result.content()
+    embedding.vectorAsList().size() should be(3)
+    embedding.vectorAsList().get(0).floatValue() should be(0.1f +- 0.001f)
+    embedding.vectorAsList().get(1).floatValue() should be(0.2f +- 0.001f)
+    embedding.vectorAsList().get(2).floatValue() should be(0.3f +- 0.001f)
   }

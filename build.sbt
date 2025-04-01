@@ -93,6 +93,7 @@ lazy val root = project
       // Testing
       "org.scalatest" %% "scalatest" % "3.2.19" % Test,
       "org.scalatestplus" %% "mockito-3-4" % "3.2.10.0" % Test,
+      "org.mockito" % "mockito-inline" % "5.2.0" % Test,
 
       // Logging
       "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5", // Logging library
