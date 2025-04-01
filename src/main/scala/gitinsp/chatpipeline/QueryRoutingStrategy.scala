@@ -45,7 +45,8 @@ class ConditionalQueryStrategy(modelRouter: OllamaChatModel) extends QueryRoutin
     val aiMessage = modelRouter.chat(prompt.toUserMessage()).aiMessage()
 
     // This basically allows to bypass fetching the RAG index if the modelk asked explicitly not to
-    if aiMessage.text().toLowerCase(Locale.ROOT).contains("no") then
+    // Check for standalone word "no"
+    if aiMessage.text().toLowerCase(Locale.ROOT).matches(".*\\bno\\b.*") then
       java.util.Collections.emptyList()
     else
       retrievers.asJava
