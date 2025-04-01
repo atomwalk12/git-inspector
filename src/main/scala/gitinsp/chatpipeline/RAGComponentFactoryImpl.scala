@@ -4,6 +4,8 @@ import com.typesafe.config.Config
 import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
+import dev.langchain4j.model.scoring.ScoringModel
+import dev.langchain4j.rag.content.aggregator.ReRankingContentAggregator
 import dev.langchain4j.rag.content.retriever.ContentRetriever
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.router.DefaultQueryRouter
@@ -21,7 +23,20 @@ import scala.jdk.CollectionConverters.*
 class RAGComponentFactoryImpl(
   config: Config,
   modelRouter: OllamaChatModel,
+  scoringModel: ScoringModel,
 ) extends RAGComponentFactory:
+
+  /** Creates a content aggregator using the reranker configuration.
+    *
+    * @return A ReRankingContentAggregator
+    */
+  override def createContentAggregator(): ReRankingContentAggregator =
+    ReRankingContentAggregator
+      .builder()
+      .scoringModel(scoringModel)
+      .maxResults(config.getInt("tinygpt.reranker.max-results"))
+      .minScore(config.getDouble("tinygpt.reranker.min-score"))
+      .build()
 
   /** Creates a query router based on configuration and available routing strategies.
     *

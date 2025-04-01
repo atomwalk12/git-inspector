@@ -11,6 +11,8 @@ import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
 import dev.langchain4j.model.output.Response
+import dev.langchain4j.model.scoring.ScoringModel
+import dev.langchain4j.rag.content.aggregator.ReRankingContentAggregator
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
 import dev.langchain4j.rag.query.router.DefaultQueryRouter
@@ -197,8 +199,9 @@ class AnalysisTest
 
   "The RAGComponentFactoryImpl" should "create DefaultQueryRouter when conditional RAG is disabled" in:
     // Setup
-    val mockChat = mock[OllamaChatModel]
-    val factory  = new RAGComponentFactoryImpl(mockConfig, mockChat)
+    val mockChat         = mock[OllamaChatModel]
+    val mockScoringModel = mock[ScoringModel]
+    val factory          = new RAGComponentFactoryImpl(mockConfig, mockChat, mockScoringModel)
 
     // Create mock retrievers
     val retriever1 = mock[EmbeddingStoreContentRetriever]
@@ -216,9 +219,10 @@ class AnalysisTest
 
   it should "create RouterWithStrategy when conditional RAG is enabled" in:
     // Setup
-    val mockChat   = mock[OllamaChatModel]
-    val mockConfig = mock[Config]
-    val factory    = new RAGComponentFactoryImpl(mockConfig, mockChat)
+    val mockChat         = mock[OllamaChatModel]
+    val mockConfig       = mock[Config]
+    val mockScoringModel = mock[ScoringModel]
+    val factory          = new RAGComponentFactoryImpl(mockConfig, mockChat, mockScoringModel)
 
     // Create mock retrievers
     val retriever1 = mock[EmbeddingStoreContentRetriever]
@@ -233,3 +237,16 @@ class AnalysisTest
 
     // Verify the router type
     router shouldBe a[RouterWithStrategy]
+
+  it should "create a content aggregator" in:
+    // Setup
+    val mockConfig       = mock[Config]
+    val mockScoringModel = mock[ScoringModel]
+    val mockChat         = mock[OllamaChatModel]
+    val factory          = new RAGComponentFactoryImpl(mockConfig, mockChat, mockScoringModel)
+
+    // Execute the method
+    val contentAggregator = factory.createContentAggregator()
+
+    // Verify the content aggregator type
+    contentAggregator shouldBe a[ReRankingContentAggregator]

@@ -2,6 +2,7 @@ package gitinsp.chatpipeline
 
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
 import dev.langchain4j.model.ollama.OllamaStreamingChatModel
+import dev.langchain4j.rag.content.aggregator.ReRankingContentAggregator
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.router.QueryRouter
 import gitinsp.utils.Language
@@ -10,6 +11,13 @@ import gitinsp.utils.Language
   * This interface allows for different implementations and configurations of RAG components.
   */
 trait RAGComponentFactory {
+
+  /** Creates a content aggregator for ranking and filtering retrieved content.
+    * This allows to rerank results, potentially yielding more relevant content.
+    *
+    * @return A configured ReRankingContentAggregator
+    */
+  def createContentAggregator(): ReRankingContentAggregator
 
   /** Creates a QueryRouter based on the provided retrievers
     *
