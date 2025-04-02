@@ -1,4 +1,4 @@
-package gitinsp.tests
+package gitinsp.tests.componentfactory
 
 import com.typesafe.config.Config
 import dev.langchain4j.data.embedding.Embedding
@@ -13,6 +13,7 @@ import dev.langchain4j.model.ollama.OllamaStreamingChatModel
 import dev.langchain4j.model.output.Response
 import dev.langchain4j.model.scoring.ScoringModel
 import dev.langchain4j.rag.DefaultRetrievalAugmentor
+import dev.langchain4j.rag.RetrievalAugmentor
 import dev.langchain4j.rag.content.aggregator.ReRankingContentAggregator
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
@@ -341,11 +342,11 @@ class AnalysisTest
     val factory = new RAGComponentFactoryImpl(mockConfig)
 
     // Configure mocks for common parameters
-    when(mockConfig.getString("tinygpt.reranker.model-path")).thenReturn("/path/to/model")
-    when(mockConfig.getString("tinygpt.reranker.tokenizer-path")).thenReturn("/path/to/tokenizer")
-    when(mockConfig.getBoolean("tinygpt.reranker.normalize-scores")).thenReturn(true)
-    when(mockConfig.getInt("tinygpt.reranker.max-length")).thenReturn(512)
-    when(mockConfig.getBoolean("tinygpt.reranker.use-gpu")).thenReturn(false)
+    when(mockConfig.getString("gitinsp.reranker.model-path")).thenReturn("/path/to/model")
+    when(mockConfig.getString("gitinsp.reranker.tokenizer-path")).thenReturn("/path/to/tokenizer")
+    when(mockConfig.getBoolean("gitinsp.reranker.normalize-scores")).thenReturn(true)
+    when(mockConfig.getInt("gitinsp.reranker.max-length")).thenReturn(512)
+    when(mockConfig.getBoolean("gitinsp.reranker.use-gpu")).thenReturn(false)
 
     // Verify
     a[RuntimeException] should be thrownBy factory.createScoringModel()
@@ -355,14 +356,24 @@ class AnalysisTest
     val factory = new RAGComponentFactoryImpl(mockConfig)
 
     // Configure mocks for common parameters
-    when(mockConfig.getString("tinygpt.reranker.model-path")).thenReturn("...")
-    when(mockConfig.getString("tinygpt.reranker.tokenizer-path")).thenReturn("...")
-    when(mockConfig.getBoolean("tinygpt.reranker.normalize-scores")).thenReturn(true)
-    when(mockConfig.getInt("tinygpt.reranker.max-length")).thenReturn(512)
-    when(mockConfig.getBoolean("tinygpt.reranker.use-gpu")).thenReturn(true)
+    when(mockConfig.getString("gitinsp.reranker.model-path")).thenReturn("...")
+    when(mockConfig.getString("gitinsp.reranker.tokenizer-path")).thenReturn("...")
+    when(mockConfig.getBoolean("gitinsp.reranker.normalize-scores")).thenReturn(true)
+    when(mockConfig.getInt("gitinsp.reranker.max-length")).thenReturn(512)
+    when(mockConfig.getBoolean("gitinsp.reranker.use-gpu")).thenReturn(true)
 
     // Verify
     a[RuntimeException] should be thrownBy factory.createScoringModel()
+
+  it should "create an ai assistant" in:
+    // Setup
+    val augmentor = mock[RetrievalAugmentor]
+    val model     = mock[OllamaStreamingChatModel]
+    val factory   = new RAGComponentFactoryImpl(mockConfig)
+
+    // Execute
+    val assistant = factory.createAssistant(model, augmentor)
+    assistant shouldBe a[Assistant]
 
   "Query Routing Strategy Factory" should "be able to create a query router" in:
     val mockChatModel = mock[OllamaChatModel]

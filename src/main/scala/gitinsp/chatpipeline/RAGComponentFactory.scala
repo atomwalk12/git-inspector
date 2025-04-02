@@ -90,8 +90,8 @@ class RAGComponentFactoryImpl(
     ReRankingContentAggregator
       .builder()
       .scoringModel(scoringModel)
-      .maxResults(config.getInt("tinygpt.reranker.max-results"))
-      .minScore(config.getDouble("tinygpt.reranker.min-score"))
+      .maxResults(config.getInt("gitinsp.reranker.max-results"))
+      .minScore(config.getDouble("gitinsp.reranker.min-score"))
       .build()
 
   /** Creates a query router based on configuration and available routing strategies.
@@ -217,13 +217,13 @@ class RAGComponentFactoryImpl(
     * @return A ScoringModel
     */
   override def createScoringModel(): ScoringModel =
-    val modelPath     = config.getString("tinygpt.reranker.model-path")
-    val tokenizerPath = config.getString("tinygpt.reranker.tokenizer-path")
-    val normalize     = config.getBoolean("tinygpt.reranker.normalize-scores")
-    val max_length    = config.getInt("tinygpt.reranker.max-length")
+    val modelPath     = config.getString("gitinsp.reranker.model-path")
+    val tokenizerPath = config.getString("gitinsp.reranker.tokenizer-path")
+    val normalize     = config.getBoolean("gitinsp.reranker.normalize-scores")
+    val max_length    = config.getInt("gitinsp.reranker.max-length")
 
     val options = new OrtSession.SessionOptions()
-    config.getBoolean("tinygpt.reranker.use-gpu") match {
+    config.getBoolean("gitinsp.reranker.use-gpu") match {
       case true =>
         options.addCUDA(0);
         options.addCPU(true);
