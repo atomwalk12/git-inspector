@@ -26,14 +26,18 @@ import gitinsp.chatpipeline.QueryRoutingStrategyFactory
 import gitinsp.chatpipeline.RAGComponentFactoryImpl
 import gitinsp.chatpipeline.RouterWithStrategy
 import gitinsp.utils.Assistant
+import io.qdrant.client.QdrantClient
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.Tag
+import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
+
+import java.util.concurrent.ExecutionException
 
 object Slow extends Tag("org.scalatest.tags.Slow")
 
@@ -41,7 +45,8 @@ class AnalysisTest
     extends AnyFlatSpec
     with Matchers
     with BeforeAndAfterEach
-    with MockitoSugar:
+    with MockitoSugar
+    with ScalaFutures:
 
   val mockConfig = mock[Config]
 
@@ -80,7 +85,7 @@ class AnalysisTest
     verify(mockFactory).createStreamingChatModel()
     verify(mockChat).chat("Hello, how are you?", handler)
 
-  it should "be able to create an embedding model" in:
+  it should "be able to create a text embedding model" in:
     val mockFactory        = mock[RAGComponentFactoryImpl]
     val mockEmbeddingModel = mock[OllamaEmbeddingModel]
 
@@ -109,6 +114,66 @@ class AnalysisTest
     embedding.vectorAsList().get(0).floatValue() should be(0.1f +- 0.001f)
     embedding.vectorAsList().get(1).floatValue() should be(0.2f +- 0.001f)
     embedding.vectorAsList().get(2).floatValue() should be(0.3f +- 0.001f)
+
+  it should "be able to create a code embedding model" in:
+    val mockFactory        = mock[RAGComponentFactoryImpl]
+    val mockEmbeddingModel = mock[OllamaEmbeddingModel]
+
+    // Create test data
+    val expectedArray     = Array(0.1f, 0.2f, 0.3f)
+    val textSegment       = TextSegment.from("Hello, world!")
+    val embeddingVector   = Embedding.from(expectedArray)
+    val embeddingResponse = Response.from(embeddingVector)
+
+    // Expectations
+    when(mockFactory.createCodeEmbeddingModel()).thenReturn(mockEmbeddingModel)
+    when(mockEmbeddingModel.embed(textSegment)).thenReturn(embeddingResponse)
+
+    // Action: Attempt to embed code
+    val embeddingModel = mockFactory.createCodeEmbeddingModel()
+    val result         = embeddingModel.embed(textSegment)
+
+    // Verify interactions and result
+    verify(mockFactory).createCodeEmbeddingModel()
+    verify(embeddingModel).embed(textSegment)
+    result should be(embeddingResponse)
+
+    // Verify the embedding values
+    val embedding = result.content()
+    embedding.vectorAsList().size() should be(3)
+    embedding.vectorAsList().get(0).floatValue() should be(0.1f +- 0.001f)
+    embedding.vectorAsList().get(1).floatValue() should be(0.2f +- 0.001f)
+    embedding.vectorAsList().get(2).floatValue() should be(0.3f +- 0.001f)
+
+  it should "create a text embedding model with correct configuration" in:
+    // Setup
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Configure mocks
+    when(mockConfig.getString("gitinsp.ollama.url")).thenReturn("http://test-ollama:11434")
+    when(mockConfig.getString("gitinsp.text-embedding.model")).thenReturn("test-embedding-model")
+
+    // Execute
+    val embeddingModel = factory.createTextEmbeddingModel()
+
+    // Verify
+    embeddingModel shouldBe a[OllamaEmbeddingModel]
+    noException should be thrownBy embeddingModel
+
+  it should "create a code embedding model with correct configuration" in:
+    // Setup
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Configure mocks
+    when(mockConfig.getString("gitinsp.ollama.url")).thenReturn("http://test-ollama:11434")
+    when(mockConfig.getString("gitinsp.code-embedding.model")).thenReturn("test-code-model")
+
+    // Execute
+    val codeEmbeddingModel = factory.createCodeEmbeddingModel()
+
+    // Verify
+    codeEmbeddingModel shouldBe a[OllamaEmbeddingModel]
+    noException should be thrownBy codeEmbeddingModel
 
   it should "be able to create a query router" in:
     val mockChatModel = mock[OllamaChatModel]
@@ -325,3 +390,64 @@ class AnalysisTest
 
     // Verify
     modelRouter shouldBe a[OllamaChatModel]
+
+  it should "create an embedding store with correct configuration" in:
+    // Setup
+    val factory        = new RAGComponentFactoryImpl(mockConfig)
+    val mockClient     = mock[QdrantClient]
+    val collectionName = "test-collection"
+
+    // Configure mocks
+    when(mockConfig.getString("gitinsp.qdrant.host")).thenReturn("localhost")
+    when(mockConfig.getInt("gitinsp.qdrant.port")).thenReturn(6333)
+
+    // Execute
+    val embeddingStore = factory.createEmbeddingStore(mockClient, collectionName)
+
+    // Verify
+    embeddingStore shouldBe a[QdrantEmbeddingStore]
+    noException should be thrownBy embeddingStore
+
+  it should "create a Qdrant client with correct configuration" in:
+    // Setup
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Configure mocks
+    when(mockConfig.getString("gitinsp.qdrant.host")).thenReturn("localhost")
+    when(mockConfig.getInt("gitinsp.qdrant.port")).thenReturn(6334)
+
+    // Execute
+    val client = factory.createQdrantClient()
+    val future = client.listAliasesAsync()
+
+    // Verify basic creation and config usage
+    client shouldBe a[QdrantClient]
+    a[ExecutionException] should be thrownBy future.get()
+
+  it should "create a scoring model with CPU configuration" in:
+    // Setup
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Configure mocks for common parameters
+    when(mockConfig.getString("tinygpt.reranker.model-path")).thenReturn("/path/to/model")
+    when(mockConfig.getString("tinygpt.reranker.tokenizer-path")).thenReturn("/path/to/tokenizer")
+    when(mockConfig.getBoolean("tinygpt.reranker.normalize-scores")).thenReturn(true)
+    when(mockConfig.getInt("tinygpt.reranker.max-length")).thenReturn(512)
+    when(mockConfig.getBoolean("tinygpt.reranker.use-gpu")).thenReturn(false)
+
+    // Verify
+    a[RuntimeException] should be thrownBy factory.createScoringModel()
+
+  it should "create a scoring model with GPU configuration" in:
+    // Setup
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Configure mocks for common parameters
+    when(mockConfig.getString("tinygpt.reranker.model-path")).thenReturn("...")
+    when(mockConfig.getString("tinygpt.reranker.tokenizer-path")).thenReturn("...")
+    when(mockConfig.getBoolean("tinygpt.reranker.normalize-scores")).thenReturn(true)
+    when(mockConfig.getInt("tinygpt.reranker.max-length")).thenReturn(512)
+    when(mockConfig.getBoolean("tinygpt.reranker.use-gpu")).thenReturn(true)
+
+    // Verify
+    a[RuntimeException] should be thrownBy factory.createScoringModel()
