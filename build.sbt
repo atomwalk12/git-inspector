@@ -43,10 +43,13 @@ wartremoverWarnings ++= Warts.all
 wartremoverWarnings --= Seq(
   Wart.Overloading,
   Wart.Nothing,
+  Wart.Any,
+  Wart.ImplicitParameter,
 )
 
 wartremoverErrors ++= Warts.unsafe
 wartremoverErrors --= Seq(
+  Wart.Any
 )
 
 // ------ Trunk ------
@@ -103,6 +106,8 @@ lazy val root = project
       "dev.langchain4j" % "langchain4j-ollama" % "1.0.0-beta1",
       "dev.langchain4j" % "langchain4j-qdrant" % "1.0.0-beta1",
       "dev.langchain4j" % "langchain4j-easy-rag" % "1.0.0-beta1",
+      "dev.langchain4j" % "langchain4j-onnx-scoring" % "1.0.0-beta1",
+      "com.microsoft.onnxruntime" % "onnxruntime_gpu" % "1.20.0",
 
       // Akka dependencies
       "com.typesafe.akka" %% "akka-http" % "10.5.3",
