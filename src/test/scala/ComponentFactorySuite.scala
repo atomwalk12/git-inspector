@@ -24,8 +24,7 @@ import gitinsp.chatpipeline.DefaultQueryStrategy
 import gitinsp.chatpipeline.QueryRoutingStrategyFactory
 import gitinsp.chatpipeline.RAGComponentFactoryImpl
 import gitinsp.chatpipeline.RouterWithStrategy
-import gitinsp.utils.Language
-import gitinsp.utils.StreamingAssistant
+import gitinsp.utils.Assistant
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.when
@@ -55,11 +54,11 @@ class AnalysisTest
     when(mockConfig.getString("gitinsp.models.default-model")).thenReturn("llama3.1")
 
   "The Analysis Context" should "be able to analyze code" in:
-    val analysis = AnalysisContext.withCodeAnalysisStrategy(StreamingAssistant())
+    val analysis = AnalysisContext.withCodeAnalysisStrategy(Assistant())
     analysis.strategy.map(_.strategyName) should be(Some("Code Analysis"))
 
   it should "be able to analyze natural language" in:
-    val analysis = AnalysisContext.withNaturalLanguageStrategy(StreamingAssistant())
+    val analysis = AnalysisContext.withNaturalLanguageStrategy(Assistant())
     analysis.strategy.map(_.strategyName) should be(Some("Markdown Analysis"))
 
   "The RAG Component Factory" should "be able to create a streaming chat model" in:
@@ -91,15 +90,15 @@ class AnalysisTest
     val embeddingResponse = Response.from(embeddingVector)
 
     // Expectations
-    when(mockFactory.createEmbeddingModel(Language.JAVA)).thenReturn(mockEmbeddingModel)
+    when(mockFactory.createTextEmbeddingModel()).thenReturn(mockEmbeddingModel)
     when(mockEmbeddingModel.embed(textSegment)).thenReturn(embeddingResponse)
 
     // Action: Attempt to embed code
-    val embeddingModel = mockFactory.createEmbeddingModel(Language.JAVA)
+    val embeddingModel = mockFactory.createTextEmbeddingModel()
     val result         = embeddingModel.embed(textSegment)
 
     // Verify interactions and result
-    verify(mockFactory).createEmbeddingModel(Language.JAVA)
+    verify(mockFactory).createTextEmbeddingModel()
     verify(embeddingModel).embed(textSegment)
     result should be(embeddingResponse)
 
@@ -202,7 +201,7 @@ class AnalysisTest
     // Setup
     val mockChat         = mock[OllamaChatModel]
     val mockScoringModel = mock[ScoringModel]
-    val factory          = new RAGComponentFactoryImpl(mockConfig, mockChat, mockScoringModel)
+    val factory          = new RAGComponentFactoryImpl(mockConfig)
 
     // Create mock retrievers
     val retriever1 = mock[EmbeddingStoreContentRetriever]
@@ -213,7 +212,7 @@ class AnalysisTest
     when(mockConfig.getBoolean("gitinsp.rag.use-conditional-rag")).thenReturn(false)
 
     // Execute the method
-    val router = factory.createQueryRouter(retrievers)
+    val router = factory.createQueryRouter(retrievers, mockChat)
 
     // Verify the router type
     router shouldBe a[DefaultQueryRouter]
@@ -223,7 +222,7 @@ class AnalysisTest
     val mockChat         = mock[OllamaChatModel]
     val mockConfig       = mock[Config]
     val mockScoringModel = mock[ScoringModel]
-    val factory          = new RAGComponentFactoryImpl(mockConfig, mockChat, mockScoringModel)
+    val factory          = new RAGComponentFactoryImpl(mockConfig)
 
     // Create mock retrievers
     val retriever1 = mock[EmbeddingStoreContentRetriever]
@@ -234,7 +233,7 @@ class AnalysisTest
     when(mockConfig.getBoolean("gitinsp.rag.use-conditional-rag")).thenReturn(true)
 
     // Execute the method
-    val router = factory.createQueryRouter(retrievers)
+    val router = factory.createQueryRouter(retrievers, mockChat)
 
     // Verify the router type
     router shouldBe a[RouterWithStrategy]
@@ -243,11 +242,10 @@ class AnalysisTest
     // Setup
     val mockConfig       = mock[Config]
     val mockScoringModel = mock[ScoringModel]
-    val mockChat         = mock[OllamaChatModel]
-    val factory          = new RAGComponentFactoryImpl(mockConfig, mockChat, mockScoringModel)
+    val factory          = new RAGComponentFactoryImpl(mockConfig)
 
     // Execute the method
-    val contentAggregator = factory.createContentAggregator()
+    val contentAggregator = factory.createContentAggregator(mockScoringModel)
 
     // Verify the content aggregator type
     contentAggregator shouldBe a[ReRankingContentAggregator]
@@ -256,7 +254,7 @@ class AnalysisTest
     // Setup
     val mockChat         = mock[OllamaChatModel]
     val mockScoringModel = mock[ScoringModel]
-    val factory          = new RAGComponentFactoryImpl(mockConfig, mockChat, mockScoringModel)
+    val factory          = new RAGComponentFactoryImpl(mockConfig)
 
     // Configure parameters
     val mockRouter            = mock[QueryRouter]
