@@ -2,7 +2,7 @@ package gitinsp.analysis
 
 import akka.NotUsed
 import akka.stream.scaladsl.Source
-import gitinsp.utils.StreamingAssistant
+import gitinsp.utils.Assistant
 
 import scala.concurrent.Future
 
@@ -43,9 +43,9 @@ object AnalysisContext:
     new AnalysisContext(None)
 
   /** Factory method to create a new context with natural language strategy */
-  def withNaturalLanguageStrategy(assistant: StreamingAssistant): AnalysisContext =
+  def withNaturalLanguageStrategy(assistant: Assistant): AnalysisContext =
     apply().withStrategy(new NaturalLanguageStrategy(assistant))
 
   /** Factory method to create a new context with code analysis strategy */
-  def withCodeAnalysisStrategy(assistant: StreamingAssistant): AnalysisContext =
+  def withCodeAnalysisStrategy(assistant: Assistant): AnalysisContext =
     apply().withStrategy(new CodeAnalysisStrategy(assistant))

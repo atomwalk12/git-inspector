@@ -2,13 +2,13 @@ package gitinsp.utils
 
 import dev.langchain4j.service.TokenStream
 
-trait StreamingAssistant:
+trait Assistant:
   def chat(msg: String): TokenStream
 
-object StreamingAssistant:
-  def apply(): StreamingAssistant = new StreamingAssistantImpl()
+object Assistant:
+  def apply(): Assistant = new StreamingAssistantImpl()
 
-  private class StreamingAssistantImpl extends StreamingAssistant:
+  private class StreamingAssistantImpl extends Assistant:
     @SuppressWarnings(Array("org.wartremover.warts.Null")) // TODO: Implement
     override def chat(msg: String): TokenStream =
       null

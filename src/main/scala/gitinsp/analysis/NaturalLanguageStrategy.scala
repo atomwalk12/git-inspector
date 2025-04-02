@@ -2,7 +2,7 @@ package gitinsp.analysis
 
 import akka.NotUsed
 import akka.stream.scaladsl.Source
-import gitinsp.utils.StreamingAssistant
+import gitinsp.utils.Assistant
 
 import scala.concurrent.Future
 
@@ -10,7 +10,7 @@ import scala.concurrent.Future
 /** Strategy implementation for analyzing natural language.
   * Specifically, it is optimized for analyzing markdown text.
   */
-class NaturalLanguageStrategy(assistant: StreamingAssistant) extends AnalysisStrategy:
+class NaturalLanguageStrategy(assistant: Assistant) extends AnalysisStrategy:
   override def analyze(query: String, codeContext: String): Future[Source[String, NotUsed]] =
     Future.successful(Source.empty)
 
