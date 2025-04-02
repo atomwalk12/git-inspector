@@ -175,95 +175,7 @@ class AnalysisTest
     codeEmbeddingModel shouldBe a[OllamaEmbeddingModel]
     noException should be thrownBy codeEmbeddingModel
 
-  it should "be able to create a query router" in:
-    val mockChatModel = mock[OllamaChatModel]
-
-    val condStrategy = QueryRoutingStrategyFactory.createStrategy("conditional", mockChatModel)
-    condStrategy shouldBe a[ConditionalQueryStrategy]
-
-    val defaultStrategy = QueryRoutingStrategyFactory.createStrategy("default", mockChatModel)
-    defaultStrategy shouldBe a[DefaultQueryStrategy]
-
-    val fallbackStrategy = QueryRoutingStrategyFactory.createStrategy("unknown", mockChatModel)
-    fallbackStrategy shouldBe a[DefaultQueryStrategy]
-
-    val uppercaseStrategy = QueryRoutingStrategyFactory.createStrategy("CONDITIONAL", mockChatModel)
-    uppercaseStrategy shouldBe a[ConditionalQueryStrategy]
-
-    val mixedCaseStrategy = QueryRoutingStrategyFactory.createStrategy("Default", mockChatModel)
-    mixedCaseStrategy shouldBe a[DefaultQueryStrategy]
-
-  "The DefaultQueryStrategy" should "always return all retrievers" in:
-    // Setup
-    val strategy = DefaultQueryStrategy()
-
-    // Create mock retrievers
-    val retriever1 = mock[EmbeddingStoreContentRetriever]
-    val retriever2 = mock[EmbeddingStoreContentRetriever]
-    val retrievers = List(retriever1, retriever2)
-
-    // Test with different queries
-    val query1 = Query.from("How does this code work?")
-    val query2 = Query.from("Don't use RAG for this question")
-
-    // Verify that all retrievers are always returned regardless of query content
-    strategy.determineRetrievers(query1, retrievers).size() should be(2)
-    strategy.determineRetrievers(query2, retrievers).size() should be(2)
-
-    // The returned collection should contain both our mock retrievers
-    val result = strategy.determineRetrievers(query1, retrievers)
-    result.contains(retriever1) should be(true)
-    result.contains(retriever2) should be(true)
-
-  "The ConditionalQueryStrategy" should "return all retrievers when the model answers 'no'" in:
-    // Setup
-    val mockChat = mock[OllamaChatModel]
-    val strategy = ConditionalQueryStrategy(mockChat)
-
-    // Create mock retrievers
-    val retriever1 = mock[EmbeddingStoreContentRetriever]
-    val retriever2 = mock[EmbeddingStoreContentRetriever]
-    val retrievers = List(retriever1, retriever2)
-
-    // Test query that should use RAG
-    val query = Query.from("How does this code work?")
-
-    // Mock the chat response indicating RAG should be used
-    val aiMessage = AiMessage.from("No, the user did not ask to avoid using RAG.")
-    val response  = ChatResponse.builder().aiMessage(aiMessage).build()
-    when(mockChat.chat(ArgumentMatchers.any(classOf[UserMessage]))).thenReturn(response)
-
-    // Verify that all retrievers are returned
-    val result = strategy.determineRetrievers(query, retrievers)
-    result.size() should be(0)
-    result.contains(retriever1) should be(false)
-    result.contains(retriever2) should be(false)
-
-  it should "return no retrievers when the model answers 'yes'" in:
-    // Setup
-    val mockChat = mock[OllamaChatModel]
-    val strategy = ConditionalQueryStrategy(mockChat)
-
-    // Create mock retrievers
-    val retriever1 = mock[EmbeddingStoreContentRetriever]
-    val retriever2 = mock[EmbeddingStoreContentRetriever]
-    val retrievers = List(retriever1, retriever2)
-
-    // Test query that should not use RAG
-    val query = Query.from("Don't use RAG for this question")
-
-    // Mock the chat response indicating RAG should not be used
-    val aiMessage = AiMessage.from("Yes, the user explicitly asked not to query the RAG index.")
-    val response  = ChatResponse.builder().aiMessage(aiMessage).build()
-    when(mockChat.chat(ArgumentMatchers.any(classOf[UserMessage]))).thenReturn(response)
-
-    // Verify that no retrievers are returned
-    val result = strategy.determineRetrievers(query, retrievers)
-    result.size() should be(2)
-    result.contains(retriever1) should be(true)
-    result.contains(retriever2) should be(true)
-
-  "The RAGComponentFactoryImpl" should "create DefaultQueryRouter when conditional RAG is disabled" in:
+  it should "create DefaultQueryRouter when conditional RAG is disabled" in:
     // Setup
     val mockChat         = mock[OllamaChatModel]
     val mockScoringModel = mock[ScoringModel]
@@ -451,3 +363,91 @@ class AnalysisTest
 
     // Verify
     a[RuntimeException] should be thrownBy factory.createScoringModel()
+
+  "Query Routing Strategy Factory" should "be able to create a query router" in:
+    val mockChatModel = mock[OllamaChatModel]
+
+    val condStrategy = QueryRoutingStrategyFactory.createStrategy("conditional", mockChatModel)
+    condStrategy shouldBe a[ConditionalQueryStrategy]
+
+    val defaultStrategy = QueryRoutingStrategyFactory.createStrategy("default", mockChatModel)
+    defaultStrategy shouldBe a[DefaultQueryStrategy]
+
+    val fallbackStrategy = QueryRoutingStrategyFactory.createStrategy("unknown", mockChatModel)
+    fallbackStrategy shouldBe a[DefaultQueryStrategy]
+
+    val uppercaseStrategy = QueryRoutingStrategyFactory.createStrategy("CONDITIONAL", mockChatModel)
+    uppercaseStrategy shouldBe a[ConditionalQueryStrategy]
+
+    val mixedCaseStrategy = QueryRoutingStrategyFactory.createStrategy("Default", mockChatModel)
+    mixedCaseStrategy shouldBe a[DefaultQueryStrategy]
+
+  "The Default Query Strategy" should "always return all retrievers" in:
+    // Setup
+    val strategy = DefaultQueryStrategy()
+
+    // Create mock retrievers
+    val retriever1 = mock[EmbeddingStoreContentRetriever]
+    val retriever2 = mock[EmbeddingStoreContentRetriever]
+    val retrievers = List(retriever1, retriever2)
+
+    // Test with different queries
+    val query1 = Query.from("How does this code work?")
+    val query2 = Query.from("Don't use RAG for this question")
+
+    // Verify that all retrievers are always returned regardless of query content
+    strategy.determineRetrievers(query1, retrievers).size() should be(2)
+    strategy.determineRetrievers(query2, retrievers).size() should be(2)
+
+    // The returned collection should contain both our mock retrievers
+    val result = strategy.determineRetrievers(query1, retrievers)
+    result.contains(retriever1) should be(true)
+    result.contains(retriever2) should be(true)
+
+  "The Conditional Query Strategy" should "return all retrievers when the model answers 'no'" in:
+    // Setup
+    val mockChat = mock[OllamaChatModel]
+    val strategy = ConditionalQueryStrategy(mockChat)
+
+    // Create mock retrievers
+    val retriever1 = mock[EmbeddingStoreContentRetriever]
+    val retriever2 = mock[EmbeddingStoreContentRetriever]
+    val retrievers = List(retriever1, retriever2)
+
+    // Test query that should use RAG
+    val query = Query.from("How does this code work?")
+
+    // Mock the chat response indicating RAG should be used
+    val aiMessage = AiMessage.from("No, the user did not ask to avoid using RAG.")
+    val response  = ChatResponse.builder().aiMessage(aiMessage).build()
+    when(mockChat.chat(ArgumentMatchers.any(classOf[UserMessage]))).thenReturn(response)
+
+    // Verify that all retrievers are returned
+    val result = strategy.determineRetrievers(query, retrievers)
+    result.size() should be(0)
+    result.contains(retriever1) should be(false)
+    result.contains(retriever2) should be(false)
+
+  it should "return no retrievers when the model answers 'yes'" in:
+    // Setup
+    val mockChat = mock[OllamaChatModel]
+    val strategy = ConditionalQueryStrategy(mockChat)
+
+    // Create mock retrievers
+    val retriever1 = mock[EmbeddingStoreContentRetriever]
+    val retriever2 = mock[EmbeddingStoreContentRetriever]
+    val retrievers = List(retriever1, retriever2)
+
+    // Test query that should not use RAG
+    val query = Query.from("Don't use RAG for this question")
+
+    // Mock the chat response indicating RAG should not be used
+    val aiMessage = AiMessage.from("Yes, the user explicitly asked not to query the RAG index.")
+    val response  = ChatResponse.builder().aiMessage(aiMessage).build()
+    when(mockChat.chat(ArgumentMatchers.any(classOf[UserMessage]))).thenReturn(response)
+
+    // Verify that no retrievers are returned
+    val result = strategy.determineRetrievers(query, retrievers)
+    result.size() should be(2)
+    result.contains(retriever1) should be(true)
+    result.contains(retriever2) should be(true)
