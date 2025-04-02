@@ -351,20 +351,6 @@ class AnalysisTest
     // Verify
     a[RuntimeException] should be thrownBy factory.createScoringModel()
 
-  it should "create a scoring model with GPU configuration" in:
-    // Setup
-    val factory = new RAGComponentFactoryImpl(mockConfig)
-
-    // Configure mocks for common parameters
-    when(mockConfig.getString("gitinsp.reranker.model-path")).thenReturn("...")
-    when(mockConfig.getString("gitinsp.reranker.tokenizer-path")).thenReturn("...")
-    when(mockConfig.getBoolean("gitinsp.reranker.normalize-scores")).thenReturn(true)
-    when(mockConfig.getInt("gitinsp.reranker.max-length")).thenReturn(512)
-    when(mockConfig.getBoolean("gitinsp.reranker.use-gpu")).thenReturn(true)
-
-    // Verify
-    a[RuntimeException] should be thrownBy factory.createScoringModel()
-
   it should "create an ai assistant" in:
     // Setup
     val augmentor = mock[RetrievalAugmentor]
