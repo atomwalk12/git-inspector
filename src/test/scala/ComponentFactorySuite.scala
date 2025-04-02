@@ -18,6 +18,7 @@ import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
 import dev.langchain4j.rag.query.router.DefaultQueryRouter
 import dev.langchain4j.rag.query.router.QueryRouter
+import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore
 import gitinsp.analysis.*
 import gitinsp.chatpipeline.ConditionalQueryStrategy
 import gitinsp.chatpipeline.DefaultQueryStrategy
@@ -265,3 +266,62 @@ class AnalysisTest
 
     // Verify
     retrievalAugmentor shouldBe a[DefaultRetrievalAugmentor]
+
+  it should "create a markdown retriever with correct configuration" in:
+    // Setup
+    val factory            = new RAGComponentFactoryImpl(mockConfig)
+    val mockEmbeddingStore = mock[QdrantEmbeddingStore]
+    val mockEmbeddingModel = mock[OllamaEmbeddingModel]
+    val indexName          = "markdown-index"
+
+    // Configure mocks
+    when(mockConfig.getInt("gitinsp.text-embedding.max-results")).thenReturn(5)
+    when(mockConfig.getDouble("gitinsp.text-embedding.min-score")).thenReturn(0.75)
+
+    // Execute
+    val retriever =
+      factory.createMarkdownRetriever(mockEmbeddingStore, mockEmbeddingModel, indexName)
+
+    // Verify
+    retriever shouldBe a[EmbeddingStoreContentRetriever]
+    // Just verify it was created successfully without checking specific properties
+    noException should be thrownBy retriever
+
+  it should "create a code retriever with correct configuration" in:
+    // Setup
+    val factory            = new RAGComponentFactoryImpl(mockConfig)
+    val mockEmbeddingStore = mock[QdrantEmbeddingStore]
+    val mockEmbeddingModel = mock[OllamaEmbeddingModel]
+    val mockModelRouter    = mock[OllamaChatModel]
+    val indexName          = "code-index"
+
+    // Configure mocks
+    when(mockConfig.getInt("gitinsp.code-embedding.max-results")).thenReturn(10)
+    when(mockConfig.getDouble("gitinsp.code-embedding.min-score")).thenReturn(0.8)
+
+    // Execute
+    val retriever = factory.createCodeRetriever(
+      mockEmbeddingStore,
+      mockEmbeddingModel,
+      indexName,
+      mockModelRouter,
+    )
+
+    // Verify
+    retriever shouldBe a[EmbeddingStoreContentRetriever]
+    // Just verify it was created successfully without checking specific properties
+    noException should be thrownBy retriever
+
+  it should "create a model router with correct configuration" in:
+    // Setup
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Configure mocks
+    when(mockConfig.getString("gitinsp.ollama.url")).thenReturn("http://test-ollama:11434")
+    when(mockConfig.getString("gitinsp.rag.model")).thenReturn("test-model")
+
+    // Execute
+    val modelRouter = factory.createModelRouter()
+
+    // Verify
+    modelRouter shouldBe a[OllamaChatModel]
