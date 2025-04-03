@@ -61,8 +61,9 @@ jobs:
 
       - name: Move ScalaDoc to docs/website/public/scaladoc
         run: |
-          mkdir -p ./docs/website/public/scaladoc
-          cp -r target/scala-*/api/* ./docs/website/public/scaladoc
+          mkdir -p docs/website/public/scaladoc
+          cp -r target/scala-*/api/* docs/website/public/scaladoc
+          ls -la docs/website/public/scaladoc
 
       - name: Generate Scoverage Report
         run: |
