@@ -67,7 +67,7 @@ jobs:
       - name: Generate Scoverage Report
         run: |
           sbt 'set coverageEnabled := true'
-          sbt clean coverage test
+          sbt clean coverage "testOnly -- -l gitinsp.tests.tags.ExternalService"
           sbt coverageReport && echo "Scoverage report generation successful" || (echo "Scoverage report generation failed" && exit 1)
 
       - name: Move Scoverage Report to docs/website/public/coverage

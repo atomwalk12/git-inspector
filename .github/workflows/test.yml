@@ -16,7 +16,7 @@ jobs:
           distribution: adopt
           java-version: '21'
       - name: Run tests
-        run: sbt coverage test coverageReport
+        run: sbt coverage "testOnly -- -l gitinsp.tests.tags.ExternalService" coverageReport
       - uses: codecov/codecov-action@v4
         with:
           fail_ci_if_error: true
