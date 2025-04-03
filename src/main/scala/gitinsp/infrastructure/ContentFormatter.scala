@@ -57,11 +57,7 @@ object ContentFormatter extends ContentFormatter:
   ): Filter =
     Option
       .when(config.getBoolean("gitinsp.rag.use-dynamic-filter")) {
-        Option
-          .when(config.getBoolean("gitinsp.rag.use-dynamic-filter")) {
-            dynamicFilter(query, config, modelRouter)
-          }
-          .orNull
+        dynamicFilter(query, config, modelRouter)
       }
       .orNull
 
