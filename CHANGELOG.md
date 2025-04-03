@@ -1,3 +1,22 @@
+## [1.2.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.1.2...v1.2.0) (2025-04-03)
+
+### Features
+
+* **analysis:** enhance analysis strategies with streaming capabilities ([d56f1a0](https://github.com/atomwalk12/PPS-22-git-insp/commit/d56f1a0c0dd36a5a2fb6fa215f33d8b02a52a0d0))
+* **analysis:** implement analysis strategies and context ([742149e](https://github.com/atomwalk12/PPS-22-git-insp/commit/742149e3037ee2fe8500aef40cde1d24decaff6a))
+* **build:** update dependencies and configuration for reranker model ([9341f8f](https://github.com/atomwalk12/PPS-22-git-insp/commit/9341f8f01b88685589e3d81c4dc979697ffa2055))
+* **cache:** introduce CacheService for AI service management ([dc45d4b](https://github.com/atomwalk12/PPS-22-git-insp/commit/dc45d4ba0958d08ab5cfb15cbcc4c18e575899f1))
+* **embedding:** add language support and embedding model creation ([b5d2d3c](https://github.com/atomwalk12/PPS-22-git-insp/commit/b5d2d3ca5c0fd82d14bbd4e6fc0135031d60b12a))
+* **formatter:** implement ContentFormatter for filtering text ([a586ebe](https://github.com/atomwalk12/PPS-22-git-insp/commit/a586ebe54d80d06f62520c0cf34b0f5bd54af283))
+* **query-routing:** implement query routing strategies and factory ([cd9761e](https://github.com/atomwalk12/PPS-22-git-insp/commit/cd9761e404cf7a694869eb55fdbf8dee95596d30))
+* **query-routing:** refine ConditionalQueryStrategy and enhance tests ([b81ac65](https://github.com/atomwalk12/PPS-22-git-insp/commit/b81ac65e40b987e51786ab2fa8d779906691e03c))
+* **rag:** add retrieval augmentor creation to RAG component factory ([8ed4512](https://github.com/atomwalk12/PPS-22-git-insp/commit/8ed45121dfb89dabffb2cdfff4f124dd1d8ce0e2))
+* **rag:** enhance RAG component factory with conditional routing and embedding models ([9b1a293](https://github.com/atomwalk12/PPS-22-git-insp/commit/9b1a293d188131dbb3e33b8b50687757d2794954))
+* **rag:** enhance RAGComponentFactory with new methods for embedding models and Qdrant integration ([340a707](https://github.com/atomwalk12/PPS-22-git-insp/commit/340a70769d2005c277faae90080c6bf5f02c1b82))
+* **reranking:** add reranker configuration and content aggregator to RAG pipeline ([838729a](https://github.com/atomwalk12/PPS-22-git-insp/commit/838729a39ef45a12376006646436b335f6106ef6))
+* **tests:** add Mockito support and enhance AnalysisTest with new chat model interactions ([14c7e8e](https://github.com/atomwalk12/PPS-22-git-insp/commit/14c7e8efae9305fe31b488b62a691a513aac0a72))
+* **tests:** add tests for markdown and code retriever creation in RAGComponentFactory ([a7e146b](https://github.com/atomwalk12/PPS-22-git-insp/commit/a7e146b61de797227b9db3c4bcaeb590a77ac95e))
+
 ## [1.1.2](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.1.1...v1.1.2) (2025-03-31)
 
 ### Bug Fixes
