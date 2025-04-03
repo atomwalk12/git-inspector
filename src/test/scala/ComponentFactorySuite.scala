@@ -32,15 +32,12 @@ import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.Tag
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 
 import java.util.concurrent.ExecutionException
-
-object Slow extends Tag("org.scalatest.tags.Slow")
 
 class AnalysisTest
     extends AnyFlatSpec

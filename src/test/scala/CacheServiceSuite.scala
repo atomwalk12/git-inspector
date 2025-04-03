@@ -2,15 +2,13 @@ package gitinsp.tests.cacheservice
 
 import gitinsp.chatpipeline.RAGComponentFactory
 import gitinsp.infrastructure.CacheService
-import org.scalatest.Tag
+import gitinsp.tests.Integration
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 
 import scala.concurrent.ExecutionContext
-
-object Slow extends Tag("org.scalatest.tags.Slow")
 
 class CacheServiceSuite
     extends AnyFlatSpec
@@ -25,7 +23,7 @@ class CacheServiceSuite
 
   val mockFactory = mock[RAGComponentFactory]
 
-  "CacheService" should "run without any exceptions" in:
+  "CacheService" should "run without any exceptions" taggedAs Integration in:
     // Get the CacheService implementation
     val cacheService = CacheService(mockFactory)
 
@@ -33,7 +31,7 @@ class CacheServiceSuite
     val aiService = cacheService.getAIService("test-repository")
     noException should be thrownBy aiService
 
-  it should "return the same AI service instance for the same repository name" in:
+  it should "return the same AI service instance for the same repository name" taggedAs Integration in:
     val cacheService = CacheService(mockFactory)
     val aiService1   = cacheService.getAIService("test-repository")
     val aiService2   = cacheService.getAIService("test-repository")
