@@ -61,8 +61,8 @@ jobs:
 
       - name: Move ScalaDoc to docs/website/public/scaladoc
         run: |
-          mkdir -p ./docs/website/public/scaladoc
-          cp -r target/scala-*/api/* ./docs/website/public/scaladoc
+          mkdir -p docs/website/public/scaladoc
+          cp -r target/scala-*/api/* docs/website/public/scaladoc
 
       - name: Generate Scoverage Report
         run: |
@@ -73,7 +73,7 @@ jobs:
       - name: Move Scoverage Report to docs/website/public/coverage
         run: |
           mkdir -p ./docs/website/public/coverage
-          cp -r target/scala-*/scoverage-report/* ./docs/website/public/coverage
+          cp -r target/scala-*/scoverage-report/* docs/website/public/coverage
 
       - name: Install Hugo CLI
         run: |
@@ -94,7 +94,7 @@ jobs:
           HUGO_ENVIRONMENT: production
         run: |
           hugo \
-            --buildDrafts --gc --cleanDestinationDir \
+            --buildDrafts --gc \
             --baseURL "${{ steps.pages.outputs.base_url }}/" \
 
       - name: Upload artifact
