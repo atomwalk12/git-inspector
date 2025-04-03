@@ -15,7 +15,7 @@ echo "Running scalafmt..."
 sbt scalafmtAll
 
 # Optional: Run lightweight tests only
-sbt "testOnly -- -l org.scalatest.tags.Slow" # Exclude slow tests
+sbt "testOnly -- -l gitinsp.tests.tags.ExternalService2" # Exclude tests relying on external services
 
 # Include only fast and medium tests only
 # This serves as an example on how to run specific tests.
@@ -24,6 +24,7 @@ sbt "testOnly -- -l org.scalatest.tags.Slow" # Exclude slow tests
 
 # Re-add any files that were modified by formatters
 echo "Re-adding modified files..."
+
 # Pipeline explanation:
 # 1. git diff --name-only --cached: Lists all files that are staged for commit
 # 2. xargs -I{}: For each line of input (each filename), run the following command,
