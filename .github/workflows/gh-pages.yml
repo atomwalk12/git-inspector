@@ -63,7 +63,6 @@ jobs:
         run: |
           mkdir -p docs/website/public/scaladoc
           cp -r target/scala-*/api/* docs/website/public/scaladoc
-          ls -la docs/website/public/scaladoc
 
       - name: Generate Scoverage Report
         run: |
