@@ -10,6 +10,4 @@ summary: "A summary of the product backlog."
 bibFile: /assets/bibliography.json
 ---
 
-## Product Backlog
-
 {{< insert-text "product-backlog.md" >}}

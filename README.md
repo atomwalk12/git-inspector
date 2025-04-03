@@ -23,3 +23,14 @@
 **Code Style Tool:**
 
 - **Trunk**: Checks code style (trailing spaces).
+
+
+# Download the reranker model
+
+```bash
+# Make sure git-lfs is installed (https://git-lfs.com)
+git lfs install
+
+# From the root directory
+git clone https://huggingface.co/jinaai/jina-reranker-v2-base-multilingual reranker/jina-reranker-v2-base-multilingual
+```

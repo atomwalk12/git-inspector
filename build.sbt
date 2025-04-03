@@ -41,18 +41,15 @@ coverageEnabled := true
 // finds potential bugs,(i.e. case classes must be final)
 wartremoverWarnings ++= Warts.all
 wartremoverWarnings --= Seq(
-  Wart.ImplicitParameter,
+  Wart.Overloading,
   Wart.Nothing,
-  Wart.Equals,
-  Wart.Throw,
-  Wart.Var,
+  Wart.Any,
+  Wart.ImplicitParameter,
 )
 
 wartremoverErrors ++= Warts.unsafe
 wartremoverErrors --= Seq(
-  Wart.Any,
-  Wart.Throw,
-  Wart.Var,
+  Wart.Any
 )
 
 // ------ Trunk ------
@@ -94,9 +91,26 @@ lazy val root = project
       // Options for Scalafix
       "-Wunused:imports",
     ),
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % Test,
 
-    // Logging
-    libraryDependencies += "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5", // Logging library
-    libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.5.18", // Engine for logging
+    libraryDependencies ++= Seq(
+      // Testing
+      "org.scalatest" %% "scalatest" % "3.2.19" % Test,
+      "org.scalatestplus" %% "mockito-3-4" % "3.2.10.0" % Test,
+
+      // Logging
+      "com.typesafe.scala-logging" %% "scala-logging" % "3.9.5", // Logging library
+      "ch.qos.logback" % "logback-classic" % "1.5.18", // Engine for logging
+
+      // Langchain4j dependencies
+      "dev.langchain4j" % "langchain4j" % "1.0.0-beta1" % Test,
+      "dev.langchain4j" % "langchain4j-ollama" % "1.0.0-beta1",
+      "dev.langchain4j" % "langchain4j-qdrant" % "1.0.0-beta1",
+      "dev.langchain4j" % "langchain4j-easy-rag" % "1.0.0-beta1",
+      "dev.langchain4j" % "langchain4j-onnx-scoring" % "1.0.0-beta1",
+      "com.microsoft.onnxruntime" % "onnxruntime_gpu" % "1.20.0",
+
+      // Akka dependencies
+      "com.typesafe.akka" %% "akka-http" % "10.5.3",
+      "com.typesafe.akka" %% "akka-stream" % "2.8.8",
+    ),
   )
