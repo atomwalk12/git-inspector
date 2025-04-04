@@ -1,0 +1,18 @@
+#content_display_area textarea {
+    min-height: 30vh !important;
+    height: 100% !important;
+}
+#content_column > div {
+    flex-grow: 1 !important;
+}
+#content_display_area {
+    display :flex !important;
+    white-space: pre-wrap;
+}
+#content_display_area > label {
+    display: flex !important;
+    flex-direction: column !important;
+}
+#content_display_area > label > div {
+    flex-grow: 1 !important;
+}
