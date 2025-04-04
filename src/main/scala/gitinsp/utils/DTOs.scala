@@ -1,5 +1,10 @@
 package gitinsp.utils
 
+import dev.langchain4j.data.document.Document
+import dev.langchain4j.data.document.Metadata
+
+import java.util.Map as JMap
+
 /** Enum for supported programming languages.
   * Each case includes a short string representation (`value`) often used as a file extension.
   */
@@ -33,3 +38,50 @@ enum Language(val value: String):
 
   // Override toString to return the custom value
   override def toString: String = value
+
+object GitRepository:
+  def detectLanguage(language: String): Either[Language, List[Language]] =
+    Option(language).map(_.trim).flatMap {
+      case lang if lang.contains(",") =>
+        Some(Right(
+          lang.split(",")
+            .toList
+            .map(l => findLanguage(l.trim)),
+        ))
+      case lang if lang.nonEmpty =>
+        Some(Left(findLanguage(lang)))
+      case _ =>
+        Some(Right(List()))
+    }.getOrElse(Right(List()))
+
+  private def findLanguage(lang: String): Language =
+    Language.values.find(_.toString == lang).getOrElse(Language.CODE)
+
+  def detectLanguages(languages: String): List[Language] =
+    languages.split(",")
+      .toList
+      .map(l => findLanguage(l.trim))
+
+final case class GitRepository(url: String, languages: List[Language], docs: List[GitDocument]):
+  val indexNames: List[IndexName] = languages.map(indexName)
+  assert(indexNames.length == languages.length, s"Length mismatch: $indexNames, $languages")
+
+  private def indexName(lang: Language): IndexName =
+    val sanitizedName = URLSanitizerService.sanitize(url)
+    lang match
+      case Language.MARKDOWN => IndexName(s"$sanitizedName-${Language.MARKDOWN.toString}", lang)
+      case _                 => IndexName(s"$sanitizedName-${Language.CODE.toString}", lang)
+
+  override def toString: String = s"GitRepository(url=$url, languages=$languages, docs=$docs)"
+
+final case class IndexName(name: String, language: Language)
+final case class GitDocument(content: String, language: Language, path: String):
+  def createLangchainDocument(): Option[Document] =
+    Option(content.trim)
+      .filter(_.nonEmpty)
+      .map(
+        trimmedContent => {
+          val metadata = Metadata.from(JMap.of("file_name", path, "code", language.toString))
+          Document.from(trimmedContent, metadata)
+        },
+      )
