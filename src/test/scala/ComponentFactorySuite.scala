@@ -19,6 +19,7 @@ import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever
 import dev.langchain4j.rag.query.Query
 import dev.langchain4j.rag.query.router.DefaultQueryRouter
 import dev.langchain4j.rag.query.router.QueryRouter
+import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore
 import gitinsp.analysis.*
 import gitinsp.chatpipeline.ConditionalQueryStrategy
@@ -26,21 +27,20 @@ import gitinsp.chatpipeline.DefaultQueryStrategy
 import gitinsp.chatpipeline.QueryRoutingStrategyFactory
 import gitinsp.chatpipeline.RAGComponentFactoryImpl
 import gitinsp.chatpipeline.RouterWithStrategy
+import gitinsp.infrastructure.strategies.IngestionStrategyFactory
 import gitinsp.utils.Assistant
+import gitinsp.utils.Language
 import io.qdrant.client.QdrantClient
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterEach
-import org.scalatest.Tag
 import org.scalatest.concurrent.ScalaFutures
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 
 import java.util.concurrent.ExecutionException
-
-object Slow extends Tag("org.scalatest.tags.Slow")
 
 class AnalysisTest
     extends AnyFlatSpec
@@ -60,10 +60,12 @@ class AnalysisTest
     when(mockConfig.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
     when(mockConfig.getString("gitinsp.models.default-model")).thenReturn("llama3.1")
 
+  // TODO: this might prove to be redundant
   "The Analysis Context" should "be able to analyze code" in:
     val analysis = AnalysisContext.withCodeAnalysisStrategy(Assistant())
     analysis.strategy.map(_.strategyName) should be(Some("Code Analysis"))
 
+  // TODO: this as well
   it should "be able to analyze natural language" in:
     val analysis = AnalysisContext.withNaturalLanguageStrategy(Assistant())
     analysis.strategy.map(_.strategyName) should be(Some("Markdown Analysis"))
@@ -360,6 +362,40 @@ class AnalysisTest
     // Execute
     val assistant = factory.createAssistant(model, augmentor)
     assistant shouldBe a[Assistant]
+
+  it should "create an ingestor specialized for markdown" in:
+    // Mocks
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Data
+    val language       = Language.MARKDOWN
+    val embeddingModel = mock[OllamaEmbeddingModel]
+    val embeddingStore = mock[QdrantEmbeddingStore]
+    val strategy       = IngestionStrategyFactory.createStrategy("default", language, mockConfig)
+
+    // Execute
+    val ingestor = factory.createIngestor(language, embeddingModel, embeddingStore, strategy)
+
+    // Verify
+    ingestor shouldBe a[EmbeddingStoreIngestor]
+    noException should be thrownBy ingestor
+
+  it should "create an ingestor specialized for code" in:
+    // Mocks
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Data
+    val language       = Language.JAVA
+    val embeddingModel = mock[OllamaEmbeddingModel]
+    val embeddingStore = mock[QdrantEmbeddingStore]
+    val strategy       = IngestionStrategyFactory.createStrategy("Default", language, mockConfig)
+
+    // Execute
+    val ingestor = factory.createIngestor(language, embeddingModel, embeddingStore, strategy)
+
+    // Verify
+    ingestor shouldBe a[EmbeddingStoreIngestor]
+    noException should be thrownBy ingestor
 
   "Query Routing Strategy Factory" should "be able to create a query router" in:
     val mockChatModel = mock[OllamaChatModel]

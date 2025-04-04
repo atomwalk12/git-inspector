@@ -31,7 +31,7 @@ jobs:
         if: runner.os == 'macOS'
         run: brew install sbt
       - name: Run tests
-        run: sbt test
+        run: sbt "testOnly -- -l gitinsp.tests.tags.ExternalService"
 
   check-code-formatting:
     strategy:

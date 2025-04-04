@@ -12,3 +12,7 @@ object Assistant:
     @SuppressWarnings(Array("org.wartremover.warts.Null")) // TODO: Implement
     override def chat(msg: String): TokenStream =
       null
+
+object URLSanitizerService:
+  def sanitize(url: String): String =
+    url.replaceAll("^https?://", "").replace("/", "[slash]").replace(":", "[colon]")

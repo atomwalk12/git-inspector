@@ -2,6 +2,7 @@ package gitinsp.chatpipeline
 
 import ai.onnxruntime.OrtSession
 import com.typesafe.config.Config
+import dev.langchain4j.data.document.DocumentTransformer
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
@@ -17,10 +18,13 @@ import dev.langchain4j.rag.query.Query
 import dev.langchain4j.rag.query.router.DefaultQueryRouter
 import dev.langchain4j.rag.query.router.QueryRouter
 import dev.langchain4j.service.AiServices
+import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import dev.langchain4j.store.embedding.filter.Filter
 import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore
 import gitinsp.infrastructure.ContentFormatter
+import gitinsp.infrastructure.strategies.IngestionStrategy
 import gitinsp.utils.Assistant
+import gitinsp.utils.Language
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.QdrantGrpcClient
 
@@ -232,6 +236,31 @@ class RAGComponentFactoryImpl(
         new OnnxScoringModel(modelPath, options, tokenizerPath, max_length, normalize)
     }
 
+  /** Creates an ingestor given a repository.
+    *
+    * @return An EmbeddingStoreIngestor
+    */
+  override def createIngestor(
+    language: Language,
+    embeddingModel: OllamaEmbeddingModel,
+    embeddingStore: QdrantEmbeddingStore,
+    strategy: IngestionStrategy,
+  ): EmbeddingStoreIngestor =
+    val chunkSize    = config.getInt("gitinsp.ingestor.chunk-size")
+    val chunkOverlap = config.getInt("gitinsp.ingestor.chunk-overlap")
+
+    EmbeddingStoreIngestor
+      .builder()
+      // adding userId metadata entry to each Document to be able to filter by it later
+      .documentTransformer(document => strategy.documentTransformer(document))
+      // splitting each Document into TextSegments based on configuration
+      .documentSplitter(strategy.documentSplitter(language, chunkSize, chunkOverlap))
+      // adding a name of the Document to each TextSegment (may improve retrieval quality)
+      .textSegmentTransformer(textSegment => strategy.textSegmentTransformer(textSegment))
+      .embeddingModel(embeddingModel)
+      .embeddingStore(embeddingStore)
+      .build()
+
 /** A custom router that uses a query routing strategy.
   * This is an adapter that bridges the gap between the QueryRouter interface and the
   * QueryRoutingStrategy.
@@ -277,7 +306,7 @@ trait RAGComponentFactory:
     * @param embeddingStore The embedding store
     * @param embeddingModel The embedding model
     * @param indexName The specific collection to be used
-    * @param dynamicFilter A function that returns a filter for the query. It can be used to filter the documents based on a specific language
+    * @param dynamicFilter Allows to filter the documents based on a specific language
     * @return A retriever for the specified index
     */
   def createCodeRetriever(
@@ -364,3 +393,14 @@ trait RAGComponentFactory:
     * @return A ScoringModel
     */
   def createScoringModel(): ScoringModel
+
+  /** Creates an ingestor.
+    *
+    * @return An EmbeddingStoreIngestor
+    */
+  def createIngestor(
+    language: Language,
+    embeddingModel: OllamaEmbeddingModel,
+    embeddingStore: QdrantEmbeddingStore,
+    strategy: IngestionStrategy,
+  ): EmbeddingStoreIngestor
