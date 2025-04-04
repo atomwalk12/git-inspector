@@ -1,3 +1,20 @@
+## [1.3.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.2.0...v1.3.0) (2025-04-04)
+
+### Features
+
+* **chat-interface:** add Gradio-based chat interface and link viewer ([35eaf58](https://github.com/atomwalk12/PPS-22-git-insp/commit/35eaf5812a2f1c65619a27b731de3a1103fd962a))
+* **chat:** implement ChatService for AI interaction ([7cfddd9](https://github.com/atomwalk12/PPS-22-git-insp/commit/7cfddd98d8e786ba63934d21f6bea5941b0b6f0c))
+* **configuration:** update application configuration and add URL sanitization utility ([379e9ee](https://github.com/atomwalk12/PPS-22-git-insp/commit/379e9ee3ae568303ac529e683caf6e120664884b))
+* **ingestion-strategy:** introduce IngestionStrategy trait and default implementation ([c8a4b31](https://github.com/atomwalk12/PPS-22-git-insp/commit/c8a4b31697134c4aeb37d543b5ee1b1b8662b277))
+* **ingestor:** implement IngestorService and integrate with Pipeline ([78702bb](https://github.com/atomwalk12/PPS-22-git-insp/commit/78702bbe72a454e7a8f02d5bb3346b8aaddd1649))
+* **styles:** add CSS styles for content display area layout ([1a703b9](https://github.com/atomwalk12/PPS-22-git-insp/commit/1a703b97faa9fe4299dba83b086fec9a5ee5dee2))
+* **tests:** add complete suites of tests for the ingestor module ([fa696be](https://github.com/atomwalk12/PPS-22-git-insp/commit/fa696be834bdb27a25b9d606f8f802b14c857711))
+* **text-splitting:** introduce RecursiveCharacterTextSplitter and TextSplitter base class ([62010ea](https://github.com/atomwalk12/PPS-22-git-insp/commit/62010ea6dec5d6ca1c5b67fa55b5be2db37341e0))
+
+### Bug Fixes
+
+* **chat:** enhance error handling in chat function ([b7b21ff](https://github.com/atomwalk12/PPS-22-git-insp/commit/b7b21ffe5d6f837d22e95f9cf57e618175c327b0))
+
 ## [1.2.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.1.2...v1.2.0) (2025-04-03)
 
 ### Features
