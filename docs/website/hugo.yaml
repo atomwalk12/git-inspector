@@ -1,8 +1,7 @@
 # If your site is in 'https', then make sure your base url isn't written using 'http' otherwise your sitemap would
 # contain http (as opposeed to https) URLs. This would affect Google indexing of your URLs.
-baseURL: https://atomwalk12.github.io/pps-22-git-insp/
+baseURL: https://atomwalk12.github.io/PPS-22-git-insp/
 title: Git Inspector
-copyright: © [PaperMod Contributors](https://atomwalk12.github.io/pps-22-git-insp/graphs/contributors)
 pagination:
   pagerSize: 7
 theme: [papermod, hugo-cite]

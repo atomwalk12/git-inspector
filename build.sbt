@@ -45,6 +45,7 @@ wartremoverWarnings --= Seq(
   Wart.Nothing,
   Wart.Any,
   Wart.ImplicitParameter,
+  Wart.Equals
 )
 
 wartremoverErrors ++= Warts.unsafe
@@ -112,5 +113,6 @@ lazy val root = project
       // Akka dependencies
       "com.typesafe.akka" %% "akka-http" % "10.5.3",
       "com.typesafe.akka" %% "akka-stream" % "2.8.8",
+      "com.tngtech.archunit" % "archunit" % "1.4.0",
     ),
   )
