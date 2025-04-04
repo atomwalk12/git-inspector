@@ -60,10 +60,12 @@ class AnalysisTest
     when(mockConfig.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
     when(mockConfig.getString("gitinsp.models.default-model")).thenReturn("llama3.1")
 
+  // TODO: this might prove to be redundant
   "The Analysis Context" should "be able to analyze code" in:
     val analysis = AnalysisContext.withCodeAnalysisStrategy(Assistant())
     analysis.strategy.map(_.strategyName) should be(Some("Code Analysis"))
 
+  // TODO: this as well
   it should "be able to analyze natural language" in:
     val analysis = AnalysisContext.withNaturalLanguageStrategy(Assistant())
     analysis.strategy.map(_.strategyName) should be(Some("Markdown Analysis"))
