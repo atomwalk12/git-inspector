@@ -4,19 +4,26 @@ import json
 
 
 def chat(msg, history, indexName):
-  response = requests.get(
-      "http://localhost:8080/chat",
-  )
+  try:
+    response = requests.get(
+        "http://localhost:8080/chat",
+    )
 
-  collected_message = ""
+    collected_message = ""
 
-  for line in response.iter_lines(decode_unicode=True):
-      if line:
-          content = json.loads(line[5:])["text"]
-          collected_message += content
-          yield collected_message
+    for line in response.iter_lines(decode_unicode=True):
+        if line:
+            content = json.loads(line[5:])["text"]
+            collected_message += content
+            yield collected_message
 
-  return collected_message
+    return collected_message
+  except requests.exceptions.RequestException as e:
+    print(f"Request failed: {e}")
+    yield "Error: Could not connect to chat service."
+  except json.JSONDecodeError as e:
+    print(f"JSON decode error: {e}")
+    yield "Error: Could not decode chat service response."
 
 
 with gr.Blocks(fill_height=True, css_paths="./style.css") as iface:
