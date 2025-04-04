@@ -50,7 +50,7 @@ class CharacterTextSplitter(
 
         case KeepAtStart | KeepAtEnd =>
           // The parentheses in the pattern keep the delimiters in the result
-          val splitPattern = s"($separator)" // TODO ???
+          val splitPattern = s"($separator)" // NOTE: used to keep separators in the result
           val splits       = splitPattern.r.split(text).toList
 
           val result = keepMode match {
