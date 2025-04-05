@@ -21,6 +21,8 @@ object URLClient extends LazyLogging:
   def apply(): URLClient =
     new URLClientImpl()
 
+  // This class is not absolutely necessary, but it's useful to streamline tests that rely on
+  // fetching external data.
   private class URLClientImpl extends URLClient:
     def fetchUrl(
       url: String,

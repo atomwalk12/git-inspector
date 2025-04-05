@@ -38,20 +38,19 @@ object Pipeline:
             val aiservice = cacheService.getAIService(Some(idx))
             chatService.chat(message, aiservice)
           case None =>
-            chatService.chat(message, cacheService.getAIService(None))
+            val aiservice = cacheService.getAIService(None)
+            chatService.chat(message, aiservice)
       }
 
     def generateIndex(repository: GitRepository, regenerate: Boolean): Try[Unit] =
       // Delete current repository if it exists
-      if regenerate then ingestorService.deleteRepository(repository)
-
       // Ingest the new repository
       Try {
+        if regenerate then ingestorService.deleteRepository(repository)
         ingestorService.ingest(repository)
       }
 
     def regenerateIndex(repository: GitRepository): Try[Unit] =
-      // Delete current repository if it exists
       generateIndex(repository, true)
 
     def listIndexes(): Try[List[IndexName]] =
