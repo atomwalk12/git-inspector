@@ -2,11 +2,12 @@ package gitinsp.chatpipeline
 
 import ai.onnxruntime.OrtSession
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
 import dev.langchain4j.data.document.DocumentTransformer
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
-import dev.langchain4j.model.ollama.OllamaStreamingChatModel
+import dev.langchain4j.model.ollama.OllamaStreamingChatModel as StreamingModel
 import dev.langchain4j.model.scoring.ScoringModel
 import dev.langchain4j.model.scoring.onnx.OnnxScoringModel
 import dev.langchain4j.rag.DefaultRetrievalAugmentor
@@ -25,10 +26,16 @@ import gitinsp.infrastructure.ContentFormatter
 import gitinsp.infrastructure.strategies.IngestionStrategy
 import gitinsp.utils.Assistant
 import gitinsp.utils.Language
+import io.grpc.StatusRuntimeException
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.QdrantGrpcClient
+import io.qdrant.client.grpc.Collections
+import io.qdrant.client.grpc.Collections.Distance
+
+import java.util.concurrent.ExecutionException
 
 import scala.jdk.CollectionConverters.*
+import scala.util.Try
 
 object RAGComponentFactory:
   def apply(config: Config): RAGComponentFactory =
@@ -38,9 +45,7 @@ object RAGComponentFactory:
   *
   * @param config The application configuration
   */
-class RAGComponentFactoryImpl(
-  config: Config,
-) extends RAGComponentFactory:
+class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with LazyLogging:
 
   /** Creates a retriever for the specified index.
     *
@@ -54,12 +59,17 @@ class RAGComponentFactoryImpl(
     embeddingModel: OllamaEmbeddingModel,
     indexName: String,
   ): EmbeddingStoreContentRetriever =
+    val maxResults = config.getInt("gitinsp.text-embedding.max-results")
+    val minScore   = config.getDouble("gitinsp.text-embedding.min-score")
+
+    logger.debug(s"Creating markdown retriever for index '$indexName'")
+
     EmbeddingStoreContentRetriever
       .builder()
       .embeddingStore(embeddingStore)
       .displayName(indexName)
-      .maxResults(config.getInt("gitinsp.text-embedding.max-results"))
-      .minScore(config.getDouble("gitinsp.text-embedding.min-score"))
+      .maxResults(maxResults)
+      .minScore(minScore)
       .embeddingModel(embeddingModel)
       .build()
 
@@ -69,13 +79,18 @@ class RAGComponentFactoryImpl(
     indexName: String,
     modelRouter: OllamaChatModel,
   ): EmbeddingStoreContentRetriever =
+    val maxResults = config.getInt("gitinsp.code-embedding.max-results")
+    val minScore   = config.getDouble("gitinsp.code-embedding.min-score")
+
+    logger.debug(s"Creating code retriever for index '$indexName' with dynamic filtering")
+
     EmbeddingStoreContentRetriever
       .builder()
       .embeddingStore(embeddingStore)
       .dynamicFilter(query => ContentFormatter.applyDynamicFilter(query, config, modelRouter))
       .displayName(indexName)
-      .maxResults(config.getInt("gitinsp.code-embedding.max-results"))
-      .minScore(config.getDouble("gitinsp.code-embedding.min-score"))
+      .maxResults(maxResults)
+      .minScore(minScore)
       .embeddingModel(embeddingModel)
       .build()
 
@@ -84,18 +99,27 @@ class RAGComponentFactoryImpl(
     * @return A ReRankingContentAggregator
     */
   override def createModelRouter(): OllamaChatModel =
+    val modelName = config.getString("gitinsp.rag.model")
+    val baseUrl   = config.getString("gitinsp.ollama.url")
+
+    logger.debug(s"Creating model router with model=$modelName, url=$baseUrl")
     OllamaChatModel
       .builder()
-      .baseUrl(config.getString("gitinsp.ollama.url"))
-      .modelName(config.getString("gitinsp.rag.model"))
-      .build();
+      .baseUrl(baseUrl)
+      .modelName(modelName)
+      .build()
 
   override def createContentAggregator(scoringModel: ScoringModel): ReRankingContentAggregator =
+    val maxResults = config.getInt("gitinsp.reranker.max-results")
+    val minScore   = config.getDouble("gitinsp.reranker.min-score")
+
+    logger.debug(s"Creating content aggregator with maxResults=$maxResults, minScore=$minScore")
+
     ReRankingContentAggregator
       .builder()
       .scoringModel(scoringModel)
-      .maxResults(config.getInt("gitinsp.reranker.max-results"))
-      .minScore(config.getDouble("gitinsp.reranker.min-score"))
+      .maxResults(maxResults)
+      .minScore(minScore)
       .build()
 
   /** Creates a query router based on configuration and available routing strategies.
@@ -107,7 +131,10 @@ class RAGComponentFactoryImpl(
     retrievers: List[EmbeddingStoreContentRetriever],
     modelRouter: OllamaChatModel,
   ): QueryRouter =
-    if config.getBoolean("gitinsp.rag.use-conditional-rag") then
+    val useConditionalRag = config.getBoolean("gitinsp.rag.use-conditional-rag")
+    logger.debug(s"Creating query router...")
+    logger.debug(s"with useConditionalRag=$useConditionalRag, retrieverCount=${retrievers.size}")
+    if useConditionalRag then
       // Use a strategy that conditionally routes based on the query
       val strategy = QueryRoutingStrategyFactory.createStrategy("conditional", modelRouter)
 
@@ -129,6 +156,7 @@ class RAGComponentFactoryImpl(
     router: QueryRouter,
     aggregator: ReRankingContentAggregator,
   ): DefaultRetrievalAugmentor =
+    logger.debug("Creating retrieval augmentor with router and aggregator")
     DefaultRetrievalAugmentor
       .builder()
       .queryRouter(router)
@@ -139,11 +167,14 @@ class RAGComponentFactoryImpl(
     *
     * @return An OllamaStreamingChatModel
     */
-  override def createStreamingChatModel(): OllamaStreamingChatModel =
-    OllamaStreamingChatModel
+  override def createStreamingChatModel(): StreamingModel =
+    val modelName = config.getString("gitinsp.models.default-model")
+    val baseUrl   = config.getString("gitinsp.ollama.url")
+    logger.debug(s"Creating streaming chat model with model=$modelName, url=$baseUrl")
+    StreamingModel
       .builder()
-      .baseUrl(config.getString("gitinsp.ollama.url"))
-      .modelName(config.getString("gitinsp.models.default-model"))
+      .baseUrl(baseUrl)
+      .modelName(modelName)
       .build()
 
   /** Creates an embedding model optimized for the specified language.
@@ -152,10 +183,13 @@ class RAGComponentFactoryImpl(
     * @return An OllamaEmbeddingModel
     */
   override def createTextEmbeddingModel(): OllamaEmbeddingModel =
+    val modelName = config.getString("gitinsp.text-embedding.model")
+    val baseUrl   = config.getString("gitinsp.ollama.url")
+    logger.debug(s"Creating text embedding model with model=$modelName, url=$baseUrl")
     OllamaEmbeddingModel
       .builder()
-      .baseUrl(config.getString("gitinsp.ollama.url"))
-      .modelName(config.getString("gitinsp.text-embedding.model"))
+      .baseUrl(baseUrl)
+      .modelName(modelName)
       .build()
 
   /** Creates an embedding model optimized for code.
@@ -163,28 +197,44 @@ class RAGComponentFactoryImpl(
     * @return An OllamaEmbeddingModel
     */
   override def createCodeEmbeddingModel(): OllamaEmbeddingModel =
+    val modelName = config.getString("gitinsp.code-embedding.model")
+    val baseUrl   = config.getString("gitinsp.ollama.url")
+
+    logger.debug(s"Creating code embedding model with $modelName model")
     OllamaEmbeddingModel
       .builder()
-      .baseUrl(config.getString("gitinsp.ollama.url"))
-      .modelName(config.getString("gitinsp.code-embedding.model"))
+      .baseUrl(baseUrl)
+      .modelName(modelName)
       .build()
 
-  /** Creates an assistant. It is used to chat with the model.
+  /** Creates an assistant. It is used to chat with the model. The retrieval augmentor is optional
+    * as it will not be used when no retrieval is required (when chatting without an index).
     *
     * @param chatModel The chat model
-    * @param retrievalAugmentor The retrieval augmentor
+    * @param retrievalAugmentor The retrieval augmentor.
     * @return A streaming assistant
     */
   override def createAssistant(
-    chatModel: OllamaStreamingChatModel,
-    retrievalAugmentor: RetrievalAugmentor,
+    chatModel: StreamingModel,
+    retrievalAugmentor: Option[RetrievalAugmentor],
   ): Assistant =
-    AiServices
+    val memory = config.getInt("gitinsp.chat.memory")
+
+    logger.debug(s"Creating assistant with memory window of $memory messages")
+    logger.debug(s"Augmentor: ${retrievalAugmentor.isDefined}")
+
+    val builder = AiServices
       .builder(classOf[Assistant])
       .streamingChatLanguageModel(chatModel)
-      .retrievalAugmentor(retrievalAugmentor)
-      .chatMemory(MessageWindowChatMemory.withMaxMessages(30))
-      .build()
+      .chatMemory(MessageWindowChatMemory.withMaxMessages(memory))
+
+    val builderWithOptionalAugmentor = retrievalAugmentor match
+      case Some(augmentor) =>
+        builder.retrievalAugmentor(augmentor)
+      case None =>
+        builder
+
+    builderWithOptionalAugmentor.build()
 
   /** Creates an embedding store. It is used to store documents in a vector database.
     *
@@ -193,11 +243,15 @@ class RAGComponentFactoryImpl(
     * @return A QdrantEmbeddingStore
     */
   override def createEmbeddingStore(client: QdrantClient, name: String): QdrantEmbeddingStore =
+    val host = config.getString("gitinsp.qdrant.host")
+    val port = config.getInt("gitinsp.qdrant.port")
+
+    logger.debug(s"Creating embedding store for collection '$name'")
     QdrantEmbeddingStore
       .builder()
       .client(client)
-      .host(config.getString("gitinsp.qdrant.host"))
-      .port(config.getInt("gitinsp.qdrant.port"))
+      .host(host)
+      .port(port)
       .collectionName(name)
       .build()
 
@@ -206,13 +260,13 @@ class RAGComponentFactoryImpl(
     * @return A QdrantClient
     */
   override def createQdrantClient(): QdrantClient =
-    new QdrantClient(
+    val host = config.getString("gitinsp.qdrant.host")
+    val port = config.getInt("gitinsp.qdrant.port")
+
+    logger.debug(s"Creating Qdrant client connected to $host:$port")
+    QdrantClient(
       QdrantGrpcClient
-        .newBuilder(
-          config.getString("gitinsp.qdrant.host"),
-          config.getInt("gitinsp.qdrant.port"),
-          false,
-        )
+        .newBuilder(host, port, false)
         .build(),
     )
 
@@ -225,12 +279,15 @@ class RAGComponentFactoryImpl(
     val tokenizerPath = config.getString("gitinsp.reranker.tokenizer-path")
     val normalize     = config.getBoolean("gitinsp.reranker.normalize-scores")
     val max_length    = config.getInt("gitinsp.reranker.max-length")
+    val useGpu        = config.getBoolean("gitinsp.reranker.use-gpu")
+
+    logger.debug(s"Creating scoring model useGpu=$useGpu")
 
     val options = new OrtSession.SessionOptions()
     config.getBoolean("gitinsp.reranker.use-gpu") match {
       case true =>
-        options.addCUDA(0);
-        options.addCPU(true);
+        options.addCUDA(0)
+        options.addCPU(true)
         new OnnxScoringModel(modelPath, options, tokenizerPath, max_length, normalize)
       case false =>
         new OnnxScoringModel(modelPath, options, tokenizerPath, max_length, normalize)
@@ -246,8 +303,11 @@ class RAGComponentFactoryImpl(
     embeddingStore: QdrantEmbeddingStore,
     strategy: IngestionStrategy,
   ): EmbeddingStoreIngestor =
-    val chunkSize    = config.getInt("gitinsp.ingestor.chunk-size")
-    val chunkOverlap = config.getInt("gitinsp.ingestor.chunk-overlap")
+    val chunkSize    = config.getInt(s"gitinsp.${language.category}-embedding.chunk-size")
+    val chunkOverlap = config.getInt(s"gitinsp.${language.category}-embedding.chunk-overlap")
+
+    logger.debug(s"Creating ingestor for ${language.value} ")
+    logger.debug(s"Chunk size $chunkSize and overlap $chunkOverlap")
 
     EmbeddingStoreIngestor
       .builder()
@@ -260,6 +320,31 @@ class RAGComponentFactoryImpl(
       .embeddingModel(embeddingModel)
       .embeddingStore(embeddingStore)
       .build()
+
+  /** Creates a collection in Qdrant.
+    *
+    * @param name The name of the collection
+    */
+  override def createCollection(name: String, client: QdrantClient, distance: Distance): Unit =
+    val dimension = config.getInt("gitinsp.qdrant.dimension")
+    Try {
+      client.createCollectionAsync(
+        name,
+        Collections.VectorParams
+          .newBuilder()
+          .setDistance(distance)
+          .setSize(dimension)
+          .build(),
+      ).get()
+      logger.info(s"Collection '$name' created successfully with dimension $dimension")
+    }.recover {
+      case e: ExecutionException =>
+        logger.warn(s"Error creating collection '$name': ${e.getMessage}")
+      case e: StatusRuntimeException =>
+        logger.warn(s"gRPC error creating collection '$name': ${e.getMessage}")
+      case e: InterruptedException =>
+        logger.warn(s"Operation interrupted while creating collection '$name': ${e.getMessage}")
+    }
 
 /** A custom router that uses a query routing strategy.
   * This is an adapter that bridges the gap between the QueryRouter interface and the
@@ -360,7 +445,7 @@ trait RAGComponentFactory:
     *
     * @return An OllamaStreamingChatModel
     */
-  def createStreamingChatModel(): OllamaStreamingChatModel
+  def createStreamingChatModel(): StreamingModel
 
   /** Create model router
     *
@@ -374,7 +459,7 @@ trait RAGComponentFactory:
     * @param augmentor The retrieval augmentor
     * @return A StreamingAssistant
     */
-  def createAssistant(model: OllamaStreamingChatModel, augmentor: RetrievalAugmentor): Assistant
+  def createAssistant(model: StreamingModel, augmentor: Option[RetrievalAugmentor]): Assistant
 
   /** Creates an embedding store.
     *
@@ -404,3 +489,9 @@ trait RAGComponentFactory:
     embeddingStore: QdrantEmbeddingStore,
     strategy: IngestionStrategy,
   ): EmbeddingStoreIngestor
+
+  /** Creates a collection in Qdrant.
+    *
+    * @param name The name of the collection
+    */
+  def createCollection(name: String, client: QdrantClient, distance: Distance): Unit

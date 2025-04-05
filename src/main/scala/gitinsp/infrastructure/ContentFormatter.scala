@@ -6,6 +6,7 @@ import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.rag.query.Query
 import dev.langchain4j.store.embedding.filter.Filter
 import dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey
+import gitinsp.utils.Language
 
 import java.util.Locale
 
@@ -80,10 +81,10 @@ object ContentFormatter extends ContentFormatter:
         |Do not include any other text in your response.""".stripMargin
 
     def createFilter(extension: String): Option[Filter] = extension match
-      case "py"    => Some(metadataKey("code").isEqualTo("py"))
-      case "java"  => Some(metadataKey("code").isEqualTo("java"))
-      case "cpp"   => Some(metadataKey("code").isEqualTo("cpp"))
-      case "scala" => Some(metadataKey("code").isEqualTo("scala"))
+      case "py"    => Some(metadataKey(Language.CODE.value).isEqualTo("py"))
+      case "java"  => Some(metadataKey(Language.CODE.value).isEqualTo("java"))
+      case "cpp"   => Some(metadataKey(Language.CODE.value).isEqualTo("cpp"))
+      case "scala" => Some(metadataKey(Language.CODE.value).isEqualTo("scala"))
       case _       => Option.empty[Filter]
 
     def parseResponse(response: String): Option[Filter] =

@@ -6,6 +6,9 @@
     </encoder>
   </appender>
 
+  <!-- Suppress warnings from HuggingFaceTokenizer. These warnings are rather noisy. -->
+  <!-- <logger name="ai.djl.huggingface.tokenizers.HuggingFaceTokenizer" level="ERROR" /> -->
+
   <root level="INFO">
     <appender-ref ref="CONSOLE" />
   </root>

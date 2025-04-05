@@ -8,7 +8,6 @@ import dev.langchain4j.service.TokenStream
 import gitinsp.chatpipeline.RAGComponentFactory
 import gitinsp.domain.ChatService
 import gitinsp.infrastructure.ContentFormatter
-import gitinsp.tests.HandleErrors
 import gitinsp.utils.Assistant
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyString
@@ -68,7 +67,7 @@ class ChatServiceSuite extends AnyFlatSpec with Matchers with MockitoSugar with 
     verify(mockChatService).chat(anyString(), any())
     results should contain theSameElementsAs List("Test response 1", "Test response 2")
 
-  it should "handle errors" taggedAs HandleErrors in:
+  it should "handle errors gracefully" in:
     // Create mock Assistant
     val mockAssistant    = mock[Assistant]
     val mockErrorService = spy(ChatService())

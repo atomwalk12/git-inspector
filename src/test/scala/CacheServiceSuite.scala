@@ -47,13 +47,15 @@ class CacheServiceSuite
     when(config.getString("gitinsp.text-embedding.model")).thenReturn("nomic-embed-text")
     when(config.getString("gitinsp.models.default-model")).thenReturn("llama3.3")
     when(config.getString("gitinsp.rag.model")).thenReturn("llama3.3")
+    when(config.getInt("gitinsp.chat.memory")).thenReturn(10)
 
   "CacheService" should "run without any exceptions" in:
     // Get the CacheService implementation
     val cacheService = CacheService(mockFactory)
 
     // Now test the service with mocked dependencies
-    val aiService = cacheService.getAIService("test-repository")
+    val indexName = IndexName("test-repository", Language.SCALA)
+    val aiService = cacheService.getAIService(Some(indexName))
     noException should be thrownBy aiService
 
   it should "return the same AI service instance for the same repository name" in:
@@ -61,8 +63,9 @@ class CacheServiceSuite
     val cacheService = CacheService(mockFactory)
 
     // Execute
-    val aiService1 = cacheService.getAIService("test-repository")
-    val aiService2 = cacheService.getAIService("test-repository")
+    val indexName  = IndexName("test-repository", Language.SCALA)
+    val aiService1 = cacheService.getAIService(Some(indexName))
+    val aiService2 = cacheService.getAIService(Some(indexName))
 
     // Verify
     aiService1 should be theSameInstanceAs aiService2

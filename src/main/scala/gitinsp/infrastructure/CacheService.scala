@@ -10,6 +10,7 @@ import gitinsp.utils.Assistant
 import gitinsp.utils.IndexName
 import gitinsp.utils.Language
 import io.qdrant.client.QdrantClient
+import io.qdrant.client.grpc.Collections.Distance
 
 import scala.collection.concurrent.TrieMap
 
@@ -35,25 +36,28 @@ object CacheService:
     val scoringModel: ScoringModel = factory.createScoringModel()
     val fmt                        = ContentFormatter
 
-    def getAIService(baseName: String): Assistant =
-      aiServiceCache.get(baseName) match {
-        case Some(aiservice) => aiservice
-        case None            =>
-          // Create the streaming model
-          val model = factory.createStreamingChatModel()
+    def getAIService(index: Option[IndexName]): Assistant =
+      // Create the streaming model
+      val model = factory.createStreamingChatModel()
 
-          // Create a full RAG pipeline
+      index match
+        case Some(IndexName(name, _)) =>
+          aiServiceCache.get(name) match
+            case Some(aiservice) => aiservice
+            case None            =>
+
+            // Create a full RAG pipeline
           val modelRouter        = factory.createModelRouter()
-          val embeddingStore     = factory.createEmbeddingStore(_qdrantClient, baseName)
+          val embeddingStore     = factory.createEmbeddingStore(_qdrantClient, name)
           val textEmbeddingModel = factory.createTextEmbeddingModel()
           val codeEmbeddingModel = factory.createCodeEmbeddingModel()
 
           val markdownRetriever =
-            factory.createMarkdownRetriever(embeddingStore, textEmbeddingModel, baseName)
+            factory.createMarkdownRetriever(embeddingStore, textEmbeddingModel, name)
           val codeRetriever = factory.createCodeRetriever(
             embeddingStore,
             codeEmbeddingModel,
-            baseName,
+            name,
             modelRouter,
           )
           val router =
@@ -62,12 +66,19 @@ object CacheService:
           val augmentor         = factory.createRetrievalAugmentor(router, contentAggregator)
 
           // Create the AI service
-          val aiservice = factory.createAssistant(model, augmentor)
+          val aiservice = factory.createAssistant(model, Some(augmentor))
 
           // Store in cache and return
-          aiServiceCache.putIfAbsent(baseName, aiservice)
-          aiServiceCache(baseName)
-      }
+          aiServiceCache.putIfAbsent(name, aiservice)
+          aiServiceCache(name)
+
+        case None =>
+          val aiService = factory.createAssistant(model, None)
+          aiServiceCache.putIfAbsent("default", aiService)
+          aiServiceCache("default")
+
+    def createCollection(name: String, distance: Distance): Unit =
+      factory.createCollection(name, _qdrantClient, distance)
 
     override def qdrantClient: QdrantClient = _qdrantClient
 
@@ -82,5 +93,7 @@ object CacheService:
 
 trait CacheService:
   def qdrantClient: QdrantClient
-  def getAIService(idxName: String): Assistant
+  def getAIService(index: Option[IndexName]): Assistant
   def getIngestor(index: IndexName, strategy: IngestionStrategy): Ingestor
+  def factory: RAGComponentFactory
+  def createCollection(name: String, distance: Distance): Unit

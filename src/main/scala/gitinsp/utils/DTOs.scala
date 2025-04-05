@@ -25,6 +25,7 @@ enum Language(val value: String):
   case SCALA      extends Language("scala")
   case SWIFT      extends Language("swift")
   case MARKDOWN   extends Language("md")
+  case TEXT       extends Language("text")
   case LATEX      extends Language("latex")
   case HTML       extends Language("html")
   case SOL        extends Language("sol")
@@ -38,6 +39,11 @@ enum Language(val value: String):
 
   // Override toString to return the custom value
   override def toString: String = value
+
+  def category: String =
+    this match
+      case Language.MARKDOWN => Language.TEXT.value
+      case _                 => Language.CODE.value
 
 object GitRepository:
   def detectLanguage(language: String): Either[Language, List[Language]] =
@@ -66,15 +72,21 @@ final case class GitRepository(url: String, languages: List[Language], docs: Lis
   val indexNames: List[IndexName] = languages.map(indexName)
   assert(indexNames.length == languages.length, s"Length mismatch: $indexNames, $languages")
 
-  private def indexName(lang: Language): IndexName =
+  def indexName(lang: Language): IndexName =
     val sanitizedName = URLSanitizerService.sanitize(url)
+    // Here we are creating different separate index for each code language
+    // Since textual input is generally markdown, we are creating a single, separate index for it
+    // The reason is that the document splitter must use differet separators according to the
+    // language being used. By creating separate indexes, we ensure that this is done correctly.
+    // The markdown index contains all the markdown text, and only one list of separators is needed.
     lang match
-      case Language.MARKDOWN => IndexName(s"$sanitizedName-${Language.MARKDOWN.toString}", lang)
-      case _                 => IndexName(s"$sanitizedName-${Language.CODE.toString}", lang)
+      case Language.MARKDOWN => IndexName(s"$sanitizedName-${Language.TEXT.toString}", lang)
+      case lang              => IndexName(s"$sanitizedName-${lang.toString}", lang)
 
   override def toString: String = s"GitRepository(url=$url, languages=$languages, docs=$docs)"
 
 final case class IndexName(name: String, language: Language)
+
 final case class GitDocument(content: String, language: Language, path: String):
   def createLangchainDocument(): Option[Document] =
     Option(content.trim)

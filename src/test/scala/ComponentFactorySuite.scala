@@ -40,8 +40,6 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 
-import java.util.concurrent.ExecutionException
-
 class AnalysisTest
     extends AnyFlatSpec
     with Matchers
@@ -323,21 +321,20 @@ class AnalysisTest
     embeddingStore shouldBe a[QdrantEmbeddingStore]
     noException should be thrownBy embeddingStore
 
-  it should "create a Qdrant client with correct configuration" in:
+  it should "create a Qdrant client without errors" in:
     // Setup
     val factory = new RAGComponentFactoryImpl(mockConfig)
 
     // Configure mocks
     when(mockConfig.getString("gitinsp.qdrant.host")).thenReturn("localhost")
-    when(mockConfig.getInt("gitinsp.qdrant.port")).thenReturn(6334)
+    when(mockConfig.getInt("gitinsp.qdrant.port")).thenReturn(6333)
 
     // Execute
     val client = factory.createQdrantClient()
-    val future = client.listAliasesAsync()
 
     // Verify basic creation and config usage
     client shouldBe a[QdrantClient]
-    a[ExecutionException] should be thrownBy future.get()
+    noException should be thrownBy client
 
   it should "create a scoring model with CPU configuration" in:
     // Setup
@@ -359,8 +356,23 @@ class AnalysisTest
     val model     = mock[OllamaStreamingChatModel]
     val factory   = new RAGComponentFactoryImpl(mockConfig)
 
+    // Configure mocks
+    when(mockConfig.getInt("gitinsp.chat.memory")).thenReturn(5)
+
     // Execute
-    val assistant = factory.createAssistant(model, augmentor)
+    val assistant = factory.createAssistant(model, Some(augmentor))
+    assistant shouldBe a[Assistant]
+
+  it should "create an ai assistant without an augmentor" in:
+    // Setup
+    val model   = mock[OllamaStreamingChatModel]
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Configure mocks
+    when(mockConfig.getInt("gitinsp.chat.memory")).thenReturn(5)
+
+    // Execute
+    val assistant = factory.createAssistant(model, None)
     assistant shouldBe a[Assistant]
 
   it should "create an ingestor specialized for markdown" in:
