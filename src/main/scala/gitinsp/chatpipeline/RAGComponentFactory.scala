@@ -280,11 +280,7 @@ class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with L
     val max_length    = config.getInt("gitinsp.reranker.max-length")
     val useGpu        = config.getBoolean("gitinsp.reranker.use-gpu")
 
-    logger.debug(
-      s"Creating scoring model " +
-        s"with modelPath=$modelPath, tokenizerPath=$tokenizerPath, normalize=$normalize, " +
-        s"maxLength=$max_length, useGpu=$useGpu",
-    )
+    logger.debug(s"Creating scoring model useGpu=$useGpu")
 
     val options = new OrtSession.SessionOptions()
     config.getBoolean("gitinsp.reranker.use-gpu") match {
