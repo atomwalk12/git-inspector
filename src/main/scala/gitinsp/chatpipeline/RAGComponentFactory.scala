@@ -35,6 +35,7 @@ import io.qdrant.client.grpc.Collections.Distance
 import java.util.concurrent.ExecutionException
 
 import scala.jdk.CollectionConverters.*
+import scala.util.Try
 
 object RAGComponentFactory:
   def apply(config: Config): RAGComponentFactory =
@@ -326,7 +327,7 @@ class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with L
     */
   override def createCollection(name: String, client: QdrantClient, distance: Distance): Unit =
     val dimension = config.getInt("gitinsp.qdrant.dimension")
-    try
+    Try {
       client.createCollectionAsync(
         name,
         Collections.VectorParams
@@ -336,13 +337,14 @@ class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with L
           .build(),
       ).get()
       logger.info(s"Collection '$name' created successfully with dimension $dimension")
-    catch
+    }.recover {
       case e: ExecutionException =>
         logger.warn(s"Error creating collection '$name': ${e.getMessage}")
       case e: StatusRuntimeException =>
         logger.warn(s"gRPC error creating collection '$name': ${e.getMessage}")
       case e: InterruptedException =>
         logger.warn(s"Operation interrupted while creating collection '$name': ${e.getMessage}")
+    }
 
 /** A custom router that uses a query routing strategy.
   * This is an adapter that bridges the gap between the QueryRouter interface and the

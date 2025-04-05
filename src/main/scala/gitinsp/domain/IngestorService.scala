@@ -18,6 +18,7 @@ import io.qdrant.client.grpc.Collections.Distance.Cosine
 import java.util.concurrent.ExecutionException
 
 import scala.jdk.CollectionConverters.ListHasAsScala
+import scala.util.Try
 
 object IngestorServiceExtensions:
   extension (ingestor: EmbeddingStoreIngestor)
@@ -29,20 +30,21 @@ object IngestorServiceExtensions:
 object QdrantClientExtensions extends LazyLogging:
   extension (qdrantClient: QdrantClient)
     def delete(index: IndexName): Unit =
-      try
+      Try {
         qdrantClient.deleteCollectionAsync(index.name).get
-      catch
+      }.recover {
         case e: ExecutionException =>
           logger.warn(s"Error deleting collection ${index.name}: ${e.getMessage}")
         case e: StatusRuntimeException =>
           logger.warn(s"gRPC error deleting collection ${index.name}: ${e.getMessage}")
         case e: InterruptedException =>
           logger.warn(s"Operation interrupted while deleting ${index.name}: ${e.getMessage}")
+      }
 
-    def listCollections(): List[String] =
-      try
+    def listCollections(): Try[List[String]] =
+      Try {
         qdrantClient.listCollectionsAsync().get().asScala.toList
-      catch
+      }.recover {
         case e: ExecutionException =>
           logger.warn(s"Error listing collections: ${e.getMessage}")
           List.empty
@@ -52,6 +54,7 @@ object QdrantClientExtensions extends LazyLogging:
         case e: InterruptedException =>
           logger.warn(s"Operation interrupted while listing collections: ${e.getMessage}")
           List.empty
+      }
 
 import QdrantClientExtensions.*
 import IngestorServiceExtensions.*
@@ -77,7 +80,7 @@ object IngestorService:
 
       // Create the collection if it doesn't exist
       repository.indexNames
-        .filterNot(index => collections.contains(index.name))
+        .filterNot(index => collections.getOrElse(List.empty).contains(index.name))
         .foreach(index => cache.createCollection(index.name, Cosine))
 
       // Create ingestor
@@ -91,5 +94,5 @@ object IngestorService:
     override def deleteRepository(repository: GitRepository): Unit =
       val collections = client.listCollections()
       repository.indexNames
-        .filter(index => collections.contains(index.name))
+        .filter(index => collections.getOrElse(List.empty).contains(index.name))
         .foreach(index => client.delete(index))
