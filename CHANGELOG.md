@@ -1,3 +1,9 @@
+## [1.3.1](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.3.0...v1.3.1) (2025-04-05)
+
+### Bug Fixes
+
+* **qdrant:** create separate collections for each file type ([e408855](https://github.com/atomwalk12/PPS-22-git-insp/commit/e408855e2acb66408512dfc954b6cb54d391f08b))
+
 ## [1.3.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.2.0...v1.3.0) (2025-04-04)
 
 ### Features
