@@ -10,9 +10,12 @@ import gitinsp.infrastructure.strategies.IngestionStrategyFactory
 import gitinsp.utils.GitRepository
 import gitinsp.utils.IndexName
 import gitinsp.utils.Language
+import io.grpc.StatusRuntimeException
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.grpc.Collections
 import io.qdrant.client.grpc.Collections.Distance.Cosine
+
+import java.util.concurrent.ExecutionException
 
 import scala.jdk.CollectionConverters.ListHasAsScala
 
@@ -29,15 +32,25 @@ object QdrantClientExtensions extends LazyLogging:
       try
         qdrantClient.deleteCollectionAsync(index.name).get
       catch
-        case e: Exception =>
+        case e: ExecutionException =>
           logger.warn(s"Error deleting collection ${index.name}: ${e.getMessage}")
+        case e: StatusRuntimeException =>
+          logger.warn(s"gRPC error deleting collection ${index.name}: ${e.getMessage}")
+        case e: InterruptedException =>
+          logger.warn(s"Operation interrupted while deleting ${index.name}: ${e.getMessage}")
 
     def listCollections(): List[String] =
       try
         qdrantClient.listCollectionsAsync().get().asScala.toList
       catch
-        case e: Exception =>
+        case e: ExecutionException =>
           logger.warn(s"Error listing collections: ${e.getMessage}")
+          List.empty
+        case e: StatusRuntimeException =>
+          logger.warn(s"gRPC error listing collections: ${e.getMessage}")
+          List.empty
+        case e: InterruptedException =>
+          logger.warn(s"Operation interrupted while listing collections: ${e.getMessage}")
           List.empty
 
 import QdrantClientExtensions.*
