@@ -14,6 +14,7 @@ import gitinsp.utils.GitRepository
 import gitinsp.utils.Language
 import io.qdrant.client.QdrantClient
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.doNothing
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.times
@@ -57,6 +58,7 @@ class CacheServiceSuite
     doReturn(mockEmbeddingModel).when(mockFactory).createTextEmbeddingModel()
     doReturn(mockEmbeddingModel).when(mockFactory).createCodeEmbeddingModel()
     doReturn(mockIngestor).when(mockFactory).createIngestor(any, any, any, any)
+    doNothing().when(mockFactory).createCollection(any(), any(), any())
 
     when(config.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
     when(config.getString("gitinsp.code-embedding.model")).thenReturn("nomic-embed-text")
@@ -67,6 +69,7 @@ class CacheServiceSuite
     when(config.getInt("gitinsp.text-embedding.chunk-size")).thenReturn(1000)
     when(config.getInt("gitinsp.code-embedding.chunk-overlap")).thenReturn(200)
     when(config.getInt("gitinsp.text-embedding.chunk-overlap")).thenReturn(200)
+    when(config.getInt("gitinsp.qdrant.dimension")).thenReturn(768)
 
   "IngestorService" should "create an ingestor for markdown" in:
     // Data
@@ -89,5 +92,5 @@ class CacheServiceSuite
       index =>
         val strategy = IngestionStrategyFactory.createStrategy("default", index.language, config)
         import gitinsp.domain.ingest
-        verify(mockIngestor, times(2)).ingest(repository)
+        verify(mockIngestor, times(1)).ingest(repository, index.language) // once for each language
     }

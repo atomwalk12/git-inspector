@@ -23,6 +23,7 @@ import gitinsp.tests.ExternalService
 import gitinsp.utils.Assistant
 import gitinsp.utils.GitDocument
 import gitinsp.utils.GitRepository
+import gitinsp.utils.IndexName
 import gitinsp.utils.Language
 import io.qdrant.client.QdrantClient
 import org.mockito.ArgumentMatchers.any
@@ -71,9 +72,34 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     val pipe = Pipeline(using system, materializer, executionContext)
 
     // Execute
-    val source  = pipe.chat("Tell me a story about a cat!", "sample-repo")
-    val future  = source.map(chunk => { println(chunk) }).runWith(Sink.seq)
-    val results = Await.result(future, 20.seconds)
+    val source  = pipe.chat("Hi!", None)
+    val future  = source.map(println).runWith(Sink.seq)
+    val results = Await.result(future, 2.minutes)
+
+  it should "be able to execute with content retrieval" taggedAs ExternalService in:
+    // Setup classes
+    val pipe  = Pipeline(using system, materializer, executionContext)
+    val index = IndexName("test-repo-py", Language.PYTHON)
+
+    // Execute
+    val source  = pipe.chat("Hi!", Some(index))
+    val future  = source.map(println).runWith(Sink.seq)
+    val results = Await.result(future, 2.minutes)
+
+  it should "be able to process documents" taggedAs ExternalService in:
+    // Setup classes
+    val pipeWithExternalServices = Pipeline(using system, materializer, executionContext)
+
+    // Setup data
+    val languages = GitRepository.detectLanguages("scala,md,py")
+    val doc1      = GitDocument("def test()", Language.SCALA, "test.scala")
+    val doc2      = GitDocument("# Hello, world!", Language.MARKDOWN, "test.md")
+    val doc3      = GitDocument("print('Hello, world!')", Language.PYTHON, "test.py")
+    val docs      = List(doc1, doc1, doc2, doc3)
+    val repo      = GitRepository("test-repo", languages, docs)
+
+    // Execute
+    val source = pipeWithExternalServices.regenerateIndex(repo)
 
   "Pipeline" should "allow dependency injection for easier testing" in:
     // Create mocks
@@ -83,16 +109,17 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     val mockResponse     = Source.single("Mocked response")
 
     // Set up mocks behavior
-    when(mockCacheService.getAIService("test-repo")).thenReturn(mockAssistant)
+    when(mockCacheService.getAIService(None)).thenReturn(mockAssistant)
     when(mockChatService.chat("Test query", mockAssistant)).thenReturn(mockResponse)
 
     // Execute the pipeline
     val pipe   = Pipeline(mockChatService, mockCacheService, mockIngestorService)
-    val result = pipe.chat("Test query", "test-repo")
+    val index  = None
+    val result = pipe.chat("Test query", index)
 
     // Verify
     result shouldBe mockResponse
-    verify(mockCacheService).getAIService("test-repo")
+    verify(mockCacheService).getAIService(None)
     verify(mockChatService).chat("Test query", mockAssistant)
 
   it should "assert that the chat pipeline works" in:
@@ -117,12 +144,13 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     doReturn(mockSource).when(mockChatService).chat(any(), any())
 
     // Execute
-    val result  = pipe.chat("Test query", "test-repo")
+    val index   = IndexName("test-repo", Language.SCALA)
+    val result  = pipe.chat("Test query", Some(index))
     val future  = result.runWith(Sink.seq)
     val results = Await.result(future, 5.seconds)
 
     // Verify
-    verify(mockCacheService).getAIService("test-repo")
+    verify(mockCacheService).getAIService(Some(index))
     results should contain theSameElementsAs List("Test response 1", "Test response 2")
 
   it should "ingest the repository" in:
@@ -153,16 +181,17 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     val languages = GitRepository.detectLanguages("scala,md")
     val doc1      = GitDocument("def test()", Language.SCALA, "test.scala")
     val doc2      = GitDocument("# Hello, world!", Language.MARKDOWN, "test.md")
-    val docs      = List(doc1, doc2)
+    val docs      = List(doc1, doc2, doc1, doc2)
     val repo      = GitRepository("test-repo", languages, docs)
 
     // Execute
-    pipe.generateIndex(repo)
+    pipe.regenerateIndex(repo)
 
     // Verify
     repo.indexNames.foreach {
       index =>
         val strategy = IngestionStrategyFactory.createStrategy("default", index.language, config)
+
         import gitinsp.domain.ingest
-        verify(mockIngestor, times(2)).ingest(repo)
+        verify(mockIngestor, times(2)).ingest(repo, index.language)
     }
