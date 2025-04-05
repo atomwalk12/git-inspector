@@ -2,6 +2,7 @@ package gitinsp.domain
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
+import com.typesafe.scalalogging.LazyLogging
 import dev.langchain4j.data.document.Document
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import gitinsp.infrastructure.CacheService
@@ -15,20 +16,32 @@ import io.qdrant.client.grpc.Collections.Distance.Cosine
 
 import scala.jdk.CollectionConverters.ListHasAsScala
 
-extension (ingestor: EmbeddingStoreIngestor)
-  def ingest(repository: GitRepository, lang: Language): Unit =
-    repository.docs.filter(_.language == lang).foreach(
-      doc =>
-        doc.createLangchainDocument()
-          .fold(())(ingestor.ingest),
-    )
+object IngestorServiceExtensions:
+  extension (ingestor: EmbeddingStoreIngestor)
+    def ingest(repository: GitRepository, lang: Language): Unit =
+      repository.docs.filter(_.language == lang).foreach(
+        doc => doc.createLangchainDocument().fold(())(ingestor.ingest),
+      )
 
-extension (qdrantClient: QdrantClient)
-  def delete(index: IndexName): Unit =
-    qdrantClient.deleteCollectionAsync(index.name).get
+object QdrantClientExtensions extends LazyLogging:
+  extension (qdrantClient: QdrantClient)
+    def delete(index: IndexName): Unit =
+      try
+        qdrantClient.deleteCollectionAsync(index.name).get
+      catch
+        case e: Exception =>
+          logger.warn(s"Error deleting collection ${index.name}: ${e.getMessage}")
 
-  def listCollections(): List[String] =
-    qdrantClient.listCollectionsAsync().get().asScala.toList
+    def listCollections(): List[String] =
+      try
+        qdrantClient.listCollectionsAsync().get().asScala.toList
+      catch
+        case e: Exception =>
+          logger.warn(s"Error listing collections: ${e.getMessage}")
+          List.empty
+
+import QdrantClientExtensions.*
+import IngestorServiceExtensions.*
 
 trait IngestorService:
   def ingest(repository: GitRepository): Unit

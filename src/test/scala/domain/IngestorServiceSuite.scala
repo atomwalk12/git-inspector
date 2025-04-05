@@ -91,6 +91,7 @@ class CacheServiceSuite
     repository.indexNames.foreach {
       index =>
         val strategy = IngestionStrategyFactory.createStrategy("default", index.language, config)
-        import gitinsp.domain.ingest
+
+        import gitinsp.domain.IngestorServiceExtensions.ingest
         verify(mockIngestor, times(1)).ingest(repository, index.language) // once for each language
     }

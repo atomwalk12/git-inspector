@@ -76,6 +76,9 @@ final case class GitRepository(url: String, languages: List[Language], docs: Lis
     val sanitizedName = URLSanitizerService.sanitize(url)
     // Here we are creating different separate index for each code language
     // Since textual input is generally markdown, we are creating a single, separate index for it
+    // The reason is that the document splitter must use differet separators according to the
+    // language being used. By creating separate indexes, we ensure that this is done correctly.
+    // The markdown index contains all the markdown text, and only one list of separators is needed.
     lang match
       case Language.MARKDOWN => IndexName(s"$sanitizedName-${Language.TEXT.toString}", lang)
       case lang              => IndexName(s"$sanitizedName-${lang.toString}", lang)

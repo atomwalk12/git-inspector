@@ -192,6 +192,6 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
       index =>
         val strategy = IngestionStrategyFactory.createStrategy("default", index.language, config)
 
-        import gitinsp.domain.ingest
+        import gitinsp.domain.IngestorServiceExtensions.ingest
         verify(mockIngestor, times(2)).ingest(repo, index.language)
     }

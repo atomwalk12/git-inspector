@@ -2,6 +2,7 @@ package gitinsp.chatpipeline
 
 import ai.onnxruntime.OrtSession
 import com.typesafe.config.Config
+import com.typesafe.scalalogging.LazyLogging
 import dev.langchain4j.data.document.DocumentTransformer
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.ollama.OllamaChatModel
@@ -40,9 +41,7 @@ object RAGComponentFactory:
   *
   * @param config The application configuration
   */
-class RAGComponentFactoryImpl(
-  config: Config,
-) extends RAGComponentFactory:
+class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with LazyLogging:
 
   /** Creates a retriever for the specified index.
     *
@@ -171,10 +170,11 @@ class RAGComponentFactoryImpl(
       .modelName(config.getString("gitinsp.code-embedding.model"))
       .build()
 
-  /** Creates an assistant. It is used to chat with the model.
+  /** Creates an assistant. It is used to chat with the model. The retrieval augmentor is optional
+    * as it will not be used when no retrieval is required (when chatting without an index).
     *
     * @param chatModel The chat model
-    * @param retrievalAugmentor The retrieval augmentor
+    * @param retrievalAugmentor The retrieval augmentor.
     * @return A streaming assistant
     */
   override def createAssistant(
@@ -283,9 +283,10 @@ class RAGComponentFactoryImpl(
           .setSize(config.getInt("gitinsp.qdrant.dimension"))
           .build(),
       ).get()
+      logger.info(s"Collection $name created")
     catch
       case e: Exception =>
-        println(s"Collection $name already exists")
+        logger.warn(s"Collection $name already exists")
 
 /** A custom router that uses a query routing strategy.
   * This is an adapter that bridges the gap between the QueryRouter interface and the
