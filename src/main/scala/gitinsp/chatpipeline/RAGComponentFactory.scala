@@ -6,7 +6,7 @@ import dev.langchain4j.data.document.DocumentTransformer
 import dev.langchain4j.memory.chat.MessageWindowChatMemory
 import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
-import dev.langchain4j.model.ollama.OllamaStreamingChatModel
+import dev.langchain4j.model.ollama.OllamaStreamingChatModel as StreamingModel
 import dev.langchain4j.model.scoring.ScoringModel
 import dev.langchain4j.model.scoring.onnx.OnnxScoringModel
 import dev.langchain4j.rag.DefaultRetrievalAugmentor
@@ -141,8 +141,8 @@ class RAGComponentFactoryImpl(
     *
     * @return An OllamaStreamingChatModel
     */
-  override def createStreamingChatModel(): OllamaStreamingChatModel =
-    OllamaStreamingChatModel
+  override def createStreamingChatModel(): StreamingModel =
+    StreamingModel
       .builder()
       .baseUrl(config.getString("gitinsp.ollama.url"))
       .modelName(config.getString("gitinsp.models.default-model"))
@@ -178,7 +178,7 @@ class RAGComponentFactoryImpl(
     * @return A streaming assistant
     */
   override def createAssistant(
-    chatModel: OllamaStreamingChatModel,
+    chatModel: StreamingModel,
     retrievalAugmentor: Option[RetrievalAugmentor],
   ): Assistant =
     val memory = config.getInt("gitinsp.chat.memory")
@@ -274,14 +274,18 @@ class RAGComponentFactoryImpl(
     * @param name The name of the collection
     */
   override def createCollection(name: String, client: QdrantClient, distance: Distance): Unit =
-    client.createCollectionAsync(
-      name,
-      Collections.VectorParams
-        .newBuilder()
-        .setDistance(distance)
-        .setSize(config.getInt("gitinsp.qdrant.dimension"))
-        .build(),
-    ).get()
+    try
+      client.createCollectionAsync(
+        name,
+        Collections.VectorParams
+          .newBuilder()
+          .setDistance(distance)
+          .setSize(config.getInt("gitinsp.qdrant.dimension"))
+          .build(),
+      ).get()
+    catch
+      case e: Exception =>
+        println(s"Collection $name already exists")
 
 /** A custom router that uses a query routing strategy.
   * This is an adapter that bridges the gap between the QueryRouter interface and the
@@ -382,7 +386,7 @@ trait RAGComponentFactory:
     *
     * @return An OllamaStreamingChatModel
     */
-  def createStreamingChatModel(): OllamaStreamingChatModel
+  def createStreamingChatModel(): StreamingModel
 
   /** Create model router
     *
@@ -396,7 +400,7 @@ trait RAGComponentFactory:
     * @param augmentor The retrieval augmentor
     * @return A StreamingAssistant
     */
-  def createAssistant(model: OllamaStreamingChatModel, aug: Option[RetrievalAugmentor]): Assistant
+  def createAssistant(model: StreamingModel, augmentor: Option[RetrievalAugmentor]): Assistant
 
   /** Creates an embedding store.
     *

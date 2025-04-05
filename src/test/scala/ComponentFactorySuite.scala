@@ -321,7 +321,7 @@ class AnalysisTest
     embeddingStore shouldBe a[QdrantEmbeddingStore]
     noException should be thrownBy embeddingStore
 
-  it should "create a Qdrant client with correct configuration" in:
+  it should "create a Qdrant client without errors" in:
     // Setup
     val factory = new RAGComponentFactoryImpl(mockConfig)
 
@@ -361,6 +361,18 @@ class AnalysisTest
 
     // Execute
     val assistant = factory.createAssistant(model, Some(augmentor))
+    assistant shouldBe a[Assistant]
+
+  it should "create an ai assistant without an augmentor" in:
+    // Setup
+    val model   = mock[OllamaStreamingChatModel]
+    val factory = new RAGComponentFactoryImpl(mockConfig)
+
+    // Configure mocks
+    when(mockConfig.getInt("gitinsp.chat.memory")).thenReturn(5)
+
+    // Execute
+    val assistant = factory.createAssistant(model, None)
     assistant shouldBe a[Assistant]
 
   it should "create an ingestor specialized for markdown" in:
