@@ -27,6 +27,8 @@ import gitinsp.utils.Assistant
 import gitinsp.utils.Language
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.QdrantGrpcClient
+import io.qdrant.client.grpc.Collections
+import io.qdrant.client.grpc.Collections.Distance
 
 import scala.jdk.CollectionConverters.*
 
@@ -177,14 +179,20 @@ class RAGComponentFactoryImpl(
     */
   override def createAssistant(
     chatModel: OllamaStreamingChatModel,
-    retrievalAugmentor: RetrievalAugmentor,
+    retrievalAugmentor: Option[RetrievalAugmentor],
   ): Assistant =
-    AiServices
+    val memory = config.getInt("gitinsp.chat.memory")
+
+    val builder = AiServices
       .builder(classOf[Assistant])
       .streamingChatLanguageModel(chatModel)
-      .retrievalAugmentor(retrievalAugmentor)
-      .chatMemory(MessageWindowChatMemory.withMaxMessages(30))
-      .build()
+      .chatMemory(MessageWindowChatMemory.withMaxMessages(memory))
+
+    val builderWithOptionalAugmentor = retrievalAugmentor match
+      case Some(augmentor) => builder.retrievalAugmentor(augmentor)
+      case None            => builder
+
+    builderWithOptionalAugmentor.build()
 
   /** Creates an embedding store. It is used to store documents in a vector database.
     *
@@ -246,8 +254,8 @@ class RAGComponentFactoryImpl(
     embeddingStore: QdrantEmbeddingStore,
     strategy: IngestionStrategy,
   ): EmbeddingStoreIngestor =
-    val chunkSize    = config.getInt("gitinsp.ingestor.chunk-size")
-    val chunkOverlap = config.getInt("gitinsp.ingestor.chunk-overlap")
+    val chunkSize    = config.getInt(s"gitinsp.${language.category}-embedding.chunk-size")
+    val chunkOverlap = config.getInt(s"gitinsp.${language.category}-embedding.chunk-overlap")
 
     EmbeddingStoreIngestor
       .builder()
@@ -260,6 +268,20 @@ class RAGComponentFactoryImpl(
       .embeddingModel(embeddingModel)
       .embeddingStore(embeddingStore)
       .build()
+
+  /** Creates a collection in Qdrant.
+    *
+    * @param name The name of the collection
+    */
+  override def createCollection(name: String, client: QdrantClient, distance: Distance): Unit =
+    client.createCollectionAsync(
+      name,
+      Collections.VectorParams
+        .newBuilder()
+        .setDistance(distance)
+        .setSize(config.getInt("gitinsp.qdrant.dimension"))
+        .build(),
+    ).get()
 
 /** A custom router that uses a query routing strategy.
   * This is an adapter that bridges the gap between the QueryRouter interface and the
@@ -374,7 +396,7 @@ trait RAGComponentFactory:
     * @param augmentor The retrieval augmentor
     * @return A StreamingAssistant
     */
-  def createAssistant(model: OllamaStreamingChatModel, augmentor: RetrievalAugmentor): Assistant
+  def createAssistant(model: OllamaStreamingChatModel, aug: Option[RetrievalAugmentor]): Assistant
 
   /** Creates an embedding store.
     *
@@ -404,3 +426,9 @@ trait RAGComponentFactory:
     embeddingStore: QdrantEmbeddingStore,
     strategy: IngestionStrategy,
   ): EmbeddingStoreIngestor
+
+  /** Creates a collection in Qdrant.
+    *
+    * @param name The name of the collection
+    */
+  def createCollection(name: String, client: QdrantClient, distance: Distance): Unit

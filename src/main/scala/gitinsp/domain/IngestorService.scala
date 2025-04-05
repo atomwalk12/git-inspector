@@ -7,15 +7,32 @@ import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory
 import gitinsp.utils.GitRepository
+import gitinsp.utils.IndexName
+import gitinsp.utils.Language
+import io.qdrant.client.QdrantClient
 import io.qdrant.client.grpc.Collections
 import io.qdrant.client.grpc.Collections.Distance.Cosine
 
+import scala.jdk.CollectionConverters.ListHasAsScala
+
 extension (ingestor: EmbeddingStoreIngestor)
-  def ingest(repository: GitRepository): Unit =
-    repository.docs.foreach(doc => doc.createLangchainDocument().fold(())(ingestor.ingest))
+  def ingest(repository: GitRepository, lang: Language): Unit =
+    repository.docs.filter(_.language == lang).foreach(
+      doc =>
+        doc.createLangchainDocument()
+          .fold(())(ingestor.ingest),
+    )
+
+extension (qdrantClient: QdrantClient)
+  def delete(index: IndexName): Unit =
+    qdrantClient.deleteCollectionAsync(index.name).get
+
+  def listCollections(): List[String] =
+    qdrantClient.listCollectionsAsync().get().asScala.toList
 
 trait IngestorService:
   def ingest(repository: GitRepository): Unit
+  def deleteRepository(repository: GitRepository): Unit
 
 object IngestorService:
   def apply(cache: CacheService, config: Config): IngestorService =
@@ -25,32 +42,28 @@ object IngestorService:
     new IngestorServiceImpl(CacheService(), ConfigFactory.load())
 
   private class IngestorServiceImpl(cache: CacheService, config: Config) extends IngestorService:
-    val qdrant = cache.qdrantClient
+
+    val client = cache.qdrantClient
 
     override def ingest(repository: GitRepository): Unit =
       // Get all collections
-      val collections = qdrant.listCollectionsAsync().get()
+      val collections = client.listCollections()
 
       // Create the collection if it doesn't exist
-      repository match
-        case GitRepository(url, languages, _) if !collections.contains(s"$url") =>
-          createCollection(repository)
-        case _ => ()
+      repository.indexNames
+        .filterNot(index => collections.contains(index.name))
+        .foreach(index => cache.createCollection(index.name, Cosine))
 
       // Create ingestor
       repository.indexNames.foreach {
         case index =>
           val strategy = IngestionStrategyFactory.createStrategy("default", index.language, config)
           val ingestor = cache.getIngestor(index, strategy)
-          ingestor.ingest(repository)
+          ingestor.ingest(repository, index.language)
       }
 
-    private def createCollection(repository: GitRepository): Unit =
-      qdrant.createCollectionAsync(
-        repository.toString,
-        Collections.VectorParams
-          .newBuilder()
-          .setDistance(Cosine)
-          .setSize(config.getInt("gitinsp.qdrant.dimension"))
-          .build(),
-      )
+    override def deleteRepository(repository: GitRepository): Unit =
+      val collections = client.listCollections()
+      repository.indexNames
+        .filter(index => collections.contains(index.name))
+        .foreach(index => client.delete(index))

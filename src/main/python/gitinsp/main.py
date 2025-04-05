@@ -31,7 +31,7 @@ with gr.Blocks(fill_height=True, css_paths="./style.css") as iface:
         # Add an informational text to display the current index
         current_index_info = gr.Dropdown(
             label="Current Index", 
-            value="None", 
+            value="default",
             interactive=True,
             #choices=load_index_from_server()
         )
