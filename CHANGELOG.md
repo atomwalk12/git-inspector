@@ -1,3 +1,9 @@
+## [1.4.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.3.1...v1.4.0) (2025-04-07)
+
+### Features
+
+* **github-integration:** add GithubWrapperService for repository handling ([908169f](https://github.com/atomwalk12/PPS-22-git-insp/commit/908169fadab61fc0d14e46a31748cd4cb42069c4))
+
 ## [1.3.1](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.3.0...v1.3.1) (2025-04-05)
 
 ### Bug Fixes
