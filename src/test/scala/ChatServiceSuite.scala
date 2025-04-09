@@ -45,9 +45,8 @@ class ChatServiceSuite extends AnyFlatSpec with Matchers with MockitoSugar with 
 
   "ChatService" should "enable interaction with the assistant" in:
     // Setup mocks and real classes
-    val mockRAGFactory = mock[RAGComponentFactory]
-    val mockAssistant  = mock[Assistant]
-
+    val mockRAGFactory  = mock[RAGComponentFactory]
+    val mockAssistant   = mock[Assistant]
     val mockChatService = spy(ChatService(false, ContentFormatter))
 
     // Setup data

@@ -3,9 +3,10 @@ package gitinsp.tests.domain
 import com.typesafe.config.Config
 import gitinsp.domain.GithubWrapperService
 import gitinsp.infrastructure.URLClient
-import gitinsp.utils.GitDocument
-import gitinsp.utils.GitRepository
+import gitinsp.utils.CodeFile
 import gitinsp.utils.Language
+import gitinsp.utils.RepositoryWithLanguages
+import gitinsp.utils.URL
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.when
@@ -27,19 +28,19 @@ class GithubWrapperServiceSuite
     // Create a mock Config
     val mockConfig = mock[Config]
     val urlClient  = mock[URLClient]
-    val languages  = GitRepository.detectLanguage("scala").getOrElse(List())
-    val exception  = new Exception("Could not fetch URL")
+    val languages  = RepositoryWithLanguages.detectLanguage("scala").getOrElse(List())
+
+    // Setup behavior
+    val exception = new Exception("Could not fetch URL")
     when(mockConfig.getInt("gitinsp.timeout")).thenReturn(5000)
     when(urlClient.fetchUrl(any, any, any, any, any)).thenReturn(Failure(exception))
 
-    // Create the service with mock config
-    val service = GithubWrapperService(mockConfig, urlClient)
-
-    // Invalid URL
+    // Setup data
+    val service    = GithubWrapperService(mockConfig, urlClient)
     val invalidUrl = "https://invalid-url-that-doesnt-exist.com"
 
     // Execute
-    val result = service.buildRepository(invalidUrl, languages)
+    val result = service.buildRepository(URL(invalidUrl), languages)
 
     // Verify
     result.isFailure shouldBe true
@@ -52,7 +53,7 @@ class GithubWrapperServiceSuite
     val testService = spy(GithubWrapperService(mockConfig, urlClient))
 
     // Setup test data
-    val testUrl   = "https://test-github-url.com"
+    val testUrl   = URL("https://test-github-url.com/atomwalk12")
     val testJson  = """
       {
         "files": {
@@ -62,12 +63,9 @@ class GithubWrapperServiceSuite
         }
       }
     """
-    val languages = GitRepository.detectLanguage("scala").getOrElse(List())
-    val repo = GitRepository(
-      testUrl,
-      languages,
-      List(GitDocument("test content", Language.SCALA, "test.scala")),
-    )
+    val languages = RepositoryWithLanguages.detectLanguage("scala").getOrElse(List())
+    val docs      = List(CodeFile("test content", Language.SCALA, "test.scala"))
+    val repo      = RepositoryWithLanguages(testUrl, languages, docs)
 
     // Behavior
     when(mockConfig.getInt("gitinsp.timeout")).thenReturn(5000)
@@ -95,7 +93,7 @@ class GithubWrapperServiceSuite
     val testService = spy(GithubWrapperService(mockConfig, urlClient))
 
     // Setup test data
-    val testUrl   = "https://test-github-url.com"
+    val testUrl   = URL("https://test-github-url.com")
     val testJson  = """
       {
         "files": {
@@ -105,7 +103,7 @@ class GithubWrapperServiceSuite
         }
       }
     """
-    val languages = GitRepository.detectLanguage("scala").getOrElse(List())
+    val languages = RepositoryWithLanguages.detectLanguage("scala").getOrElse(List())
 
     // Behavior
     when(mockConfig.getInt("gitinsp.timeout")).thenReturn(5000)

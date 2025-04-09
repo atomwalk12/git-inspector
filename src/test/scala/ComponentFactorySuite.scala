@@ -60,12 +60,14 @@ class AnalysisTest
 
   // TODO: this might prove to be redundant
   "The Analysis Context" should "be able to analyze code" in:
-    val analysis = AnalysisContext.withCodeAnalysisStrategy(Assistant())
+    val mockAssistant = mock[Assistant]
+    val analysis      = AnalysisContext.withCodeAnalysisStrategy(mockAssistant)
     analysis.strategy.map(_.strategyName) should be(Some("Code Analysis"))
 
   // TODO: this as well
   it should "be able to analyze natural language" in:
-    val analysis = AnalysisContext.withNaturalLanguageStrategy(Assistant())
+    val mockAssistant = mock[Assistant]
+    val analysis      = AnalysisContext.withNaturalLanguageStrategy(mockAssistant)
     analysis.strategy.map(_.strategyName) should be(Some("Markdown Analysis"))
 
   "The RAG Component Factory" should "be able to create a streaming chat model" in:
@@ -460,10 +462,10 @@ class AnalysisTest
     val retrievers = List(retriever1, retriever2)
 
     // Test query that should use RAG
-    val query = Query.from("How does this code work?")
+    val query = Query.from("How does this code work? Please do not query the index.")
 
     // Mock the chat response indicating RAG should be used
-    val aiMessage = AiMessage.from("No, the user did not ask to avoid using RAG.")
+    val aiMessage = AiMessage.from("Yes, the user did ask to avoid using RAG.")
     val response  = ChatResponse.builder().aiMessage(aiMessage).build()
     when(mockChat.chat(ArgumentMatchers.any(classOf[UserMessage]))).thenReturn(response)
 
@@ -484,10 +486,10 @@ class AnalysisTest
     val retrievers = List(retriever1, retriever2)
 
     // Test query that should not use RAG
-    val query = Query.from("Don't use RAG for this question")
+    val query = Query.from("How does this code work? Please query the index for better results.")
 
     // Mock the chat response indicating RAG should not be used
-    val aiMessage = AiMessage.from("Yes, the user explicitly asked not to query the RAG index.")
+    val aiMessage = AiMessage.from("No.")
     val response  = ChatResponse.builder().aiMessage(aiMessage).build()
     when(mockChat.chat(ArgumentMatchers.any(classOf[UserMessage]))).thenReturn(response)
 

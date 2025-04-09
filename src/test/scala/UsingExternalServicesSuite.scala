@@ -1,7 +1,9 @@
 package gitinsp.tests.external
+import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.stream.scaladsl.Sink
+import akka.stream.scaladsl.Source
 import com.typesafe.config.Config
 import gitinsp.chatpipeline.RAGComponentFactory
 import gitinsp.domain.ChatService
@@ -12,10 +14,11 @@ import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentFormatter
 import gitinsp.infrastructure.URLClient
 import gitinsp.tests.ExternalService
-import gitinsp.utils.GitDocument
-import gitinsp.utils.GitRepository
-import gitinsp.utils.IndexName
+import gitinsp.utils.Assistant
+import gitinsp.utils.CodeFile
 import gitinsp.utils.Language
+import gitinsp.utils.RepositoryWithLanguages
+import gitinsp.utils.URL
 import org.mockito.Mockito.spy
 import org.mockito.Mockito.when
 import org.scalatest.BeforeAndAfterAll
@@ -33,17 +36,23 @@ import scala.util.Success
 class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with BeforeAndAfterAll
     with BeforeAndAfterEach:
 
+  // Setup dependencies
   val config                                      = mock[Config]
   implicit val system: ActorSystem                = ActorSystem("pipeline-test-system")
   implicit val materializer: Materializer         = Materializer(system)
   implicit val executionContext: ExecutionContext = system.dispatcher
 
+  // Data
+  val url = URL("https://github.com/atomwalk12/PPS-22-git-insp")
+
+  // Setup mocks
   val mockRAGFactory      = mock[RAGComponentFactory]
   val mockIngestorService = mock[IngestorService]
   val mockChatService     = spy(ChatService(false, ContentFormatter))
   val mockCacheService    = spy(CacheService(mockRAGFactory))
 
   override def beforeAll(): Unit =
+    // Setup config
     when(config.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
     when(config.getString("gitinsp.code-embedding.model")).thenReturn("nomic-embed-text")
     when(config.getString("gitinsp.text-embedding.model")).thenReturn("nomic-embed-text")
@@ -56,41 +65,68 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     when(config.getInt("gitinsp.timeout")).thenReturn(5000)
 
   "Pipeline with external services" should "be able to execute" taggedAs ExternalService in:
-    // Setup classes
+    // Setup
     val pipe = Pipeline(using system, materializer, executionContext)
 
     // Execute
-    val source = pipe.chat("Hi!", None)
-    source.foreach {
-      chatSource =>
-        val future  = chatSource.map(println).runWith(Sink.seq)
-        val results = Await.result(future, 2.minutes)
-    }
+    val index     = url.toAIServiceURL()
+    val aiService = pipe.getAIService(Some(index))
+
+    // Verify
+    aiService.fold(
+      (ex: Throwable) => fail(s"Failed to get AI service: ${ex.getMessage}"),
+      (assistant: Assistant) => {
+        // Execute
+        val source = pipe.chat("Hi!", assistant)
+
+        // Verify
+        source.fold(
+          (ex: Throwable) => fail(s"Chat failed: ${ex.getMessage}"),
+          (chatSource: Source[String, NotUsed]) => {
+            val future  = chatSource.map(println).runWith(Sink.seq)
+            val results = Await.result(future, 2.minutes)
+          },
+        )
+      },
+    )
 
   it should "be able to execute with content retrieval" taggedAs ExternalService in:
-    // Setup classes
+    // Setup
     val pipe  = Pipeline(using system, materializer, executionContext)
-    val index = IndexName("test-repo-py", Language.PYTHON)
+    val index = url.toAIServiceURL()
 
     // Execute
-    val source = pipe.chat("Hi!", Some(index))
-    source.foreach {
-      chatSource =>
-        val future  = chatSource.map(println).runWith(Sink.seq)
-        val results = Await.result(future, 2.minutes)
-    }
+    val aiService = pipe.getAIService(Some(index))
+
+    // Verify
+    aiService.fold(
+      (ex: Throwable) => fail(s"Failed to get AI service: ${ex.getMessage}"),
+      (assistant: Assistant) => {
+        // Execute
+        val source = pipe.chat("Hi!", assistant)
+
+        // Verify
+        source.fold(
+          (ex: Throwable) => fail(s"Chat failed: ${ex.getMessage}"),
+          (chatSource: Source[String, NotUsed]) => {
+            val future  = chatSource.map(println).runWith(Sink.seq)
+            val results = Await.result(future, 2.minutes)
+          },
+        )
+      },
+    )
 
   it should "be able to process documents" taggedAs ExternalService in:
     // Setup classes
     val pipeWithExternalServices = Pipeline(using system, materializer, executionContext)
 
     // Setup data
-    val languages = GitRepository.detectLanguages("scala,md,py")
-    val doc1      = GitDocument("def test()", Language.SCALA, "test.scala")
-    val doc2      = GitDocument("# Hello, world!", Language.MARKDOWN, "test.md")
-    val doc3      = GitDocument("print('Hello, world!')", Language.PYTHON, "test.py")
+    val languages = RepositoryWithLanguages.detectLanguages("scala,md,py")
+    val doc1      = CodeFile("def test()", Language.SCALA, "test.scala")
+    val doc2      = CodeFile("# Hello, world!", Language.MARKDOWN, "test.md")
+    val doc3      = CodeFile("print('Hello, world!')", Language.PYTHON, "test.py")
     val docs      = List(doc1, doc1, doc2, doc3)
-    val repo      = GitRepository("test-repo", languages, docs)
+    val repo      = RepositoryWithLanguages(url, languages, docs)
 
     // Execute
     val source = pipeWithExternalServices.regenerateIndex(repo)
@@ -100,17 +136,16 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     val service = GithubWrapperService(config, URLClient())
 
     // Use a known public repo for testing
-    val repoUrl   = "https://github.com/atomwalk12/PPS-22-git-insp"
-    val languages = GitRepository.detectLanguage("scala,md").getOrElse(List())
+    val languages = RepositoryWithLanguages.detectLanguage("scala,md").getOrElse(List())
 
     // Execute
-    val result = service.buildRepository(repoUrl, languages)
+    val result = service.buildRepository(url, languages)
 
     // Verify
     result.isSuccess shouldBe true
     result match
       case Success(repo) =>
-        repo.url shouldBe repoUrl
+        repo.url shouldBe url
         repo.languages should contain(Language.SCALA)
         repo.languages should contain(Language.MARKDOWN)
         repo.docs should not be empty
@@ -122,11 +157,10 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     val service = GithubWrapperService(config, URLClient())
 
     // Use a known public repo for testing
-    val repoUrl   = "https://github.com/atomwalk12/PPS-22-git-insp"
-    val languages = GitRepository.detectLanguage("scala,md").getOrElse(List())
+    val languages = RepositoryWithLanguages.detectLanguage("scala,md").getOrElse(List())
 
     // Execute
-    val result = service.fetchRepository(repoUrl, languages)
+    val result = service.fetchRepository(url, languages)
 
     // Verify
     result.isSuccess shouldBe true

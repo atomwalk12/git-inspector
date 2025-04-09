@@ -6,8 +6,9 @@ import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import gitinsp.chatpipeline.RAGComponentFactory
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory as ISF
-import gitinsp.utils.IndexName
 import gitinsp.utils.Language
+import gitinsp.utils.QdrantURL
+import gitinsp.utils.RepositoryWithLanguages
 import io.qdrant.client.QdrantClient
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.spy
@@ -39,9 +40,10 @@ class CacheServiceSuite
   val scoringModel     = mock[ScoringModel]
   override def beforeAll(): Unit =
     // Setup the mock to return our mock client
-    // when(mockFactory.createQdrantClient()).thenReturn(mockQdrantClient)
     doReturn(mockQdrantClient).when(mockFactory).createQdrantClient()
     doReturn(scoringModel).when(mockFactory).createScoringModel()
+
+    // Setup the configuration
     when(config.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
     when(config.getString("gitinsp.code-embedding.model")).thenReturn("nomic-embed-text")
     when(config.getString("gitinsp.text-embedding.model")).thenReturn("nomic-embed-text")
@@ -50,35 +52,50 @@ class CacheServiceSuite
     when(config.getInt("gitinsp.chat.memory")).thenReturn(10)
 
   "CacheService" should "run without any exceptions" in:
-    // Get the CacheService implementation
-    val cacheService = CacheService(mockFactory)
+    // Setup the data
+    val indexURL1         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-code")
+    val indexURL2         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-text")
+    val qdrantCollections = List(indexURL1, indexURL2)
+    val repositories      = RepositoryWithLanguages.from(qdrantCollections)
 
-    // Now test the service with mocked dependencies
-    val indexName = IndexName("test-repository", Language.SCALA)
-    val aiService = cacheService.getAIService(Some(indexName))
-    noException should be thrownBy aiService
+    // Get the CacheService implementation
+    val cache = CacheService(mockFactory)
+
+    // Execute and verify
+    repositories.foreach(r => noException should be thrownBy cache.initializeAIServices(Some(r)))
 
   it should "return the same AI service instance for the same repository name" in:
-    // Data
+    // Data setup
+    val indexURL1         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-code")
+    val indexURL2         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-text")
+    val qdrantCollections = List(indexURL1, indexURL2, indexURL1) // Duplicate indexURL1
+    val repository        = RepositoryWithLanguages.from(qdrantCollections)
+
+    // Services
     val cacheService = CacheService(mockFactory)
 
-    // Execute
-    val indexName  = IndexName("test-repository", Language.SCALA)
-    val aiService1 = cacheService.getAIService(Some(indexName))
-    val aiService2 = cacheService.getAIService(Some(indexName))
+    // Execute and verify
+    repository.foreach(
+      repo => {
+        val aiService1 = cacheService.initializeAIServices(Some(repo))
+        val aiService2 = cacheService.initializeAIServices(Some(repo))
 
-    // Verify
-    aiService1 should be theSameInstanceAs aiService2
+        // Verify
+        aiService1 should be theSameInstanceAs aiService2
+      },
+    )
 
   it should "create an ingestor for a specific language" in:
-    when(mockFactory.createQdrantClient()).thenReturn(mockQdrantClient)
-    // Data
+    // Data setup
     val cacheService      = CacheService(mockFactory)
     val ingestionStrategy = ISF.createStrategy("default", Language.SCALA, config)
-    val indexName         = IndexName("test-repository", Language.SCALA)
+    val indexName         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-code")
+
+    // Setup behavior
+    when(mockFactory.createQdrantClient()).thenReturn(mockQdrantClient)
 
     // Execute
-    val ingestor = cacheService.getIngestor(indexName, ingestionStrategy)
+    val ingestor = cacheService.getIngestor(indexName, Language.SCALA, ingestionStrategy)
 
     // Verify
     ingestor shouldBe a[EmbeddingStoreIngestor]
@@ -88,10 +105,10 @@ class CacheServiceSuite
     // Data
     val cacheService      = CacheService(mockFactory)
     val ingestionStrategy = ISF.createStrategy("default", Language.MARKDOWN, config)
-    val indexName         = IndexName("test-repository", Language.MARKDOWN)
+    val indexName         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-text")
 
     // Execute
-    val ingestor = cacheService.getIngestor(indexName, ingestionStrategy)
+    val ingestor = cacheService.getIngestor(indexName, Language.MARKDOWN, ingestionStrategy)
 
     // Verify
     ingestor shouldBe a[EmbeddingStoreIngestor]

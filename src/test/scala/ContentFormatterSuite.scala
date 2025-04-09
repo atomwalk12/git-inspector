@@ -14,22 +14,33 @@ import gitinsp.infrastructure.ContentFormatter
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.when
+import org.scalatest.BeforeAndAfterAll
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 import java.util.Arrays
 
-class ContentFormatterSuite extends AnyFlatSpec with Matchers:
+class ContentFormatterSuite extends AnyFlatSpec with Matchers with BeforeAndAfterAll:
+  val formatter = ContentFormatter
+
   "ContentFormatter" should "format HTML content" in:
-    val formatter = ContentFormatter
-    val content   = "test"
+    // Data setup
+    val content = "test"
+
+    // Execute
     val formatted = formatter.toHtml(content)
+
+    // Verify
     formatted should be("<pre style=\"white-space: pre-wrap;\">test</pre>")
 
   it should "format plain text content" in:
-    val formatter = ContentFormatter
-    val content   = "test"
+    // Data setup
+    val content = "test"
+
+    // Execute
     val formatted = formatter.toPlainText(content)
+
+    // Verify
     formatted should be("test\n")
 
   it should "apply dynamic filter" in:
