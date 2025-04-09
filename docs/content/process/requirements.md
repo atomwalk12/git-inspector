@@ -81,6 +81,22 @@ The architectural diagram is a diagram that shows the different components of th
 
 ![Architectural Diagram](../../static/figures/PPS-architecture.svg)
 
+### Design Principles
+
+Domain:
+  - Core business models
+  - Core business interfaces
+  - Core business logic
+
+Application:
+  - Use cases that use domain interfaces
+  - Management of domain objects
+  - Application-specific interfaces (for DTOs, content type, status codes, etc.)
+
+Infrastructure:
+  - Implements domain interfaces
+  - Technical concerns (Qdrant, Ollama, etc.)
+
 ### Detailed Design
 
 Detailed design includes more implementation specifics like private methods, framework-specific elements, etc.

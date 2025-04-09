@@ -42,4 +42,17 @@ Checkout the [daily progress updates](./daily_updates/) folder for detailed day-
 
 ## Sprint Retrospective
 
-TODO: Add retrospective at the end of the sprint.
+- **What went well?**
+  - **Good progress.** Most of the requirements that were planned were completed.
+  - **Layered Architecture.** It becomes clear how useful the layered architecture is. The different parts communicate using interfaces, and the dependencies are well defined. By allowing different modules to depend on other modules strictly below them, the code becomes more flexible and easier to maintain.
+  - **Example.** The application layer is not allowed to depend on the infrastructure layer, but all communicate is done through the domain layer, which is an intermediary designated to satisfy business requirements.
+
+- **What could be improved?**
+  - **NFRs not addressed.** For instance, while the repository loading functionality is complete, it is still necessary to assess qualities such as the robustness and performance of the code.
+  - **Testing.** From a testing perspective, both integration and mocked tests pass, with the former requiring local external services to be running. The later are executable using CI.
+  - **Requirements Documentation.** It would be ideal to have the requirements documented using tests. However, since the implementation details are likely to change, I deemed more valuable to to document this later  when the code is more stable.
+  - **Code Quality.** The code is not as clean as it could be, and more refactoring is going to be necessary in future sprints.
+
+- **What did I learn?**
+  - **Requirements.** Since the requirements were well defined, the implementation was relatively straightforward.
+  - **Documenting progress.** It is fairly useful to document progress, and to think about the process by documenting it. This can certainly influence the direction of future sprints.

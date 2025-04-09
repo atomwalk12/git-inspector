@@ -88,7 +88,6 @@ lazy val root = project
       "-new-syntax",
       "-indent",
       "-source:3.3",
-      "-source 3.0-migration",
       // Options for Scalafix
       "-Wunused:imports",
     ),
@@ -115,7 +114,7 @@ lazy val root = project
       "com.typesafe.akka" %% "akka-stream" % "2.8.8",
       "com.tngtech.archunit" % "archunit" % "1.4.0",
 
-      // JSON dependencie
-      "io.circe" %% "circe-parser" % "0.14.5",
+      // JSON dependencie. Required for forwarding JSON responses
+      "io.circe" %% "circe-parser" % "0.14.12",
     ),
   )

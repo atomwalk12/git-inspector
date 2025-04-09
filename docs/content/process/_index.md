@@ -1,8 +1,8 @@
 ---
 author: "Razvan"
-title: "Sprint 2"
+title: "Process Documentation"
 date: "2025-03-31"
-description: "Design patterns and code indexing (March 31-April 6, 2025)"
-aliases: ["sprint2"]
-summary: "The second sprint focused on design patterns and code indexing."
+description: "This page documents the development process of the project."
+aliases: ["process"]
+summary: "The development process of the project."
 ---

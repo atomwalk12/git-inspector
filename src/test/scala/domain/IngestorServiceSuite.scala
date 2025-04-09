@@ -5,14 +5,15 @@ import com.typesafe.config.Config
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
 import dev.langchain4j.model.scoring.ScoringModel
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
-import gitinsp.chatpipeline.RAGComponentFactory
 import gitinsp.domain.IngestorService
+import gitinsp.domain.models.CodeFile
+import gitinsp.domain.models.IngestorServiceExtensions.ingest
+import gitinsp.domain.models.Language
+import gitinsp.domain.models.RepositoryWithLanguages
+import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
+import gitinsp.infrastructure.factories.RAGComponentFactory
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory
-import gitinsp.utils.GitDocument
-import gitinsp.utils.GitRepository
-import gitinsp.utils.IngestorServiceExtensions.ingest
-import gitinsp.utils.Language
 import io.qdrant.client.QdrantClient
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.doReturn
@@ -30,6 +31,8 @@ import java.util.Collections as C
 
 import scala.concurrent.ExecutionContext
 import scala.util.Success
+
+import RepositoryWithLanguages.detectLanguages
 
 class CacheServiceSuite
     extends AnyFlatSpec
@@ -52,7 +55,7 @@ class CacheServiceSuite
   val mockIngestor       = mock[EmbeddingStoreIngestor]
 
   override def beforeAll(): Unit =
-    // Setup spies and mocks
+    // Setup behavior
     doReturn(mockQdrantClient).when(mockFactory).createQdrantClient()
     doReturn(F.immediateFuture(C.emptyList[String]())).when(mockQdrantClient).listCollectionsAsync()
     doReturn(scoringModel).when(mockFactory).createScoringModel()
@@ -61,6 +64,7 @@ class CacheServiceSuite
     doReturn(mockIngestor).when(mockFactory).createIngestor(any, any, any, any)
     doReturn(Success(())).when(mockFactory).createCollection(any(), any(), any())
 
+    // Setup the config
     when(config.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
     when(config.getString("gitinsp.code-embedding.model")).thenReturn("nomic-embed-text")
     when(config.getString("gitinsp.text-embedding.model")).thenReturn("nomic-embed-text")
@@ -72,26 +76,26 @@ class CacheServiceSuite
     when(config.getInt("gitinsp.text-embedding.chunk-overlap")).thenReturn(200)
     when(config.getInt("gitinsp.qdrant.dimension")).thenReturn(768)
 
-  "IngestorService" should "create an ingestor for markdown" in:
-    // Data
-    val url        = "https://github.com/gitinsp/gitinsp"
-    val languages  = "md,scala"
-    val doc1       = GitDocument("Hello, world!", Language.MARKDOWN, "README.md")
-    val doc2       = GitDocument("Hello, world!", Language.SCALA, "README.scala")
-    val docs       = List(doc1, doc2)
-    val repository = GitRepository(url, GitRepository.detectLanguages(languages), docs)
+  "IngestorService" should "create an ingestor for text and code" in:
+    // Data setup
+    val url        = URL("https://github.com/gitinsp/gitinsp")
+    val languages  = "py,md,scala,py"
+    val doc1       = CodeFile("Hello, world!", Language.MARKDOWN, "README.md")
+    val doc2       = CodeFile("Hello, world!", Language.SCALA, "README.scala")
+    val doc3       = CodeFile("Hello, world!", Language.PYTHON, "README.py")
+    val docs       = List(doc1, doc2, doc3)
+    val repository = RepositoryWithLanguages(url, detectLanguages(languages), docs)
 
     // Mocks
     val mockCacheService = spy(CacheService(mockFactory))
 
     // Execute
-    val ingestorService = IngestorService(mockCacheService, config)
+    val ingestorService = IngestorService(mockCacheService, config, IngestionStrategyFactory)
     ingestorService.ingest(repository)
 
-    // Verify
-    repository.indexNames.foreach {
-      index =>
-        val strategy = IngestionStrategyFactory.createStrategy("default", index.language, config)
-
-        verify(mockIngestor, times(1)).ingest(repository, index.language) // once for each language
+    // Execute and verify
+    repository.languages.zip(repository.indexNames).foreach {
+      case (language, index) =>
+        val strategy = IngestionStrategyFactory.createStrategy("default", language, config)
+        verify(mockIngestor, times(1)).ingest(repository, language)
     }
