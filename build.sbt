@@ -88,7 +88,6 @@ lazy val root = project
       "-new-syntax",
       "-indent",
       "-source:3.3",
-      "-source 3.0-migration",
       // Options for Scalafix
       "-Wunused:imports",
     ),

@@ -34,7 +34,8 @@ import scala.concurrent.duration.DurationInt
 import scala.util.Failure
 import scala.util.Success
 
-class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with BeforeAndAfterAll
+class UsingExternalServicesSuite extends AnyFlatSpec with Matchers with MockitoSugar
+    with BeforeAndAfterAll
     with BeforeAndAfterEach:
 
   // Setup dependencies

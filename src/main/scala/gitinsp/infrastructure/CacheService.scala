@@ -14,7 +14,6 @@ import gitinsp.domain.models.Given.given_Conversion_AIServiceURL_String
 import gitinsp.domain.models.Language
 import gitinsp.domain.models.QdrantURL
 import gitinsp.domain.models.RepositoryWithCategories
-import gitinsp.infrastructure.factories.RAGComponentFactory as RAGComponentFactoryImpl
 import io.grpc.StatusRuntimeException
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.grpc.Collections.Distance
@@ -28,22 +27,13 @@ import scala.util.Success
 import scala.util.Try
 
 object CacheService:
-  def apply(): CacheService =
-    new CacheServiceImpl()
-
   def apply(factory: RAGComponentFactory): CacheService =
     // A constructor used to simplify testing
     new CacheServiceImpl(factory)
 
-  private class CacheServiceImpl(providedFactory: Option[RAGComponentFactory]) extends CacheService:
-
-    // Default constructor
-    def this() = this(None)
-    def this(factory: RAGComponentFactory) = this(Some(factory))
-
+  private class CacheServiceImpl(override val factory: RAGComponentFactory) extends CacheService:
     // Data fields
-    val config: Config               = ConfigFactory.load()
-    val factory: RAGComponentFactory = providedFactory.getOrElse(RAGComponentFactoryImpl(config))
+    val config: Config = ConfigFactory.load()
 
     // The Triemap is a caching structure that is thread safe
     private val aiServiceCache: TrieMap[AIServiceURL, Assistant] = TrieMap.empty

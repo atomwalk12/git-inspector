@@ -2,6 +2,8 @@ import gradio as gr
 import requests
 import json
 from dataclasses import dataclass
+from requests.exceptions import RequestException
+from json.decoder import JSONDecodeError
 
 # Constants
 TIMEOUT = 120000
@@ -56,10 +58,10 @@ class ChatInterface:
                     yield collected_message
 
             return collected_message
-        except requests.exceptions.RequestException as e:
+        except RequestException as e:
             print(f"Request failed: {e}")
             yield "Error: Could not connect to chat service."
-        except json.JSONDecodeError as e:
+        except JSONDecodeError as e:
             print(f"JSON decode error: {e}")
             yield "Error: Could not decode chat service response."
 
@@ -72,7 +74,7 @@ class ChatInterface:
                 params={"link": link, "format": format_type, "extension": extension},
             )
             return response.text
-        except requests.exceptions.RequestException as e:
+        except RequestException as e:
             return f"Error: {str(e)}"
 
     def generate_index(self, link, extensions):
@@ -102,8 +104,10 @@ class ChatInterface:
                 )
             else:
                 return f"Error {response.status_code}: {response.text}", None
+        except RequestException as e:
+            return f"Error: {str(e)}"
         except Exception as e:
-            return f"Error: {str(e)}", None
+            return f"Error: {str(e)}"
 
 
     def load_index_from_server(self):
@@ -116,7 +120,7 @@ class ChatInterface:
                 return [(idx, idx) if idx else ("No Index", "") for idx in indexes]
             else:
                 return []
-        except requests.exceptions.RequestException:
+        except RequestException:
             return []
 
     def load_index(self):

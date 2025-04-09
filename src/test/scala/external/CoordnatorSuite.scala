@@ -6,6 +6,7 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.Sink
 import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
+import dev.langchain4j.model.scoring.ScoringModel
 import gitinsp.application.LangchainCoordinator
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
@@ -13,8 +14,11 @@ import gitinsp.domain.Pipeline
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
 import gitinsp.infrastructure.GithubWrapperService
+import gitinsp.infrastructure.factories.RAGComponentFactoryImpl
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory
 import gitinsp.tests.ExternalService
+import org.mockito.Mockito.doReturn
+import org.mockito.Mockito.spy
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
@@ -27,17 +31,21 @@ import scala.concurrent.duration.DurationInt
 import scala.util.Failure
 import scala.util.Success
 
-class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with BeforeAndAfterAll
-    with BeforeAndAfterEach with LazyLogging:
+class CoordinatorSuite extends AnyFlatSpec with Matchers with MockitoSugar with BeforeAndAfterAll
+    with BeforeAndAfterEach
+    with LazyLogging:
 
   val config                                      = ConfigFactory.load()
   implicit val system: ActorSystem                = ActorSystem("pipeline-test-system")
   implicit val materializer: Materializer         = Materializer(system)
   implicit val executionContext: ExecutionContext = system.dispatcher
 
-  val gitWrapper      = GithubWrapperService()
-  val chatService     = ChatService(prettyFmt = true, ContentService)
-  val cacheService    = CacheService()
+  val gitWrapper       = GithubWrapperService()
+  val chatService      = ChatService(prettyFmt = true, ContentService)
+  val factory          = spy(RAGComponentFactoryImpl(config))
+  val mockScoringModel = mock[ScoringModel]
+  doReturn(mockScoringModel).when(factory).createScoringModel()
+  val cacheService    = CacheService(factory)
   val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
   val pipeline        = Pipeline(chatService, cacheService, ingestorService, gitWrapper)
   val coordinator     = LangchainCoordinator(pipeline, gitWrapper, prettyFmt = true)

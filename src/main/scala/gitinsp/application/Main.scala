@@ -13,6 +13,7 @@ import gitinsp.domain.Pipeline
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
 import gitinsp.infrastructure.GithubWrapperService
+import gitinsp.infrastructure.factories.RAGComponentFactoryImpl
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory
 import io.circe.*
 import io.circe.parser.*
@@ -36,7 +37,8 @@ object GitInspector extends LazyLogging:
 
   def API(prettyFmt: Boolean): Unit =
     // Services
-    val cacheService    = CacheService()
+    val factory         = RAGComponentFactoryImpl(config)
+    val cacheService    = CacheService(factory)
     val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
     val gitService      = GithubWrapperService()
     val chatService     = ChatService(prettyFmt, ContentService)
