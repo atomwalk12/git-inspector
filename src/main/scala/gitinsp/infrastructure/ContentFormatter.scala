@@ -6,6 +6,7 @@ import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.rag.query.Query
 import dev.langchain4j.store.embedding.filter.Filter
 import dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey
+import gitinsp.utils.Category
 import gitinsp.utils.Language
 
 import java.util.Locale
@@ -14,7 +15,7 @@ import java.util.Locale
   * plain text to HTML for display in web interfaces.
   */
 trait ContentFormatter:
-  /** Format content as HTML with proper styling
+  /** Format content as HTML with proper styling.
     *
     * @param content The plain text content to format
     * @return HTML formatted string
@@ -44,7 +45,9 @@ trait ContentFormatter:
   def docTemplate(docNumber: Int, text: String): String
 
 object ContentFormatter extends ContentFormatter:
+
   override def toHtml(content: String): String =
+    // Used to improve readability of the retrieved content in the UI
     val htmlSafeContent = content.replace("\n", "<br>")
     s"<pre style=\"white-space: pre-wrap;\">$htmlSafeContent</pre>"
 
@@ -56,6 +59,8 @@ object ContentFormatter extends ContentFormatter:
     config: Config,
     modelRouter: OllamaChatModel,
   ): Filter =
+    // This must return null because the Java backend expects this
+    // when no filter should be applied.
     Option
       .when(config.getBoolean("gitinsp.rag.use-dynamic-filter")) {
         dynamicFilter(query, config, modelRouter)
@@ -81,14 +86,21 @@ object ContentFormatter extends ContentFormatter:
         |Do not include any other text in your response.""".stripMargin
 
     def createFilter(extension: String): Option[Filter] = extension match
-      case "py"    => Some(metadataKey(Language.CODE.value).isEqualTo("py"))
-      case "java"  => Some(metadataKey(Language.CODE.value).isEqualTo("java"))
-      case "cpp"   => Some(metadataKey(Language.CODE.value).isEqualTo("cpp"))
-      case "scala" => Some(metadataKey(Language.CODE.value).isEqualTo("scala"))
-      case _       => Option.empty[Filter]
+      // Filter to retrieve only specific code files when multiple file types exist in the index
+      case Language.PYTHON.value =>
+        Some(metadataKey(Category.CODE.value).isEqualTo(Language.PYTHON.value))
+      case Language.JAVA.value =>
+        Some(metadataKey(Category.CODE.value).isEqualTo(Language.JAVA.value))
+      case Language.CPP.value =>
+        Some(metadataKey(Category.CODE.value).isEqualTo(Language.CPP.value))
+      case Language.SCALA.value =>
+        Some(metadataKey(Category.CODE.value).isEqualTo(Language.SCALA.value))
+      case _ => Option.empty[Filter]
 
     def parseResponse(response: String): Option[Filter] =
       val trimmedResponse = response.trim.toLowerCase(Locale.ROOT)
+
+      // Here a model classifies the query and ensures that code of a specific language is retrieved
       trimmedResponse match
         case "no"                       => Option.empty[Filter]
         case r if r.startsWith("yes: ") => createFilter(r.substring(5).trim)
@@ -99,6 +111,7 @@ object ContentFormatter extends ContentFormatter:
     val prompt = PromptTemplate.from(promptTemplate)
       .apply(query.metadata().userMessage().contents())
 
+    // This retrieves the response from the model
     val response = modelRouter
       .chat(prompt.toUserMessage())
       .aiMessage()
