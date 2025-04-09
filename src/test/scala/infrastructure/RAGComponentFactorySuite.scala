@@ -29,7 +29,6 @@ import gitinsp.infrastructure.factories.RouterWithStrategy
 import gitinsp.infrastructure.strategies.ConditionalQueryStrategy
 import gitinsp.infrastructure.strategies.DefaultQueryStrategy
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory
-import gitinsp.temp.analysis.AnalysisContext
 import io.qdrant.client.QdrantClient
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.verify
@@ -57,18 +56,6 @@ class AnalysisTest
     // Config mock setup
     when(mockConfig.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
     when(mockConfig.getString("gitinsp.models.default-model")).thenReturn("llama3.1")
-
-  // TODO: this might prove to be redundant
-  "The Analysis Context" should "be able to analyze code" in:
-    val mockAssistant = mock[Assistant]
-    val analysis      = AnalysisContext.withCodeAnalysisStrategy(mockAssistant)
-    analysis.strategy.map(_.strategyName) should be(Some("Code Analysis"))
-
-  // TODO: this as well
-  it should "be able to analyze natural language" in:
-    val mockAssistant = mock[Assistant]
-    val analysis      = AnalysisContext.withNaturalLanguageStrategy(mockAssistant)
-    analysis.strategy.map(_.strategyName) should be(Some("Markdown Analysis"))
 
   "The RAG Component Factory" should "be able to create a streaming chat model" in:
     val mockFactory = mock[RAGComponentFactoryImpl]
