@@ -1,16 +1,18 @@
 package gitinsp.domain
-
-import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import akka.stream.OverflowStrategy
 import akka.stream.scaladsl.Source
+import dev.langchain4j.rag.content.Content
 import gitinsp.infrastructure.ContentFormatter
 import gitinsp.utils.Assistant
+import gitinsp.utils.StreamedResponse
+import gitinsp.utils.TextSegment
+
+import java.util.List
 
 import scala.concurrent.ExecutionContext
 import scala.jdk.CollectionConverters.ListHasAsScala
-
 object ChatService:
   type AS = ActorSystem
   type M  = Materializer
@@ -28,18 +30,19 @@ object ChatService:
   private class ChatServiceImpl(pretty: Boolean, val fmt: ContentFormatter.type)(using AS, M, EC)
       extends ChatService:
 
-    override def chat(msg: String, ai: Assistant): Source[String, NotUsed] =
+    override def chat(msg: String, ai: Assistant): StreamedResponse =
       streamChat(msg, ai)
 
-    def streamChat(msg: String, ai: Assistant): Source[String, NotUsed] =
+    def streamChat(msg: String, ai: Assistant): StreamedResponse =
       val (q, src) = Source
         .queue[String](100, OverflowStrategy.backpressure)
         .preMaterialize()
 
       ai.chat(msg)
         .onRetrieved {
-          resp =>
-            resp.asScala.zipWithIndex.foreach {
+          // This is triggered when data is retrieved from the index
+          (resp: List[TextSegment]) =>
+            resp.asScala.toList.zipWithIndex.foreach {
               (content, idx) =>
                 val text      = content.textSegment().text()
                 val tmpl      = fmt.docTemplate(idx + 1, text)
@@ -55,4 +58,4 @@ object ChatService:
       src
 
 trait ChatService:
-  def chat(message: String, aiService: Assistant): Source[String, NotUsed]
+  def chat(message: String, aiService: Assistant): StreamedResponse

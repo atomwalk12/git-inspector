@@ -32,7 +32,7 @@ trait QueryRoutingStrategy:
   */
 class ConditionalQueryStrategy(modelRouter: OllamaChatModel) extends QueryRoutingStrategy:
   private val PROMPT_TEMPLATE = PromptTemplate.from(
-    "Did the user ask explicitly not to query the RAG index??" +
+    "Did the user ask to avoid querying the vector database?" +
       "Answer only 'yes' or 'no'. " +
       "Query: {{it}}",
   )
@@ -46,7 +46,7 @@ class ConditionalQueryStrategy(modelRouter: OllamaChatModel) extends QueryRoutin
 
     // This basically allows to bypass fetching the RAG index if the modelk asked explicitly not to
     // Check for standalone word "no"
-    if aiMessage.text().toLowerCase(Locale.ROOT).matches(".*\\bno\\b.*") then
+    if aiMessage.text().toLowerCase(Locale.ROOT).matches(".*\\byes\\b.*") then
       java.util.Collections.emptyList()
     else
       retrievers.asJava

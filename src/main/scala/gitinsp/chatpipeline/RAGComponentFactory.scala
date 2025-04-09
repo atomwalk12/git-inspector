@@ -303,7 +303,7 @@ class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with L
     val chunkSize    = config.getInt(s"gitinsp.${language.category}-embedding.chunk-size")
     val chunkOverlap = config.getInt(s"gitinsp.${language.category}-embedding.chunk-overlap")
 
-    logger.debug(s"Creating ingestor for ${language.value} ")
+    logger.debug(s"Creating ingestor for ${language} ")
     logger.debug(s"Chunk size $chunkSize and overlap $chunkOverlap")
 
     EmbeddingStoreIngestor
