@@ -3,23 +3,24 @@ package gitinsp.domain
 import akka.actor.ActorSystem
 import akka.stream.Materializer
 import com.typesafe.scalalogging.LazyLogging
-import gitinsp.infrastructure.CacheService
-import gitinsp.utils.AIServiceURL
-import gitinsp.utils.Assistant
-import gitinsp.utils.Category
-import gitinsp.utils.Language
-import gitinsp.utils.QdrantURL
-import gitinsp.utils.RepositoryWithLanguages
-import gitinsp.utils.StreamedResponse
-import gitinsp.utils.URL
+import gitinsp.domain.interfaces.application.ChatService
+import gitinsp.domain.interfaces.application.IngestorService
+import gitinsp.domain.interfaces.application.Pipeline
+import gitinsp.domain.interfaces.infrastructure.CacheService
+import gitinsp.domain.interfaces.infrastructure.GithubWrapperService
+import gitinsp.domain.models.AIServiceURL
+import gitinsp.domain.models.Assistant
+import gitinsp.domain.models.Category
+import gitinsp.domain.models.Language
+import gitinsp.domain.models.QdrantURL
+import gitinsp.domain.models.RepositoryWithLanguages
+import gitinsp.domain.models.StreamedResponse
+import gitinsp.domain.models.URL
 
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
 object Pipeline extends LazyLogging:
-  def apply(using s: ActorSystem, m: Materializer, e: ExecutionContext): Pipeline =
-    new PipelineImpl(ChatService(), CacheService(), IngestorService(), GithubWrapperService())
-
   def apply(cs: ChatService, cas: CacheService, is: IngestorService, ws: GithubWrapperService)(using
     ActorSystem,
     Materializer,
@@ -90,12 +91,3 @@ object Pipeline extends LazyLogging:
       index match
         case Some(index) => cacheService.getAIService(index)
         case None        => cacheService.getAIService(AIServiceURL.default)
-
-trait Pipeline:
-  def chat(message: String, aiService: Assistant): StreamedResponse
-  def generateIndex(repository: RepositoryWithLanguages, regenerate: Boolean): Try[Unit]
-  def regenerateIndex(repository: RepositoryWithLanguages): Try[Unit]
-  def listIndexes(): Try[List[AIServiceURL]]
-  def fetchRepository(url: URL, languages: List[Language]): Try[RepositoryWithLanguages]
-  def deleteIndex(indexName: URL, category: Category): Try[Unit]
-  def getAIService(index: Option[AIServiceURL]): Try[Assistant]

@@ -5,15 +5,15 @@ import com.typesafe.config.Config
 import dev.langchain4j.model.ollama.OllamaEmbeddingModel
 import dev.langchain4j.model.scoring.ScoringModel
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
-import gitinsp.chatpipeline.RAGComponentFactory
 import gitinsp.domain.IngestorService
+import gitinsp.domain.models.CodeFile
+import gitinsp.domain.models.IngestorServiceExtensions.ingest
+import gitinsp.domain.models.Language
+import gitinsp.domain.models.RepositoryWithLanguages
+import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
+import gitinsp.infrastructure.factories.RAGComponentFactory
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory
-import gitinsp.utils.CodeFile
-import gitinsp.utils.IngestorServiceExtensions.ingest
-import gitinsp.utils.Language
-import gitinsp.utils.RepositoryWithLanguages
-import gitinsp.utils.URL
 import io.qdrant.client.QdrantClient
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.doReturn
@@ -90,7 +90,7 @@ class CacheServiceSuite
     val mockCacheService = spy(CacheService(mockFactory))
 
     // Execute
-    val ingestorService = IngestorService(mockCacheService, config)
+    val ingestorService = IngestorService(mockCacheService, config, IngestionStrategyFactory)
     ingestorService.ingest(repository)
 
     // Execute and verify

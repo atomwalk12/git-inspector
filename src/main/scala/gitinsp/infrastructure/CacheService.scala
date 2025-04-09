@@ -2,18 +2,19 @@ package gitinsp.infrastructure
 
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
-import com.typesafe.scalalogging.LazyLogging
 import dev.langchain4j.model.scoring.ScoringModel
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor as Ingestor
-import gitinsp.chatpipeline.RAGComponentFactory
-import gitinsp.infrastructure.strategies.IngestionStrategy
-import gitinsp.utils.AIServiceURL
-import gitinsp.utils.Assistant
-import gitinsp.utils.Category
-import gitinsp.utils.Given.given_Conversion_AIServiceURL_String
-import gitinsp.utils.Language
-import gitinsp.utils.QdrantURL
-import gitinsp.utils.RepositoryWithCategories
+import gitinsp.domain.interfaces.infrastructure.CacheService
+import gitinsp.domain.interfaces.infrastructure.IngestionStrategy
+import gitinsp.domain.interfaces.infrastructure.RAGComponentFactory
+import gitinsp.domain.models.AIServiceURL
+import gitinsp.domain.models.Assistant
+import gitinsp.domain.models.Category
+import gitinsp.domain.models.Given.given_Conversion_AIServiceURL_String
+import gitinsp.domain.models.Language
+import gitinsp.domain.models.QdrantURL
+import gitinsp.domain.models.RepositoryWithCategories
+import gitinsp.infrastructure.factories.RAGComponentFactory as RAGComponentFactoryImpl
 import io.grpc.StatusRuntimeException
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.grpc.Collections.Distance
@@ -42,7 +43,7 @@ object CacheService:
 
     // Data fields
     val config: Config               = ConfigFactory.load()
-    val factory: RAGComponentFactory = providedFactory.getOrElse(RAGComponentFactory(config))
+    val factory: RAGComponentFactory = providedFactory.getOrElse(RAGComponentFactoryImpl(config))
 
     // The Triemap is a caching structure that is thread safe
     private val aiServiceCache: TrieMap[AIServiceURL, Assistant] = TrieMap.empty
@@ -51,7 +52,7 @@ object CacheService:
     override def qdrantClient: QdrantClient = _qdrantClient
 
     val scoringModel: ScoringModel = factory.createScoringModel()
-    val fmt                        = ContentFormatter
+    val fmt                        = ContentService
 
     def initializeAIServices(repository: Option[RepositoryWithCategories]): Assistant =
       // Create the streaming model
@@ -189,15 +190,3 @@ object CacheService:
             logger.warn(s"Operation interrupted while listing collections: ${e.getMessage}")
             Failure(e)
         }
-
-trait CacheService extends LazyLogging:
-  def qdrantClient: QdrantClient // Todo: remove this
-  def listCollections(): Try[List[String]]
-  def initializeAIServices(repository: Option[RepositoryWithCategories]): Assistant
-  def getIngestor(index: QdrantURL, language: Language, strategy: IngestionStrategy): Ingestor
-  def factory: RAGComponentFactory
-  def createCollection(name: String, distance: Distance): Try[Unit]
-  def getAIService(index: AIServiceURL): Try[Assistant]
-  def deleteCollection(indexName: QdrantURL): Try[Unit]
-  def deleteAIService(indexName: AIServiceURL): Try[Unit]
-  def delete(index: QdrantURL): Try[Unit]

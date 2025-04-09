@@ -1,31 +1,31 @@
 package gitinsp.domain
 
 import com.typesafe.config.Config
-import com.typesafe.config.ConfigFactory
-import gitinsp.infrastructure.CacheService
-import gitinsp.infrastructure.strategies.IngestionStrategyFactory
-import gitinsp.utils.Given.given_Conversion_QdrantURL_String
-import gitinsp.utils.IngestorServiceExtensions.ingest
-import gitinsp.utils.QdrantURL
-import gitinsp.utils.RepositoryWithLanguages
+import gitinsp.domain.interfaces.application.IngestorService
+import gitinsp.domain.interfaces.infrastructure.CacheService
+import gitinsp.domain.interfaces.infrastructure.IngestionStrategyFactory
+import gitinsp.domain.models.Given.given_Conversion_QdrantURL_String
+import gitinsp.domain.models.IngestorServiceExtensions.ingest
+import gitinsp.domain.models.QdrantURL
+import gitinsp.domain.models.RepositoryWithLanguages
 import io.qdrant.client.grpc.Collections
 import io.qdrant.client.grpc.Collections.Distance.Cosine
 
 import scala.util.Try
 
-trait IngestorService:
-  def ingest(repository: RepositoryWithLanguages): Unit
-  def deleteRepository(repository: RepositoryWithLanguages): Unit
-  def listCollections(): Try[List[String]]
-
 object IngestorService:
-  def apply(cache: CacheService, config: Config): IngestorService =
-    new IngestorServiceImpl(cache, config)
+  def apply(
+    cache: CacheService,
+    config: Config,
+    strategyFactory: IngestionStrategyFactory,
+  ): IngestorService =
+    new IngestorServiceImpl(cache, config, strategyFactory)
 
-  def apply(): IngestorService =
-    new IngestorServiceImpl(CacheService(), ConfigFactory.load())
-
-  private class IngestorServiceImpl(cache: CacheService, config: Config) extends IngestorService:
+  private class IngestorServiceImpl(
+    cache: CacheService,
+    config: Config,
+    strategyFactory: IngestionStrategyFactory,
+  ) extends IngestorService:
     // Fields
     val client = cache.qdrantClient
 
@@ -41,7 +41,7 @@ object IngestorService:
       // Create ingestor and store documents
       repository.languages.zip(repository.indexNames).foreach {
         case (language, index) =>
-          val strategy = IngestionStrategyFactory.createStrategy("default", language, config)
+          val strategy = strategyFactory.createStrategy("default", language, config)
           val ingestor = cache.getIngestor(index, language, strategy)
           ingestor.ingest(repository, language)
       }

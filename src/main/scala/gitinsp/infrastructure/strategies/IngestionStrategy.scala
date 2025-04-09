@@ -4,14 +4,11 @@ import com.typesafe.config.Config
 import dev.langchain4j.data.document.Document
 import dev.langchain4j.data.document.DocumentSplitter
 import dev.langchain4j.data.segment.TextSegment
-import gitinsp.utils.Category
-import gitinsp.utils.Language
-import gitinsp.utils.RecursiveCharacterTextSplitter
-
-trait IngestionStrategy:
-  def textSegmentTransformer(textSegment: TextSegment): TextSegment
-  def documentTransformer(document: Document): Document
-  def documentSplitter(lang: Language, chunkSize: Int, overlap: Int): DocumentSplitter
+import gitinsp.domain.interfaces.infrastructure.IngestionStrategy
+import gitinsp.domain.interfaces.infrastructure.IngestionStrategyFactory
+import gitinsp.domain.models.Category
+import gitinsp.domain.models.Language
+import gitinsp.infrastructure.parser.RecursiveCharacterTextSplitter
 
 object IngestionStrategy:
   def apply(lang: Language, config: Config): IngestionStrategy =
@@ -45,7 +42,7 @@ object IngestionStrategy:
         chunkOverlap = overlap,
       )
 
-object IngestionStrategyFactory:
+object IngestionStrategyFactory extends IngestionStrategyFactory:
   def createStrategy(strategyType: String, lang: Language, config: Config): IngestionStrategy =
     strategyType.toLowerCase(java.util.Locale.ROOT) match
       case "default" => IngestionStrategy(lang, config)

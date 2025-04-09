@@ -3,33 +3,23 @@ package gitinsp.application
 import akka.NotUsed
 import akka.actor.ActorSystem
 import akka.http.scaladsl.Http
-import akka.http.scaladsl.marshalling.ToResponseMarshallable
-import akka.http.scaladsl.marshalling.sse.EventStreamMarshalling.*
 import akka.http.scaladsl.model.sse.ServerSentEvent
-import akka.http.scaladsl.server.Directives.*
 import akka.http.scaladsl.server.Route
 import akka.stream.Materializer
 import akka.stream.scaladsl.Source
-import com.typesafe.config.ConfigFactory
 import com.typesafe.scalalogging.LazyLogging
-import gitinsp.domain.ChatService
-import gitinsp.domain.GithubWrapperService
-import gitinsp.domain.IngestorService
-import gitinsp.domain.Pipeline as PipelineService
-import gitinsp.infrastructure.CacheService
-import gitinsp.utils.Category
-import gitinsp.utils.RepositoryWithLanguages
-import gitinsp.utils.URL
+import gitinsp.domain.interfaces.application.Pipeline
+import gitinsp.domain.interfaces.infrastructure.GithubWrapperService
+import gitinsp.domain.models.Category
+import gitinsp.domain.models.RepositoryWithLanguages
+import gitinsp.domain.models.URL
 import io.circe.*
-import io.circe.parser.*
 import io.circe.syntax.*
 
 import scala.concurrent.ExecutionContext
-import scala.concurrent.duration.DurationInt
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
-
 trait LangchainCoordinator:
   // Aliases
   type StreamingResponse = Source[ServerSentEvent, NotUsed]
@@ -43,23 +33,19 @@ trait LangchainCoordinator:
   def start(routes: Route): Unit
 
 object LangchainCoordinator:
-  def apply(prettyFmt: Boolean): LangchainCoordinator = new LangchainCoordinatorImpl(prettyFmt)
+  def apply(pipeline: Pipeline, gitWrapper: GithubWrapperService, prettyFmt: Boolean)(using
+    system: ActorSystem,
+    materializer: Materializer,
+    executionContext: ExecutionContext,
+  ): LangchainCoordinator = new LangchainCoordinatorImpl(pipeline, gitWrapper, prettyFmt)
 
-  private class LangchainCoordinatorImpl(prettyFmt: Boolean) extends LangchainCoordinator
+  private class LangchainCoordinatorImpl(using
+    system: ActorSystem,
+    materializer: Materializer,
+    executionContext: ExecutionContext,
+  )(pipeline: Pipeline, gitService: GithubWrapperService, prettyFmt: Boolean)
+      extends LangchainCoordinator
       with LazyLogging:
-
-    // Config
-    val config                                      = ConfigFactory.load()
-    implicit val system: ActorSystem                = ActorSystem("langchain-coordinator", config)
-    implicit val materializer: Materializer         = Materializer(system)
-    implicit val executionContext: ExecutionContext = system.dispatcher
-
-    // Services
-    val cacheService    = CacheService()
-    val ingestorService = IngestorService()
-    val gitService      = GithubWrapperService()
-    val chatService     = ChatService(prettyFmt = prettyFmt)
-    val pipeline        = PipelineService(chatService, cacheService, ingestorService, gitService)
 
     override def listIndexes(): Try[String] =
       pipeline.listIndexes().map(
@@ -156,57 +142,3 @@ object LangchainCoordinator:
 
     override def start(routes: Route): Unit =
       Http().newServerAt("localhost", 8080).bind(routes)
-
-object GitInspector extends LazyLogging:
-
-  @main def pythonFrontend(): Unit =
-    API(prettyFmt = true)
-
-  @main def scalaFrontend(): Unit =
-    API(prettyFmt = false)
-
-  def API(prettyFmt: Boolean): Unit =
-    // Config
-    val langchainCoordinator = LangchainCoordinator(prettyFmt)
-    val config               = ConfigFactory.load()
-
-    // Used for listing current indexes
-    val listIndexes: Route = path("list_indexes"):
-      get:
-        complete:
-          langchainCoordinator.listIndexes()
-
-    // Used for chatting with the AI
-    val chat: Route = path("chat"):
-      get:
-        parameters("msg", "indexName".?): (msg, indexNameOpt) =>
-          complete:
-            langchainCoordinator.chat(msg, indexNameOpt)
-
-    // Used for generating an index
-    val generateIndex: Route = path("generate"):
-      withRequestTimeout(config.getInt("gitinsp.request.timeout").seconds):
-        post:
-          formFields("data"): (data) =>
-            decode[Map[String, String]](data) match
-              case Right(json) =>
-                val repoUrl   = json("indexName")
-                val languages = json("extensions")
-                complete:
-                  langchainCoordinator.generateIndex(repoUrl, languages)
-              case Left(error) =>
-                complete(s"Error parsing data: ${error.getMessage}")
-
-    // Used for fetching a repository
-    val fetchRepository: Route = path("fetch"):
-      get:
-        parameters("link", "format", "extension"): (link, format, extension) =>
-          complete {
-            langchainCoordinator.fetchRepository(link, format, extension)
-          }
-
-    // Setup the routes
-    val combinedRoutes = listIndexes ~ chat ~ generateIndex ~ fetchRepository
-
-    // Start the HTTP server
-    langchainCoordinator.start(combinedRoutes)
