@@ -1,3 +1,16 @@
+## [1.5.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.4.0...v1.5.0) (2025-04-09)
+
+### Features
+
+* **langchain-coordinator:** implement LangchainCoordinator for managing AI interactions ([eed65c4](https://github.com/atomwalk12/PPS-22-git-insp/commit/eed65c4669762e2b032d946535ab8433f02d08a6))
+* **language-management:** introduce Category enum, separating coding languages from their categories ([d3632d6](https://github.com/atomwalk12/PPS-22-git-insp/commit/d3632d63eb1453cea065303c3743a0735c546cef))
+* **refactor:** reorganize the architecture services to strictly follow the layered approach defined in the documentation ([3750435](https://github.com/atomwalk12/PPS-22-git-insp/commit/375043568bb3aef7280c7ec7a363d0c08ab16003))
+* **tests:** add tests to assess the entire pipeline, including the API that interacts with the frontend. Includes integration tests. ([d35fd2d](https://github.com/atomwalk12/PPS-22-git-insp/commit/d35fd2d8edae7621be2bfbc38d53dabf46063076))
+
+### Bug Fixes
+
+* **github-integration:** improve GithubWrapperService and IngestorService for better repository fetching ([922a7d1](https://github.com/atomwalk12/PPS-22-git-insp/commit/922a7d199a0bf1abbb3a295b26ceed141d1f8c86))
+
 ## [1.4.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.3.1...v1.4.0) (2025-04-07)
 
 ### Features
