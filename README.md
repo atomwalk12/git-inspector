@@ -34,3 +34,10 @@ git lfs install
 # From the root directory
 git clone https://huggingface.co/jinaai/jina-reranker-v2-base-multilingual reranker/jina-reranker-v2-base-multilingual
 ```
+
+
+After restructuring, you can:
+Run the backend with: sbt backend/run
+Run the frontend with: sbt frontend/run
+Build backend JAR with: sbt backend/assembly
+Build frontend with: sbt frontend/fastLinkJS (development) or sbt frontend/fullLinkJS (production)
