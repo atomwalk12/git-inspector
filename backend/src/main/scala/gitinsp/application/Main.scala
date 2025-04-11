@@ -29,6 +29,10 @@ object GitInspector extends LazyLogging:
   implicit val materializer: Materializer         = Materializer(system)
   implicit val executionContext: ExecutionContext = system.dispatcher
 
+  // Traditional Java-style main method that SBT can find
+  def main(args: Array[String]): Unit =
+    scalaFrontend()
+
   @main def pythonFrontend(): Unit =
     API(prettyFmt = true)
 
