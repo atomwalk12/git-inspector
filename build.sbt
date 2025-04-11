@@ -103,7 +103,7 @@ lazy val backend = project
   .in(file("backend"))
   .settings(
     commonSettings,
-    scalaVersion := "3.6.4",
+    scalaVersion := scala3Version,
     name := "gitinsp-backend",
     // Explicitly set Test/fork to true for backend
     Test / fork := true,
@@ -139,9 +139,9 @@ lazy val frontend = project
   .enablePlugins(ScalaJSPlugin)
   .settings(
     commonSettings,
-    scalaVersion := "3.6.4",
+    scalaVersion := scala3Version,
     name := "gitinsp-frontend",
-    // Explicitly set Test/fork to false for frontend
+    // Explicitly set Test/fork to false for frontend. Required for Scala.js
     Test / fork := false,
     scalaJSUseMainModuleInitializer := true,
     Compile / mainClass := Some("gitinsp.GitInspectorFrontend"),
