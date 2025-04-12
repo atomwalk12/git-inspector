@@ -22,12 +22,12 @@ import dev.langchain4j.service.AiServices
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import dev.langchain4j.store.embedding.filter.Filter
 import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore
-import gitinsp.domain.QueryFilterService
 import gitinsp.domain.interfaces.infrastructure.IngestionStrategy
 import gitinsp.domain.interfaces.infrastructure.QueryRoutingStrategy
 import gitinsp.domain.interfaces.infrastructure.RAGComponentFactory
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.Language
+import gitinsp.infrastructure.QueryFilterService
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.QdrantGrpcClient
 import io.qdrant.client.grpc.Collections

@@ -1,4 +1,4 @@
-package gitinsp.domain
+package gitinsp.infrastructure
 
 import com.typesafe.config.Config
 import dev.langchain4j.model.input.PromptTemplate

@@ -25,5 +25,6 @@ object ChatModelFactoryProvider extends LazyLogging:
       case "gemini" => GeminiChatModelFactory(config)
       case "claude" => ClaudeFactoryProvider(config)
       case _ =>
-        logger.warn(s"Unknown provider '$provider', falling back to Ollama")
+        logger.warn(s"Unknown provider '$provider', falling back to Ollama. " +
+          s"Available providers are: ollama, gemini, claude")
         OllamaChatModelFactory(config)

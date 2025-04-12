@@ -4,6 +4,6 @@ import gitinsp.domain.models.RepositoryWithLanguages
 import scala.util.Try
 
 trait IngestorService:
-  def ingest(repository: RepositoryWithLanguages): Unit
-  def deleteRepository(repository: RepositoryWithLanguages): Unit
+  def ingest(repository: RepositoryWithLanguages): Try[Unit]
+  def deleteRepository(repository: RepositoryWithLanguages): Try[Unit]
   def listCollections(): Try[List[String]]

@@ -32,7 +32,7 @@ import scala.concurrent.duration.*
 import scala.jdk.CollectionConverters.*
 import scala.util.Try
 
-class FunctionRequirementsSuite extends AnyFeatureSpec with GivenWhenThen with MockitoSugar
+class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen with MockitoSugar
     with Matchers:
 
   // Setup test environment
@@ -391,11 +391,12 @@ class FunctionRequirementsSuite extends AnyFeatureSpec with GivenWhenThen with M
 
       Then("The keyword should be remembered")
       responseSource.isSuccess shouldBe true
-      responseSource.foreach {
+      responseSource.fold(
+        ex => fail(s"Expected success but got failure: $ex"),
         source =>
           // Convert Source[String, NotUsed] to String
           val result = Await.result(source.runWith(Sink.fold("")(_ + _)), 60.seconds)
-          result should include("apple")
-      }
+          result should include("apple"),
+      )
     }
   }

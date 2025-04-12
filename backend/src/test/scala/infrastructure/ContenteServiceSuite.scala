@@ -10,8 +10,8 @@ import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.rag.query.Metadata
 import dev.langchain4j.rag.query.Query
 import dev.langchain4j.store.embedding.filter.MetadataFilterBuilder.metadataKey
-import gitinsp.domain.QueryFilterService
 import gitinsp.infrastructure.ContentService
+import gitinsp.infrastructure.QueryFilterService
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.when

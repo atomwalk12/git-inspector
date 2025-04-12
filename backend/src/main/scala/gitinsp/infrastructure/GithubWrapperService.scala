@@ -52,7 +52,7 @@ object GithubWrapperService:
       }.recoverWith {
         // If the request fails...
         case ex =>
-          Failure(ex)
+          Failure(new Exception(s"Failed to fetch repository"))
       }
 
     private def getUrl(url: String, languages: List[Language], json: Boolean): String =
