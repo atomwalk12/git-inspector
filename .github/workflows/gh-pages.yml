@@ -59,17 +59,17 @@ jobs:
       - name: Generate ScalaDoc for the backend
         run: sbt backend/doc && echo "ScalaDoc generation successful" || (echo "ScalaDoc generation failed" && exit 1)
 
-      - name: Move ScalaDoc to docs/website/public/scaladoc
+      - name: Move ScalaDoc to docs/website/public/backend/scaladoc
         run: |
-          mkdir -p docs/website/public/scaladoc
+          mkdir -p docs/website/public/backend/scaladoc
           cp -r backend/target/scala-*/api/* docs/website/public/backend/scaladoc
 
       - name: Generate ScalaDoc for the frontend
         run: sbt frontend/doc && echo "ScalaDoc generation successful" || (echo "ScalaDoc generation failed" && exit 1)
 
-      - name: Move ScalaDoc to docs/website/public/scaladoc
+      - name: Move ScalaDoc to docs/website/public/frontend/scaladoc
         run: |
-          mkdir -p docs/website/public/scaladoc
+          mkdir -p docs/website/public/frontend/scaladoc
           cp -r frontend/target/scala-*/api/* docs/website/public/frontend/scaladoc
 
       - name: Generate Scoverage Report
