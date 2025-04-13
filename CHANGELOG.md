@@ -1,3 +1,11 @@
+## [1.6.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.5.0...v1.6.0) (2025-04-13)
+
+### Features
+
+* **acceptance-tests:** add acceptance tests evaluating all requirements from the specification document ([e70b950](https://github.com/atomwalk12/PPS-22-git-insp/commit/e70b9500b6d8b62f1469d943a45fe0a8b4bf60e2))
+* **cloud-services:** Enhance backend configuration to use a model factory that allows to switch model provider (i.e. ollama, gemini, clauide) ([16127e2](https://github.com/atomwalk12/PPS-22-git-insp/commit/16127e2a5f1db28da0ef503b767181f6cae9b420))
+* **tests:** add acceptance tests for both business requirements as well as user functional requirements ([3c371d0](https://github.com/atomwalk12/PPS-22-git-insp/commit/3c371d02633bd1af2638f8676b2eedeb058a691a))
+
 ## [1.5.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.4.0...v1.5.0) (2025-04-09)
 
 ### Features
