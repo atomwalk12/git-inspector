@@ -78,10 +78,10 @@ jobs:
           sbt clean coverage "testOnly -- -l gitinsp.tests.tags.ExternalService"
           sbt coverageReport && echo "Scoverage report generation successful" || (echo "Scoverage report generation failed" && exit 1)
 
-      - name: Move Scoverage Report to docs/website/public/coverage
+      - name: Move Scoverage Report to docs/website/public/backend/coverage
         run: |
-          mkdir -p ./docs/website/public/coverage
-          cp -r target/scala-*/scoverage-report/* docs/website/public/coverage
+          mkdir -p ./docs/website/public/backend/coverage
+          cp -r backend/target/scala-*/scoverage-report/* docs/website/public/backend/coverage
 
       - name: Install Hugo CLI
         run: |
