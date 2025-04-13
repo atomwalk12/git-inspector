@@ -17,4 +17,8 @@ To enable the citation footer, add the following to the front matter of the post
 
 ```md
 useCitationFooter: true
+
+{{< cite "DNN1" >}}
+{{< bibliography cited >}}
+
 ```

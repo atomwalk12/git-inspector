@@ -11,6 +11,8 @@ import gitinsp.domain.models.RepositoryWithLanguages
 import io.qdrant.client.grpc.Collections
 import io.qdrant.client.grpc.Collections.Distance.Cosine
 
+import scala.language.implicitConversions
+import scala.util.Failure
 import scala.util.Try
 
 object IngestorService:
@@ -29,7 +31,7 @@ object IngestorService:
     // Fields
     val client = cache.qdrantClient
 
-    override def ingest(repository: RepositoryWithLanguages): Unit =
+    override def ingest(repository: RepositoryWithLanguages): Try[Unit] =
       // Get all collections
       val collections = listCollections().getOrElse(List.empty).map(QdrantURL(_))
 
@@ -39,21 +41,31 @@ object IngestorService:
         .foreach(index => cache.createCollection(index, Cosine))
 
       // Create ingestor and store documents
-      repository.languages.zip(repository.indexNames).foreach {
-        case (language, index) =>
-          val strategy = strategyFactory.createStrategy("default", language, config)
-          val ingestor = cache.getIngestor(index, language, strategy)
-          ingestor.ingest(repository, language)
+      Try {
+        repository.languages.zip(repository.indexNames).foreach {
+          case (language, index) =>
+            val strategy = strategyFactory.createStrategy("default", language, config)
+            val ingestor = cache.getIngestor(index, language, strategy)
+            ingestor.ingest(repository, language)
+        }
+      }.recoverWith {
+        case e =>
+          Failure(new Exception(s"Error ingesting repository: ${e.getMessage}"))
       }
 
-    override def deleteRepository(repository: RepositoryWithLanguages): Unit =
+    override def deleteRepository(repository: RepositoryWithLanguages): Try[Unit] =
       // Get all collections
       val collections = listCollections().getOrElse(List.empty).map(QdrantURL(_))
 
       // Delete the collection if it exists
-      repository.indexNames
-        .filter(index => collections.contains(index))
-        .foreach(index => cache.delete(index))
+      Try {
+        repository.indexNames
+          .filter(index => collections.contains(index))
+          .foreach(index => cache.delete(index))
+      }.recoverWith {
+        case e =>
+          Failure(new Exception(s"Error deleting repository: ${e.getMessage}"))
+      }
 
     override def listCollections(): Try[List[String]] =
       cache.listCollections()

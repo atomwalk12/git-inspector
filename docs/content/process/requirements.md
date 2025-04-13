@@ -8,7 +8,6 @@ tocopen: true
 tags: ["requirements"]
 summary: "I define all 5 requirement types: Business, Functional (user and system), Non-Functional, Implementation."
 bibFile: /assets/bibliography.json
-useCitationFooter: true
 ---
 
 <!-- markdownlint-disable MD051 -->
@@ -24,12 +23,6 @@ useCitationFooter: true
 For more details on the requirements engineering process, please refer to [day 4](sprint1/daily_updates/2025-03-27.md) of the first sprint.
 
 {{< insert-text "requirements.md" >}}
-
-Hardware specification:
-
-- CPU: AMD Radeon 7950X3D
-- RAM: 64GB
-- Storage: SSD
 
 ### Domain Model
 
@@ -100,6 +93,3 @@ Infrastructure:
 ### Detailed Design
 
 Detailed design includes more implementation specifics like private methods, framework-specific elements, etc.
-
-{{< cite "DNN1" >}}
-{{< bibliography cited >}}

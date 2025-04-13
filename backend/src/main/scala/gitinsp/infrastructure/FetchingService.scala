@@ -45,10 +45,9 @@ object FetchingService extends LazyLogging:
             }
           }.recoverWith {
             case e: Exception =>
-              logger.error(s"Error fetching URL: $url", e)
+              logger.error(s"Error fetching URL: $url")
               Failure(e)
           }
         case _ =>
           val e = new IllegalArgumentException(s"Expected HTTP connection for URL: $url")
-          logger.error("Invalid connection type", e)
           Failure(e)

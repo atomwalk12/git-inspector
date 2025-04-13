@@ -9,6 +9,8 @@ object Given:
 
   given Conversion[URL, String] = _.value
 
+  given Conversion[URL, AIServiceURL] = url => url.toAIServiceURL()
+
 object IngestorServiceExtensions:
   extension (ingestor: EmbeddingStoreIngestor)
     def ingest(repository: RepositoryWithLanguages, lang: Language): Unit =
