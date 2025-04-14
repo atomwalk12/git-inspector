@@ -5,6 +5,7 @@ import gitinsp.components.ChatInterface
 import gitinsp.components.ChatInterface.ChatMessage
 import gitinsp.components.IndexOption
 import gitinsp.components.IndexSelector
+import gitinsp.components.LinkViewer
 import gitinsp.components.StatusBar
 import gitinsp.components.TabContainer
 import gitinsp.components.TabContainer.Tab
@@ -48,7 +49,7 @@ object GitInspectorFrontend:
         // on selected tab change, change the content of the section
         tabContent = selectedTabVar.signal.map {
           case "chat"       => renderChatTab()
-          case "linkViewer" => renderLinkViewer()
+          case "linkViewer" => renderLinkViewerTab()
           case _            => renderChatTab()
         },
       ),
@@ -95,5 +96,8 @@ object GitInspectorFrontend:
         messages :+ ChatMessage(id = "user", isBot = false, content = message),
     )
 
-  private def renderLinkViewer(): HtmlElement =
-    div("Link Viewer")
+  private def renderLinkViewerTab(): HtmlElement =
+    div(
+      cls := "link-viewer-tab",
+      LinkViewer(),
+    )

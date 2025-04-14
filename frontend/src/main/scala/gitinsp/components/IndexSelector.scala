@@ -42,10 +42,10 @@ object IndexSelector:
 
         // TODO: the time it takes to load the indices is short, so this may not be needed
         cls("loading-button") <-- isLoadingVar.signal,
-        child.text <-- isLoadingVar.signal.map {
-          case true  => "Loading..."
-          case false => "Load Indices"
-        },
+        child.text <-- isLoadingVar.signal.map(
+          loading =>
+            if loading then "Loading..." else "Load Indices",
+        ),
         disabled <-- isLoadingVar.signal,
 
         // Execute the callback when the button is clicked
