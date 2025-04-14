@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutionException
 
 import scala.collection.concurrent.TrieMap
 import scala.jdk.CollectionConverters.ListHasAsScala
+import scala.language.implicitConversions
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try

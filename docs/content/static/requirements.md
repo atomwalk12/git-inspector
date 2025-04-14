@@ -9,7 +9,7 @@
 | FR1.5  | (Context) As a user, I can view the context around a code snippet in the search results.                                                                                        |
 | FR1.6  | (Chat) As a user, I can use chat functionality to ask questions about the code, where the chat history is remembered.                                                           |
 | FR2.1  | (Repository Cloning) The system should fetch and clone Git repositories from provided URLs.                                                                                     |
-| FR2.2  | (Code Indexing) The system should index the code of the fetched repositories.                                                                           |
+| FR2.2  | (Code Indexing) The system should index the code of the fetched repositories.                                                                                                   |
 | FR2.3  | (Vector Database) The system should use a vector database to store code embeddings for semantic search.                                                                         |
 | FR2.4  | (LLM Integration) The system should integrate with an LLM to process natural language queries and generate responses.                                                           |
 | NFR1   | (Performance) The system should complete initial code extraction and indexing for repositories up to 500MB within 2 minutes on the defined target hardware specification.       |

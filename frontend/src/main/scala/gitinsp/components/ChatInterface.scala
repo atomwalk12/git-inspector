@@ -12,13 +12,13 @@ object ChatInterface:
   ): HtmlElement =
     div(
       cls := "chat-interface",
-      h1("Chat Interface"),
       div(
         div(
-          cls := "chat-message",
+          cls := "chat-messages",
           // Readonly variable to display the messages
           children <-- messagesSignal.map {
             messages =>
+              // Add all messages to the chat
               messages.map {
                 message =>
                   div(
@@ -56,7 +56,7 @@ object ChatInterface:
           ),
         ),
         button(
-          cls := "chat-input-button",
+          cls := "send-button",
           "Send",
           // Send the message whenever the button is clicked
           onClick --> (

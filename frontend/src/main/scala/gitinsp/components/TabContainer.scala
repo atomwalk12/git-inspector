@@ -21,7 +21,7 @@ object TabContainer:
               cls := "tab-button",
               // When the state changes, we activate the correct tab
               cls.toggle("active") <-- selectedTabVar.signal.map(_ == tab.id),
-              span(tab.label),
+              tab.label,
               // On click, we change the contents of the selected variable
               // which in turn changes the contents of the tab from the caller
               onClick --> (_ => selectedTabVar.set(tab.id)),
