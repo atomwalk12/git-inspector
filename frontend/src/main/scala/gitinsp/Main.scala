@@ -6,7 +6,6 @@ import gitinsp.components.ChatInterface.ChatMessage
 import gitinsp.components.IndexOption
 import gitinsp.components.IndexSelector
 import gitinsp.components.LinkViewer
-import gitinsp.components.StatusBar
 import gitinsp.components.TabContainer
 import gitinsp.components.TabContainer.Tab
 import org.scalajs.dom
@@ -25,12 +24,12 @@ object GitInspectorFrontend:
   ))
 
   // Variuables allow read-write operations, while signals are read-only
-  val selectedTabVar = Var("chat") // has also a set method
-  val chatMessageVar = Var(Seq(
+  val selectedTabVar: Var[String] = Var("chat") // has also a set method
+  val chatMessageVar: Var[Seq[ChatMessage]] = Var(Seq(
     ChatMessage(id = "welcome", isBot = true, content = "Hello, how can I help you?"),
   ))
-  val selectedIndexVar = Var("None")
-  val chatStatusVar    = Var("Welcome to Git Inspector!")
+  val selectedIndexVar: Var[String] = Var("None")
+  val chatStatusVar: Var[String]    = Var("Welcome to Git Inspector!")
 
   // Event bus to listen to events from the index selector
   val indexEvents = new EventBus[IndexEvent]()
@@ -55,6 +54,9 @@ object GitInspectorFrontend:
       ),
     )
 
+  // ================================
+  // Chat Section
+  // ================================
   private def renderChatTab(): HtmlElement =
     val indexChangedObserver = Observer[String] {
       indexId =>
@@ -85,7 +87,8 @@ object GitInspectorFrontend:
           onSendMessage = handleNewMessage,
         ),
       ),
-      StatusBar(chatStatusVar.signal),
+      // This is optional
+      // StatusBar(chatStatusVar.signal),
     )
 
   private def handleNewMessage(message: String): Unit =
@@ -96,6 +99,9 @@ object GitInspectorFrontend:
         messages :+ ChatMessage(id = "user", isBot = false, content = message),
     )
 
+  // ================================
+  // Link Viewer Section
+  // ================================
   private def renderLinkViewerTab(): HtmlElement =
     div(
       cls := "link-viewer-tab",

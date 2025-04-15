@@ -18,8 +18,28 @@ body {
     color: #e0e0e0;
 }
 
-/* App container -> Main.scala */
+/* Scrollbar Styling */
+/* See https://css-tricks.com/custom-scrollbars-in-webkit/ */
 
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #1a1a1a;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
+
+/* App container -> Main.scala */
 .app-container {
     padding: 20px;
     display: flex;
@@ -34,7 +54,7 @@ body {
     background-color: #1a1a1a;
 }
 
-.chat-tab {
+.chat-tab, .link-viewer-tab {
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -162,7 +182,7 @@ body {
 }
 
 
-loading-button {
+.loading-button {
     opacity: 0.7;
     cursor: wait;
     position: relative;
@@ -326,4 +346,99 @@ loading-button {
 .status-message {
     color: #aaa;
     font-size: 13px;
+}
+
+
+/* Link viewer styling -> LinkViewer.scala */
+
+.chat-interface,
+.link-viewer-tab,
+.chat-tab {
+    background-color: #1a1a1a;
+}
+
+.link-viewer-container {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 10px;
+    gap: 15px;
+    overflow-y: auto;
+    background-color: #1a1a1a;
+}
+
+.input-section {
+    display: grid;
+    grid-template-columns: 1fr 200px 200px;
+    gap: 10px;
+    align-items: center;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.input-label {
+    font-size: 12px;
+    color: #aaa;
+}
+
+.url-input, .extension-input, .format-select {
+    padding: 10px;
+    background-color: #333;
+    border: 1px solid #444;
+    border-radius: 4px;
+    color: #fff;
+}
+
+.url-input:focus, .extension-input:focus, .format-select:focus {
+    outline: none;
+    border-color: #666;
+}
+
+.fetch-button, .generate-index-button {
+    background-color: #535353;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+    text-align: center;
+}
+
+.fetch-button:hover, .generate-index-button:hover {
+    background-color: #666;
+}
+
+.content-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+    min-height: 0;
+}
+
+.content-header {
+    font-size: 14px;
+    color: #ccc;
+    border-bottom: 1px solid #333;
+    padding-bottom: 5px;
+}
+
+.content-display {
+    flex: 1;
+    background-color: #212121;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 10px;
+    color: #ddd;
+    font-family: monospace;
+    font-size: 13px;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    min-height: 300px;
 }
