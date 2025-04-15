@@ -1,12 +1,16 @@
 package gitinsp.components
 import com.raquo.laminar.api.L.*
+import gitinsp.services.ContentService
 
 object LinkViewer:
   // Possible context formats
   val contextFormats = List("Github")
   val statusVar      = Var("Idle...")
 
-  def apply(): HtmlElement =
+  def apply(
+    contentService: ContentService,
+    onIndexGenerated: Observer[String],
+  ): HtmlElement =
     val urlVar           = Var("")
     val contextFormatVar = Var("Github")
     val extensionVar     = Var("")

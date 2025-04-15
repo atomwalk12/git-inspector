@@ -1,6 +1,7 @@
 package gitinsp
 
 import com.raquo.laminar.api.L.*
+import gitinsp.api.HttpClient
 import gitinsp.components.ChatInterface
 import gitinsp.components.ChatInterface.ChatMessage
 import gitinsp.components.IndexOption
@@ -8,36 +9,71 @@ import gitinsp.components.IndexSelector
 import gitinsp.components.LinkViewer
 import gitinsp.components.TabContainer
 import gitinsp.components.TabContainer.Tab
+import gitinsp.models.IndexEvent
+import gitinsp.models.IndexGenerated
+import gitinsp.models.RefreshIndicesRequested
+import gitinsp.services.ContentService
 import org.scalajs.dom
-import utils.IndexEvent
-import utils.RefreshIndicesRequested
+
+import scala.concurrent.ExecutionContext.Implicits.global
 
 object GitInspectorFrontend:
-  // Labels
-  val tabs = Seq(Tab("chat", "Chat"), Tab("linkViewer", "Link Viewer"))
 
-  // The shared variables are managed from the parent as opposed to the child
-  // This makes it easier to share the state between the components
-  val availableIndexesVar = Var(Seq(
+  // ================================
+  // Application State
+  // ================================
+
+  // Available tabs
+  private val tabs = Seq(Tab("chat", "Chat"), Tab("linkViewer", "Link Viewer"))
+
+  // State management
+  private val selectedTabVar: Var[String] = Var("chat")
+  private val chatMessagesVar: Var[Seq[ChatMessage]] = Var(Seq(
+    ChatMessage(id = "welcome", isBot = true, content = "Hello, how can I help you?"),
+  ))
+  private val availableIndexesVar = Var(Seq(
     IndexOption("None", "None"),
     IndexOption("index1", "Index 1"),
   ))
+  private val selectedIndexVar: Var[String] = Var("None")
+  private val chatStatusVar: Var[String]    = Var("Welcome to Git Inspector!")
 
-  // Variuables allow read-write operations, while signals are read-only
-  val selectedTabVar: Var[String] = Var("chat") // has also a set method
-  val chatMessageVar: Var[Seq[ChatMessage]] = Var(Seq(
-    ChatMessage(id = "welcome", isBot = true, content = "Hello, how can I help you?"),
-  ))
-  val selectedIndexVar: Var[String] = Var("None")
-  val chatStatusVar: Var[String]    = Var("Welcome to Git Inspector!")
+  // The possible events are triggered when an index is generated and when the indices are refreshed
+  private val indexEvents = new EventBus[IndexEvent]()
 
-  // Event bus to listen to events from the index selector
-  val indexEvents = new EventBus[IndexEvent]()
+  // ================================
+  // Services
+  // ================================
+  private val httpClient = HttpClient(baseUrl = "") // The base URL is implicitly managed by Vite
+  private val contentService = new ContentService(httpClient)
 
   def main(args: Array[String]): Unit =
-    // Render the app element when the content is loaded
+    // Initialize application
+    setupEventListeners()
+    refreshAvailableIndices()
     renderOnDomContentLoaded(dom.document.querySelector("#app"), appElement())
 
+  // ================================
+  // Event Handlers
+  // ================================
+  private def setupEventListeners(): Unit =
+    // Subscribe to index events
+    indexEvents.events.foreach {
+      case IndexGenerated(name) =>
+        chatStatusVar.set(s"New index generated: $name")
+        refreshAvailableIndices()
+      case RefreshIndicesRequested =>
+        refreshAvailableIndices()
+    }(unsafeWindowOwner)
+
+  private def refreshAvailableIndices(): Unit =
+    contentService
+      .fetchAvailableIndices()
+      .foreach(indices => availableIndexesVar.set(indices))(global)
+
+  // ================================
+  // UI Components
+  // ================================
   private def appElement(): HtmlElement =
     div(
       cls := "app-container",
@@ -45,7 +81,7 @@ object GitInspectorFrontend:
         tabs = tabs,
         selectedTabVar = selectedTabVar,
 
-        // on selected tab change, change the content of the section
+        // When a new tab is selected, render the corresponding section
         tabContent = selectedTabVar.signal.map {
           case "chat"       => renderChatTab()
           case "linkViewer" => renderLinkViewerTab()
@@ -83,20 +119,21 @@ object GitInspectorFrontend:
       div(
         cls := "chat-interface-container",
         ChatInterface(
-          messagesSignal = chatMessageVar.signal, // Readonly variable
-          onSendMessage = handleNewMessage,
+          messagesSignal = chatMessagesVar.signal, // Readonly variable
+          onSendMessage = handleChatMessage,
         ),
       ),
       // This is optional
       // StatusBar(chatStatusVar.signal),
     )
 
-  private def handleNewMessage(message: String): Unit =
-    // This happens when the user sends the send button in the chat interface
-    dom.console.log(s"New message: $message")
-    chatMessageVar.update(
-      messages =>
-        messages :+ ChatMessage(id = "user", isBot = false, content = message),
+  private def handleChatMessage(content: String): Unit =
+    ChatInterface.handleNewMessage(
+      content = content,
+      chatMessagesVar = chatMessagesVar,
+      selectedIndexVar = selectedIndexVar,
+      chatStatusVar = chatStatusVar,
+      contentService = contentService,
     )
 
   // ================================
@@ -105,5 +142,11 @@ object GitInspectorFrontend:
   private def renderLinkViewerTab(): HtmlElement =
     div(
       cls := "link-viewer-tab",
-      LinkViewer(),
+      LinkViewer(
+        contentService = contentService,
+        onIndexGenerated = Observer(
+          indexName =>
+            indexEvents.writer.onNext(IndexGenerated(indexName)),
+        ),
+      ),
     )
