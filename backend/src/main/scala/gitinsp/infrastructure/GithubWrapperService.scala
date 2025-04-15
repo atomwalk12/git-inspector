@@ -97,7 +97,14 @@ object GithubWrapperService:
                       fileJson.hcursor.downField("content").as[String] match {
                         case Right(content) => {
                           val languageOpt = RepositoryWithLanguages.detectLanguageFromFile(filePath)
-                          languageOpt.map(language => CodeFile(content, language, filePath))
+                          languageOpt.map(
+                            language => {
+                              val category = language.category
+                              val cs = config.getInt(s"gitinsp.${category}-embedding.chunk-size")
+                              val co = config.getInt(s"gitinsp.${category}-embedding.chunk-overlap")
+                              CodeFile(content, language, filePath, cs, co)
+                            },
+                          )
                         }
                         case Left(_) => None
                       }

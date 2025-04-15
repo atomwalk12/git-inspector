@@ -64,7 +64,7 @@ class GithubWrapperServiceSuite
       }
     """
     val languages = RepositoryWithLanguages.detectLanguage("scala").getOrElse(List())
-    val docs      = List(CodeFile("test content", Language.SCALA, "test.scala"))
+    val docs      = List(CodeFile("test content", Language.SCALA, "test.scala", 1000, 100))
     val repo      = RepositoryWithLanguages(testUrl, languages, docs)
 
     // Behavior

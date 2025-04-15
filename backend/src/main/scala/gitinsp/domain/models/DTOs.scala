@@ -194,13 +194,28 @@ object QdrantURL:
 // CodeFile
 // ============================
 
-final case class CodeFile(content: String, language: Language, path: String):
+final case class CodeFile(
+  content: String,
+  language: Language,
+  path: String,
+  chunkSize: Int,
+  chunkOverlap: Int,
+):
   def createLangchainDocument(): Option[Document] =
     Option(content.trim)
       .filter(_.nonEmpty)
       .map(
         trimmedContent => {
-          val metadata = Metadata.from(JMap.of("file_name", path, "code", language.toString))
+          val metadata = Metadata.from(JMap.of(
+            "file_name",
+            path,
+            "code",
+            language.toString,
+            "chunk_size",
+            chunkSize,
+            "chunk_overlap",
+            chunkOverlap,
+          ))
           Document.from(trimmedContent, metadata)
         },
       )

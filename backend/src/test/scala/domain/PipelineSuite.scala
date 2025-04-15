@@ -185,8 +185,8 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     // Setup data
     val pipe      = Pipeline(mockChatService, mockCacheService, ingestorService, mockGithubWrapper)
     val languages = RepositoryWithLanguages.detectLanguages("scala,md")
-    val doc1      = CodeFile("def test()", Language.SCALA, "test.scala")
-    val doc2      = CodeFile("# Hello, world!", Language.MARKDOWN, "test.md")
+    val doc1      = CodeFile("def test()", Language.SCALA, "test.scala", 1000, 100)
+    val doc2      = CodeFile("# Hello, world!", Language.MARKDOWN, "test.md", 1000, 100)
     val docs      = List(doc1, doc2, doc1, doc2)
     val url       = URL("https://github.com/atomwalk12/PPS-22-git-insp")
     val repo      = RepositoryWithLanguages(url, languages, docs)

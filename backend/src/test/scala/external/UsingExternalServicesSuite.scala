@@ -124,9 +124,9 @@ class UsingExternalServicesSuite extends AnyFlatSpec with Matchers with MockitoS
 
     // Setup data
     val languages = RepositoryWithLanguages.detectLanguages("scala,md,py")
-    val doc1      = CodeFile("def test()", Language.SCALA, "test.scala")
-    val doc2      = CodeFile("# Hello, world!", Language.MARKDOWN, "test.md")
-    val doc3      = CodeFile("print('Hello, world!')", Language.PYTHON, "test.py")
+    val doc1      = CodeFile("def test()", Language.SCALA, "test.scala", 1000, 100)
+    val doc2      = CodeFile("# Hello, world!", Language.MARKDOWN, "test.md", 1000, 100)
+    val doc3      = CodeFile("print('Hello, world!')", Language.PYTHON, "test.py", 1000, 100)
     val docs      = List(doc1, doc1, doc2, doc3)
     val repo      = RepositoryWithLanguages(url, languages, docs)
 
