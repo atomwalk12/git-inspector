@@ -7,6 +7,7 @@ import dev.langchain4j.data.document.Document
 import dev.langchain4j.data.document.Metadata
 import dev.langchain4j.rag.content.Content
 
+import java.util.Locale
 import java.util.Map as JMap
 // TODO: Refactor this
 // ============================
@@ -131,27 +132,35 @@ final case class URL(val value: String):
   override def toString: String = value
 
   def toAIServiceURL(): AIServiceURL =
-    val desanitized = value
-      .replaceAll("^https?://", "")
-      .replace("/", "[slash]")
-    AIServiceURL(desanitized)
+    if value == "default" then
+      AIServiceURL.default
+    else
+      val desanitized = value
+        .replaceAll("^https?://", "")
+        .replace("/", "[slash]")
+      AIServiceURL(desanitized)
 
   def toQdrantURL(category: Category): QdrantURL =
     toAIServiceURL().toQdrantURL(category)
 
 object URL:
+  val default = new URL("default")
+
   def apply(value: String): URL =
-    // ENsure that the value is an URL
-    val regex = "^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$".r
-    assert(regex.matches(value), s"Invalid GitHub URL format: $value")
-    new URL(value)
+    // Ensure that the value is an URL
+    if value.isEmpty() || value == "default" || value.toLowerCase(Locale.ROOT) == "none" then
+      default
+    else
+      val regex = "^(https?://)?([\\w-]+\\.)+[\\w-]+(/[\\w-./?%&=]*)?$".r
+      assert(regex.matches(value), s"Invalid GitHub URL format: $value")
+      new URL(value)
 
 // ============================
 // AIServiceURL
 // ============================
 
 object AIServiceURL:
-  val default = new AIServiceURL("default")
+  val default = AIServiceURL("default")
 
 final case class AIServiceURL(val value: String):
   if value != "default" then

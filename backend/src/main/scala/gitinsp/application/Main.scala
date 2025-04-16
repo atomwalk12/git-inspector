@@ -20,6 +20,7 @@ import io.circe.parser.*
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration.DurationInt
+import scala.util.Failure
 
 object GitInspector extends LazyLogging:
 
@@ -75,6 +76,11 @@ object GitInspector extends LazyLogging:
                 val languages = json("extensions")
                 complete:
                   langchainCoordinator.generateIndex(repoUrl, languages)
+                    .recoverWith {
+                      case ex =>
+                        logger.error(s"Couldn't generate index: ${ex.getMessage}")
+                        Failure(ex)
+                    }
               case Left(error) =>
                 complete(s"Error parsing data: ${error.getMessage}")
 
@@ -86,8 +92,19 @@ object GitInspector extends LazyLogging:
             langchainCoordinator.fetchRepository(link, format, extension)
           }
 
+    val removeIndex: Route = path("remove"):
+      post:
+        formFields("data"): (data) =>
+          decode[Map[String, String]](data) match
+            case Right(json) =>
+              val indexName = json("indexName")
+              complete:
+                langchainCoordinator.deleteIndex(indexName)
+            case Left(error) =>
+              complete(s"Error parsing data: ${error.getMessage}")
+
     // Setup the routes
-    val combinedRoutes = listIndexes ~ chat ~ generateIndex ~ fetchRepository
+    val combinedRoutes = listIndexes ~ chat ~ generateIndex ~ fetchRepository ~ removeIndex
 
     // Start the HTTP server
     langchainCoordinator.start(combinedRoutes)

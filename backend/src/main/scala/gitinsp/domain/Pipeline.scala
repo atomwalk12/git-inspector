@@ -65,12 +65,18 @@ object Pipeline extends LazyLogging:
         indexes          = aiServiceIndexes.distinctBy(_.value)
       } yield indexes
 
-    def deleteIndex(indexName: URL, category: Category): Try[Unit] =
+    def deleteIndex(index: URL, category: Category): Try[Unit] =
       // When an index is removed delete the collection and the AI service
-      for {
-        _ <- cacheService.deleteCollection(indexName.toQdrantURL(category))
-        _ <- cacheService.deleteAIService(indexName.toAIServiceURL())
-      } yield ()
+      if index == URL.default then
+        for {
+          _ <- cacheService.deleteAIService(index.toAIServiceURL())
+          _ = cacheService.initializeAIServices(None)
+        } yield ()
+      else
+        for {
+          _ <- cacheService.deleteCollection(index.toQdrantURL(category))
+          _ <- cacheService.deleteAIService(index.toAIServiceURL())
+        } yield ()
 
     def initializeApp(): Try[Unit] =
       // Initialize the AI services

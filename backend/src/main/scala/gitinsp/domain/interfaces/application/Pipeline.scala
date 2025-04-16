@@ -15,5 +15,5 @@ trait Pipeline:
   def regenerateIndex(repository: RepositoryWithLanguages): Try[Unit]
   def listIndexes(): Try[List[AIServiceURL]]
   def fetchRepository(url: URL, languages: List[Language]): Try[RepositoryWithLanguages]
-  def deleteIndex(indexName: URL, category: Category): Try[Unit]
+  def deleteIndex(index: URL, category: Category): Try[Unit]
   def getAIService(index: Option[AIServiceURL]): Try[Assistant]
