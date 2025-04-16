@@ -1,3 +1,17 @@
+## [1.7.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.6.0...v1.7.0) (2025-04-16)
+
+### Features
+
+* **backend:** add additional metadata information with chuink overlap and chunk size to aid debugging ([aff7b0a](https://github.com/atomwalk12/PPS-22-git-insp/commit/aff7b0a2fefd02a3e51f14cc921f3f42c076282a))
+* **backend:** implement index removal functionality and enhance error handling ([155c969](https://github.com/atomwalk12/PPS-22-git-insp/commit/155c969425912d15973095724134bb93e973f4a0))
+* **frontend:** add routes to the Vite configuration and update the Python ChatInterface for index removal ([c3e7c9a](https://github.com/atomwalk12/PPS-22-git-insp/commit/c3e7c9ac8b9ddcfe5a04a049a6cf23905d1fc56b))
+* **frontend:** add styling and link viewer component ([69a2f9a](https://github.com/atomwalk12/PPS-22-git-insp/commit/69a2f9a1907775c459e9b6b1c4a38e7295cc7873))
+* **frontend:** add the ability to fetch repository data, remove and generate indexes ([2563c18](https://github.com/atomwalk12/PPS-22-git-insp/commit/2563c1832a303dcc3129be153c20e216294d34ef))
+* **frontend:** enhance chat interface with index selection and status bar ([a4e9234](https://github.com/atomwalk12/PPS-22-git-insp/commit/a4e9234dc0c59289e0a206a46df0795d61104989))
+* **frontend:** implement chat interface and tab navigation ([a858840](https://github.com/atomwalk12/PPS-22-git-insp/commit/a8588406531c46b45a9aa50b0c1a2851baa5bd5b))
+* **frontend:** improve styling and create basic layout for the link viewer section ([f61da46](https://github.com/atomwalk12/PPS-22-git-insp/commit/f61da4638dc5ef712abbcb929c3fd24feb859322))
+* **frontend:** refactor chat interface and integrate HTTP client for streaming ([27250a2](https://github.com/atomwalk12/PPS-22-git-insp/commit/27250a219f32742a20b45aea5db5df0623b34898))
+
 ## [1.6.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.5.0...v1.6.0) (2025-04-13)
 
 ### Features
