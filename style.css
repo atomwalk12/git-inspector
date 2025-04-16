@@ -140,6 +140,7 @@ body {
 
 .index-selector {
     display: flex;
+    gap: 10px;
     padding: 10px;
     background-color: #1a1a1a;
     border-bottom: 1px solid #333;
