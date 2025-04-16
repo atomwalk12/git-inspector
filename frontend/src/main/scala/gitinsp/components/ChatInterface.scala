@@ -2,7 +2,7 @@ package gitinsp.components
 import com.raquo.laminar.api.L.*
 import gitinsp.services.ContentService
 import gitinsp.util.IDGenerator
-
+import org.scalajs.dom
 object ChatInterface {
 
   case class ChatMessage(id: String, isBot: Boolean, content: String)
@@ -30,7 +30,7 @@ object ChatInterface {
     val indexName = selectedIndexVar.now()
 
     // Start streaming
-    contentService.chatStreaming(content, indexName)
+    contentService.chat(content, indexName)
       .foreach {
         streamedContent =>
           // Update the bot message with the latest content
@@ -48,9 +48,13 @@ object ChatInterface {
           }
 
           // Update status
-          chatStatusVar.set("Receiving response...")
+          indexName match
+            case "" =>
+              chatStatusVar.set("No index selected")
+            case _ =>
+              chatStatusVar.set(s"Currently chatting with $indexName...")
 
-        // The unsafe window owner is a legitimate use in this case
+        // The unsafe window owner is a legitimate use in this case (use doc comment)
         // The owner never kills its possessions because the observer is global and
         // persists throughout the lifetime of the application
       }(unsafeWindowOwner)
@@ -59,13 +63,16 @@ object ChatInterface {
     messagesSignal: Signal[Seq[ChatMessage]],
     onSendMessage: String => Unit,
   ): HtmlElement =
-    val inputVar = Var("")
+    val inputVar       = Var("")
+    val messagesDivRef = Var[Option[dom.html.Div]](None)
 
     div(
       cls := "chat-interface",
       cls := "content-display",
       div(
         cls := "chat-messages",
+        onMountCallback(ctx => messagesDivRef.set(Some(ctx.thisNode.ref))),
+
         // Readonly variable to display the messages
         children <-- messagesSignal.map {
           messages =>
@@ -84,6 +91,19 @@ object ChatInterface {
             }
         },
       ),
+
+      // Scroll to the bottom of the messages div when the messages change
+      messagesSignal --> {
+        _ =>
+          dom.window.setTimeout(
+            () => {
+              messagesDivRef.now().foreach {
+                messagesDiv => messagesDiv.scrollTop = messagesDiv.scrollHeight
+              }
+            },
+            50,
+          )
+      },
       div(
         cls := "chat-input-container",
         input(

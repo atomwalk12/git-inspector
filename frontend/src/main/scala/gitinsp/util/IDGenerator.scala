@@ -1,6 +1,6 @@
 package gitinsp.util
 
-import java.util.UUID
+import scala.scalajs.js.Date
 
 /** Simple ID generator for Scala.js that doesn't rely on java.util.UUID */
 object IDGenerator {
@@ -8,6 +8,9 @@ object IDGenerator {
 
   /** Generates a unique ID with a prefix */
   def generateId(prefix: String): String = {
-    UUID.randomUUID().toString
+    counter += 1
+    val timestamp = new Date().getTime().toLong
+    s"$prefix-$timestamp-$counter"
+    // This doesn't compile: UUID.randomUUID().toString
   }
 }

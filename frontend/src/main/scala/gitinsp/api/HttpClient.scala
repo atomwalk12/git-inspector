@@ -8,16 +8,66 @@ import gitinsp.models.StreamResponse
 import io.circe.generic.auto.*
 import io.circe.parser.*
 import org.scalajs.dom.EventSource
+import org.scalajs.dom.Headers
+import org.scalajs.dom.HttpMethod
 import org.scalajs.dom.MessageEvent
+import org.scalajs.dom.RequestInit
+import org.scalajs.dom.fetch
 
+import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 import scala.scalajs.js
+import scala.scalajs.js.Dynamic.global as jsGlobal
 
 class HttpClient(baseUrl: String):
 
+  def get(endpoint: String, params: Map[String, String] = Map.empty): Future[String] =
+    val url = s"$baseUrl/$endpoint"
+
+    // Build query string from params
+    val queryString = params.map {
+      case (key, value) =>
+        s"${encodeURIComponent(key)}=${encodeURIComponent(value)}"
+    }.mkString("&")
+
+    val fullUrl = s"$baseUrl/$endpoint${if params.nonEmpty then s"?$queryString" else ""}"
+
+    fetch(fullUrl, new RequestInit { method = HttpMethod.GET })
+      .toFuture
+      .flatMap(
+        response =>
+          if !response.ok then
+            jsGlobal.console.error(s"HTTP error for $endpoint: status ${response.status}")
+            Future.failed(new Error(s"HTTP error for $endpoint: status ${response.status}"))
+          else
+            response.text().toFuture,
+      )
+
+  def post(endpoint: String, data: String): Future[String] =
+    val url = s"$baseUrl/$endpoint"
+
+    val _headers = new Headers()
+    _headers.append("Content-Type", "application/x-www-form-urlencoded")
+
+    val init = new RequestInit {
+      method = HttpMethod.POST
+      body = data
+      headers = _headers
+    }
+
+    fetch(url, init)
+      .toFuture
+      .flatMap(
+        response =>
+          if !response.ok then
+            jsGlobal.console.error(s"HTTP error for $endpoint: status ${response.status}")
+            Future.failed(new Error(s"HTTP error for $endpoint: status ${response.status}"))
+          else
+            response.text().toFuture,
+      )
+
   private def encodeURIComponent(s: String): String =
     js.URIUtils.encodeURIComponent(s)
-
-  // Add PUT, DELETE, etc. as needed
 
   def streamChat(endpoint: String, data: Map[String, String]): EventStream[String] =
     // The event stream is used to accumulate data while it is being sent

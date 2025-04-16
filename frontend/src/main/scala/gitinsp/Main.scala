@@ -4,14 +4,16 @@ import com.raquo.laminar.api.L.*
 import gitinsp.api.HttpClient
 import gitinsp.components.ChatInterface
 import gitinsp.components.ChatInterface.ChatMessage
-import gitinsp.components.IndexOption
 import gitinsp.components.IndexSelector
 import gitinsp.components.LinkViewer
+import gitinsp.components.StatusBar
 import gitinsp.components.TabContainer
 import gitinsp.components.TabContainer.Tab
 import gitinsp.models.IndexEvent
 import gitinsp.models.IndexGenerated
+import gitinsp.models.IndexOption
 import gitinsp.models.RefreshIndicesRequested
+import gitinsp.models.RemoveIndexRequested
 import gitinsp.services.ContentService
 import org.scalajs.dom
 
@@ -32,10 +34,9 @@ object GitInspectorFrontend:
     ChatMessage(id = "welcome", isBot = true, content = "Hello, how can I help you?"),
   ))
   private val availableIndexesVar = Var(Seq(
-    IndexOption("None", "None"),
-    IndexOption("index1", "Index 1"),
+    IndexOption.default,
   ))
-  private val selectedIndexVar: Var[String] = Var("None")
+  private val selectedIndexVar: Var[String] = Var(IndexOption.default.id)
   private val chatStatusVar: Var[String]    = Var("Welcome to Git Inspector!")
 
   // The possible events are triggered when an index is generated and when the indices are refreshed
@@ -64,16 +65,47 @@ object GitInspectorFrontend:
         refreshAvailableIndices()
       case RefreshIndicesRequested =>
         refreshAvailableIndices()
+      case RemoveIndexRequested(name) =>
+        removeIndex(name)
+        selectedIndexVar.set(IndexOption.default.id)
+        chatMessagesVar.update(messages => messages.filter(_.id == "welcome"))
     }(unsafeWindowOwner)
 
+  private def removeIndex(name: String): Unit =
+    chatStatusVar.set(s"Removing index: $name")
+    contentService
+      .removeIndex(name)
+      .foreach {
+        case Some(result) =>
+          chatStatusVar.set(s"Index removed: $result")
+          refreshAvailableIndices()
+        case None =>
+          chatStatusVar.set("Failed to remove index. Ensure the backend is running.")
+      }(global)
+
   private def refreshAvailableIndices(): Unit =
+    chatStatusVar.set("Refreshing available indices...")
     contentService
       .fetchAvailableIndices()
-      .foreach(indices => availableIndexesVar.set(indices))(global)
+      .map {
+        case Some(indices) =>
+          availableIndexesVar.set(indices)
+          if indices.size == 1 then
+            chatStatusVar.set("No indices found")
+          else
+            chatStatusVar.set(s"Found ${indices.size - 1} indices")
+        case None =>
+          chatStatusVar.set("Failed to refresh indices. Ensure the backend is running.")
+      }(global)
 
   // ================================
   // UI Components
   // ================================
+
+  // Cache tab components to avoid recreating them on each tab switch
+  private val chatTabElement: HtmlElement       = createChatTab()
+  private val linkViewerTabElement: HtmlElement = createLinkViewerTab()
+
   private def appElement(): HtmlElement =
     div(
       cls := "app-container",
@@ -81,11 +113,11 @@ object GitInspectorFrontend:
         tabs = tabs,
         selectedTabVar = selectedTabVar,
 
-        // When a new tab is selected, render the corresponding section
+        // When a new tab is selected, show the cached tab element
         tabContent = selectedTabVar.signal.map {
-          case "chat"       => renderChatTab()
-          case "linkViewer" => renderLinkViewerTab()
-          case _            => renderChatTab()
+          case "chat"       => chatTabElement
+          case "linkViewer" => linkViewerTabElement
+          case _            => chatTabElement
         },
       ),
     )
@@ -93,10 +125,10 @@ object GitInspectorFrontend:
   // ================================
   // Chat Section
   // ================================
-  private def renderChatTab(): HtmlElement =
+  private def createChatTab(): HtmlElement =
     val indexChangedObserver = Observer[String] {
       indexId =>
-        if indexId != "None" then
+        if indexId != IndexOption.default.id then
           chatStatusVar.set(s"Selected index: $indexId")
         else
           chatStatusVar.set("Currently no index selected!")
@@ -110,6 +142,8 @@ object GitInspectorFrontend:
         availableIndexesSignal = availableIndexesVar.signal,
         selectedIndexVar = selectedIndexVar,
         onRefreshRequested = Observer(_ => indexEvents.writer.onNext(RefreshIndicesRequested)),
+        onRemoveRequested =
+          Observer(_ => indexEvents.writer.onNext(RemoveIndexRequested(selectedIndexVar.now()))),
       ),
 
       // Listen to changes when the user selects a new index
@@ -124,7 +158,7 @@ object GitInspectorFrontend:
         ),
       ),
       // This is optional
-      // StatusBar(chatStatusVar.signal),
+      StatusBar(chatStatusVar.signal),
     )
 
   private def handleChatMessage(content: String): Unit =
@@ -139,7 +173,7 @@ object GitInspectorFrontend:
   // ================================
   // Link Viewer Section
   // ================================
-  private def renderLinkViewerTab(): HtmlElement =
+  private def createLinkViewerTab(): HtmlElement =
     div(
       cls := "link-viewer-tab",
       LinkViewer(

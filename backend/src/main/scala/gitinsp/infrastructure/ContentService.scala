@@ -12,6 +12,4 @@ object ContentService extends ContentService:
   override def toPlainText(content: String): String = content + "\n"
 
   override def docTemplate(num: Int, text: String): String =
-    s"""Document ${"%02d".format(num)}
-        ===========
-        $text""".stripMargin
+    s"""Document ${"%02d".format(num)}\n===========\n$text\n\n""".stripMargin

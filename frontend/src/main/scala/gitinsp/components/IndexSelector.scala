@@ -1,14 +1,13 @@
 package gitinsp.components
 
 import com.raquo.laminar.api.L.*
-
-case class IndexOption(id: String, label: String)
-
+import gitinsp.models.IndexOption
 object IndexSelector:
   def apply(
     availableIndexesSignal: Signal[Seq[IndexOption]], // the available indexes
     selectedIndexVar: Var[String],                    // the current selected index
     onRefreshRequested: Observer[Unit],               // the callback to execute on refresh
+    onRemoveRequested: Observer[Unit],
   ): HtmlElement =
 
     val isLoadingVar = Var(false)
@@ -36,6 +35,15 @@ object IndexSelector:
               }
           },
         ),
+      ),
+      button(
+        cls := "load-index-button",
+        cls("loading-button") <-- isLoadingVar.signal,
+        "Remove Index",
+        disabled <-- isLoadingVar.signal,
+
+        // Execute the callback when the button is clicked
+        onClick.mapTo(()) --> onRemoveRequested,
       ),
       button(
         cls := "load-index-button",
