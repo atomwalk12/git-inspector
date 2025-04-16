@@ -84,9 +84,9 @@ class CacheServiceSuite
     // Data setup
     val url        = URL("https://github.com/gitinsp/gitinsp")
     val languages  = "py,md,scala,py"
-    val doc1       = CodeFile("Hello, world!", Language.MARKDOWN, "README.md")
-    val doc2       = CodeFile("Hello, world!", Language.SCALA, "README.scala")
-    val doc3       = CodeFile("Hello, world!", Language.PYTHON, "README.py")
+    val doc1       = CodeFile("Hello, world!", Language.MARKDOWN, "README.md", 1000, 100)
+    val doc2       = CodeFile("Hello, world!", Language.SCALA, "README.scala", 1000, 100)
+    val doc3       = CodeFile("Hello, world!", Language.PYTHON, "README.py", 1000, 100)
     val docs       = List(doc1, doc2, doc3)
     val repository = RepositoryWithLanguages(url, detectLanguages(languages), docs)
 

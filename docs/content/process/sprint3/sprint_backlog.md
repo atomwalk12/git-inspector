@@ -48,8 +48,8 @@ Link to the main product backlog: {{< abslink url="/static/product-backlog#task-
 | S3.3.3                                   | Ensure responsive and accessible design           | UI Implementation  | [E1](../../static/product-backlog.md#task-board) | 5           | ✓ (Python) |
 | **TECHNICAL DEBT & TESTING (15 Points)** |                                                   |                    |                                                  |             |            |
 | S3.4.1                                   | Implement ArchUnit tests for layered architecture | Technical Debt     | [F1](../../static/product-backlog.md#task-board) | 3           | Todo       |
-| S3.4.2                                   | Create acceptance tests for repository loading    | Technical Debt     | [F2](../../static/product-backlog.md#task-board) | 5           | Todo       |
-| S3.4.3                                   | Develop provider for results with score relevance | Testing            | [C1](../../static/product-backlog.md#task-board) | 4           | Todo       |
+| S3.4.2                                   | Create acceptance tests for repository loading    | Technical Debt     | [F2](../../static/product-backlog.md#task-board) | 5           | ✓          |
+| S3.4.3                                   | Develop provider for results with score relevance | Testing            | [C1](../../static/product-backlog.md#task-board) | 4           | ✓          |
 | S3.4.4                                   | Implement chat accuracy evaluation                | Testing            | [C2](../../static/product-backlog.md#task-board) | 3           | Todo       |
 |                                          |                                                   |                    |                                                  |             |            |
 

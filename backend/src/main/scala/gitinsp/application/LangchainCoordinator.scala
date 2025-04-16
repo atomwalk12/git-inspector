@@ -55,13 +55,13 @@ object LangchainCoordinator:
           logger.info(s"Indexes: $indexNames")
 
           // Return the indexes in a JSON format
-          val jsonResponse = Map("indexes" -> (List("") ++ indexNames)).asJson.noSpaces
+          val jsonResponse = Map("indexes" -> indexNames).asJson.noSpaces
           jsonResponse
         },
-      ).recover {
+      ).recoverWith {
         case ex: Exception =>
-          logger.error("Error listing indexes", ex)
-          Map("error" -> "Error listing indexes").asJson.noSpaces
+          logger.error("Error listing indexes", ex.getMessage)
+          Failure(ex)
       }
 
     override def chat(msg: String, indexNameOpt: Option[String]): Try[StreamingResponse] =
@@ -106,17 +106,20 @@ object LangchainCoordinator:
       val repoURL       = URL(repoUrl)
       val languagesList = RepositoryWithLanguages.detectLanguage(languages).getOrElse(List())
 
-      // Build and index the repository in a more functional way
-      gitService
-        .buildRepository(repoURL, languagesList)
-        .flatMap(repo => pipeline.regenerateIndex(repo))
-        .map(
-          _ =>
-            Map(
-              "result"    -> "Index generated successfully",
-              "indexName" -> repoURL.value,
-            ).asJson.noSpaces,
-        )
+      if languagesList.isEmpty then
+        Failure(new IllegalArgumentException(s"No languages detected for $repoUrl"))
+      else
+        // Build and index the repository in a more functional way
+        gitService
+          .buildRepository(repoURL, languagesList)
+          .flatMap(repo => pipeline.regenerateIndex(repo))
+          .map(
+            _ =>
+              Map(
+                "result"    -> "Index generated successfully",
+                "indexName" -> repoURL.value,
+              ).asJson.noSpaces,
+          )
 
     override def deleteIndex(indexName: String): Try[String] =
       val url = URL(indexName)
@@ -126,13 +129,13 @@ object LangchainCoordinator:
           .map(
             _ => {
               logger.info(s"${category.toString} index deleted successfully: $indexName")
-              s"${category.toString} index deleted successfully"
+              s"$indexName deleted successfully"
             },
           )
-          .recoverWith {
+          .recover {
             case ex =>
-              logger.error(s"Error deleting ${category.toString} index: $indexName", ex)
-              Failure(ex)
+              logger.warn(s"Error deleting ${category.toString} index: $indexName")
+              s"$indexName not found"
           }
 
       for {

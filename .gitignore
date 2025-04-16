@@ -64,3 +64,5 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+visualization_output/

@@ -7,7 +7,7 @@ from json.decoder import JSONDecodeError
 
 # Constants
 TIMEOUT = 120000
-
+DEFAULT_INDEX = ("None", "None")
 
 class ChatInterface:
     def __init__(self, pretty_fmt=True):
@@ -77,7 +77,7 @@ class ChatInterface:
         except RequestException as e:
             return f"Error: {str(e)}"
 
-    def generate_index(self, link, extensions):
+    def generate_index(self, link, extensions, options_dropdown):
         """Generate an index for a given repository link."""
         try:
             data = json.dumps({"indexName": link, "extensions": extensions})
@@ -96,6 +96,9 @@ class ChatInterface:
                 if new_index not in current_choices:
                     current_choices.append(new_index)
 
+                if DEFAULT_INDEX not in current_choices:
+                    current_choices.append(DEFAULT_INDEX)
+
                 return result, gr.Dropdown(
                     label="Current Index",
                     value=index_name,
@@ -103,7 +106,34 @@ class ChatInterface:
                     choices=current_choices,
                 )
             else:
-                return f"Error {response.status_code}: {response.text}", None
+                dropdown = gr.Dropdown(
+                    label="Current Index",
+                    value=DEFAULT_INDEX[1],
+                    interactive=True,
+                    choices=[DEFAULT_INDEX],
+                )
+                return f"Error {response.status_code}: {response.text}", dropdown
+        except RequestException as e:
+            return f"Error: {str(e)}"
+        except Exception as e:
+            return f"Error: {str(e)}"
+
+    def remove_index(self, index_name):
+        """Remove an index from the server."""
+        try:
+            data = json.dumps({"indexName": index_name})
+            requests.post(
+                "http://localhost:8080/remove", data={"data": data}, timeout=TIMEOUT
+            )
+            # Load updated index list after removal
+            indexes = self.load_index_from_server()
+            # Return updated dropdown with first item selected
+            return gr.Dropdown(
+                label="Current Index",
+                value=DEFAULT_INDEX[1],
+                interactive=True,
+                choices=indexes,
+            )
         except RequestException as e:
             return f"Error: {str(e)}"
         except Exception as e:
@@ -117,9 +147,9 @@ class ChatInterface:
             if response.status_code == 200:
                 response_data = json.loads(response.text)
                 indexes = response_data.get("indexes", [])
-                return [(idx, idx) if idx else ("No Index", "") for idx in indexes]
+                return [DEFAULT_INDEX] + [(idx, idx) for idx in indexes]
             else:
-                return []
+                return [DEFAULT_INDEX]
         except RequestException:
             return []
 
@@ -143,12 +173,14 @@ class ChatInterface:
                 server_indexes = self.load_index_from_server()
                 self.current_index_info = gr.Dropdown(
                     label="Current Index",
-                    value="",
+                    value=DEFAULT_INDEX[1],
                     interactive=True,
                     choices=server_indexes,
                 )
 
-                load_index_button = gr.Button("Load Index")
+                with gr.Row():
+                    remove_index_button = gr.Button("Remove Index")
+                    load_index_button = gr.Button("Load Index")
 
                 chat_interface = gr.ChatInterface(
                     fn=self.chat,
@@ -194,7 +226,7 @@ class ChatInterface:
                 # Set up event handlers
                 generate_index_button.click(
                     fn=self.generate_index,
-                    inputs=[link_input, extension],
+                    inputs=[link_input, extension, self.current_index_info],
                     outputs=[status_display, self.current_index_info],
                 )
 
@@ -206,6 +238,12 @@ class ChatInterface:
 
                 load_index_button.click(
                     fn=self.load_index, inputs=[], outputs=[self.current_index_info]
+                )
+
+                remove_index_button.click(
+                    fn=self.remove_index,
+                    inputs=[self.current_index_info],
+                    outputs=self.current_index_info
                 )
 
         return self.interface

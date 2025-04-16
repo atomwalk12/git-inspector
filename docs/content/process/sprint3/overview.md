@@ -51,4 +51,24 @@ Checkout the [daily progress updates](./daily_updates/) folder for detailed day-
 
 ## Sprint Retrospective
 
-TODO: Add retrospective at the end of the sprint.
+- **What went well?**
+  - Many tasks carried over from the previous sprint have been completed
+    - Acceptance tests involving all types of requirements were built. This includes tests for the requirements
+      listed in the requirements document.
+  - Much of the technical debt has been resolved
+  - Implemented the search functionality with filtering capabilities
+  - Added comprehensive test suites for validating functional, business, and non-functional requirements using BDD-style tests
+
+- **What could be improved?**
+  - Not all planned tasks were completed:
+    - The Scala.js interface components (S3.3.2) implementation was only started but not completed
+    - ArchUnit tests for layered architecture (S3.4.1) remain to be implemented
+    - Chat accuracy evaluation (S3.4.4) wasn't completed
+  - Frontend development in Scala.js requires more attention in the next sprint
+  - Integration between the backend and frontend components needs further refinement
+
+- **What did I learn?**
+  - BDD-style testing with ScalaTest FeatureSpec provides a clear way to validate requirements
+  - Modern build tools like Vite improve the frontend development experience by allowing to dynamically reload changes
+  - Implementing comprehensive test suites early helps validate that requirements are being met correctly
+  - Python prototyping allowed for quick validation of UI concepts before full Scala.js implementation

@@ -22,6 +22,7 @@ import java.util.concurrent.ExecutionException
 
 import scala.collection.concurrent.TrieMap
 import scala.jdk.CollectionConverters.ListHasAsScala
+import scala.language.implicitConversions
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
@@ -135,7 +136,7 @@ object CacheService:
     def delete(index: QdrantURL): Try[Unit] =
       // Attempt to delete the collection
       Try(qdrantClient.deleteCollectionAsync(index.value).get())
-        .map(_ => ())
+        .map(_ => logger.debug(s"Successfully deleted collection: $index"))
         .recoverWith {
           case e: ExecutionException =>
             logger.warn(s"Error deleting collection ${index.value}: ${e.getMessage}")
