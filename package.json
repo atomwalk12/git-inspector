@@ -47,27 +47,38 @@
           "assets": [
             {
               "path": "backend/target/scala-*/gitinsp-backend.jar",
-              "label": "Backend Executable JAR"
+              "label": "Backend Executable JAR",
+              "name": "gitinsp-backend-v${nextRelease.version}.jar"
             },
             {
               "path": "frontend/target/scala-*/gitinsp-frontend-opt/main.js",
-              "label": "Frontend JavaScript Main (optimized)"
+              "label": "Frontend JavaScript Main (optimized)",
+              "name": "main-v${nextRelease.version}.js"
             },
             {
               "path": "frontend/target/scala-*/gitinsp-frontend-opt/gitinsp.-Git-Inspector-Frontend*.js",
-              "label": "Frontend Application JavaScript (optimized)"
+              "label": "Frontend Application JavaScript (optimized)",
+              "name": "gitinsp-frontend-v${nextRelease.version}.js"
             },
             {
               "path": "frontend/target/scala-*/gitinsp-frontend-opt/internal-*.js",
-              "label": "Frontend Support JavaScript (optimized)"
+              "label": "Frontend Support JavaScript (optimized)",
+              "name": "internal-frontend-v${nextRelease.version}.js"
             },
             {
               "path": "index.html",
-              "label": "Frontend HTML"
+              "label": "Frontend HTML",
+              "name": "index-v${nextRelease.version}.html"
             },
             {
               "path": "style.css",
-              "label": "Frontend CSS"
+              "label": "Frontend CSS",
+              "name": "style-v${nextRelease.version}.css"
+            },
+            {
+              "path": ".release-assets/report.pdf",
+              "label": "Project Report PDF",
+              "name": "report-v${nextRelease.version}.pdf"
             }
           ]
         }
