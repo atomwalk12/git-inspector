@@ -12,8 +12,8 @@ import gitinsp.domain.interfaces.infrastructure.GithubWrapperService
 import gitinsp.domain.interfaces.infrastructure.RAGComponentFactory
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.CodeFile
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
@@ -123,12 +123,12 @@ class UsingExternalServicesSuite extends AnyFlatSpec with Matchers with MockitoS
     val pipe = Pipeline(mockChatService, mockCacheService, mockIngestorService, githubService)
 
     // Setup data
-    val languages = RepositoryWithLanguages.detectLanguages("scala,md,py")
+    val languages = GitRepository.detectLanguages("scala,md,py")
     val doc1      = CodeFile("def test()", Language.SCALA, "test.scala", 1000, 100)
     val doc2      = CodeFile("# Hello, world!", Language.MARKDOWN, "test.md", 1000, 100)
     val doc3      = CodeFile("print('Hello, world!')", Language.PYTHON, "test.py", 1000, 100)
     val docs      = List(doc1, doc1, doc2, doc3)
-    val repo      = RepositoryWithLanguages(url, languages, docs)
+    val repo      = GitRepository(url, languages, docs)
 
     // Execute
     val source = pipe.regenerateIndex(repo)
@@ -138,7 +138,7 @@ class UsingExternalServicesSuite extends AnyFlatSpec with Matchers with MockitoS
     val service = GithubWrapperService(config, FetchingService())
 
     // Use a known public repo for testing
-    val languages = RepositoryWithLanguages.detectLanguage("scala,md").getOrElse(List())
+    val languages = GitRepository.detectLanguage("scala,md").getOrElse(List())
 
     // Execute
     val result = service.buildRepository(url, languages)
@@ -159,7 +159,7 @@ class UsingExternalServicesSuite extends AnyFlatSpec with Matchers with MockitoS
     val service = GithubWrapperService(config, FetchingService())
 
     // Use a known public repo for testing
-    val languages = RepositoryWithLanguages.detectLanguage("scala,md").getOrElse(List())
+    val languages = GitRepository.detectLanguage("scala,md").getOrElse(List())
 
     // Execute
     val result = service.fetchRepository(url, languages)

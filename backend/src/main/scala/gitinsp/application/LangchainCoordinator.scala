@@ -9,9 +9,8 @@ import akka.stream.Materializer
 import akka.stream.scaladsl.Source
 import com.typesafe.scalalogging.LazyLogging
 import gitinsp.domain.interfaces.application.Pipeline
-import gitinsp.domain.interfaces.infrastructure.GithubWrapperService
 import gitinsp.domain.models.Category
-import gitinsp.domain.models.RepositoryWithLanguages
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.URL
 import io.circe.*
 import io.circe.syntax.*
@@ -33,17 +32,17 @@ trait LangchainCoordinator:
   def start(routes: Route): Unit
 
 object LangchainCoordinator:
-  def apply(pipeline: Pipeline, gitWrapper: GithubWrapperService, prettyFmt: Boolean)(using
+  def apply(pipeline: Pipeline, prettyFmt: Boolean)(using
     system: ActorSystem,
     materializer: Materializer,
     executionContext: ExecutionContext,
-  ): LangchainCoordinator = new LangchainCoordinatorImpl(pipeline, gitWrapper, prettyFmt)
+  ): LangchainCoordinator = new LangchainCoordinatorImpl(pipeline, prettyFmt)
 
   private class LangchainCoordinatorImpl(using
     system: ActorSystem,
     materializer: Materializer,
     executionContext: ExecutionContext,
-  )(pipeline: Pipeline, gitService: GithubWrapperService, prettyFmt: Boolean)
+  )(pipeline: Pipeline, prettyFmt: Boolean)
       extends LangchainCoordinator
       with LazyLogging:
 
@@ -90,10 +89,10 @@ object LangchainCoordinator:
 
     override def fetchRepository(link: String, format: String, extension: String): Try[String] =
       // Detect the languages in the repository
-      val languages = RepositoryWithLanguages.detectLanguage(extension).getOrElse(List())
+      val languages = GitRepository.detectLanguage(extension).getOrElse(List())
 
       // Fetch the repository and return the content
-      gitService
+      pipeline
         .fetchRepository(URL(link), languages)
         .map(content => if content.trim.isEmpty then "No content found" else content)
         .recoverWith {
@@ -104,20 +103,21 @@ object LangchainCoordinator:
     override def generateIndex(repoUrl: String, languages: String): Try[String] =
       // Parse the data
       val repoURL       = URL(repoUrl)
-      val languagesList = RepositoryWithLanguages.detectLanguage(languages).getOrElse(List())
+      val languagesList = GitRepository.detectLanguage(languages).getOrElse(List())
 
       if languagesList.isEmpty then
         Failure(new IllegalArgumentException(s"No languages detected for $repoUrl"))
       else
         // Build and index the repository in a more functional way
-        gitService
+        pipeline
           .buildRepository(repoURL, languagesList)
           .flatMap(repo => pipeline.regenerateIndex(repo))
           .map(
             _ =>
               Map(
-                "result"    -> "Index generated successfully",
-                "indexName" -> repoURL.value,
+                "result" -> "Index generated successfully",
+                // Strip out the http://
+                "indexName" -> repoURL.toAIServiceURL().toURL().value,
               ).asJson.noSpaces,
           )
 

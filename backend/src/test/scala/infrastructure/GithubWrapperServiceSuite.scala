@@ -3,8 +3,8 @@ package gitinsp.tests.domain
 import com.typesafe.config.Config
 import gitinsp.domain.interfaces.infrastructure.FetchingService
 import gitinsp.domain.models.CodeFile
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.GithubWrapperService
 import org.mockito.ArgumentMatchers.any
@@ -28,7 +28,7 @@ class GithubWrapperServiceSuite
     // Create a mock Config
     val mockConfig = mock[Config]
     val urlClient  = mock[FetchingService]
-    val languages  = RepositoryWithLanguages.detectLanguage("scala").getOrElse(List())
+    val languages  = GitRepository.detectLanguage("scala").getOrElse(List())
 
     // Setup behavior
     val exception = new Exception("Could not fetch URL")
@@ -63,9 +63,9 @@ class GithubWrapperServiceSuite
         }
       }
     """
-    val languages = RepositoryWithLanguages.detectLanguage("scala").getOrElse(List())
+    val languages = GitRepository.detectLanguage("scala").getOrElse(List())
     val docs      = List(CodeFile("test content", Language.SCALA, "test.scala", 1000, 100))
-    val repo      = RepositoryWithLanguages(testUrl, languages, docs)
+    val repo      = GitRepository(testUrl, languages, docs)
 
     // Behavior
     when(mockConfig.getInt("gitinsp.timeout")).thenReturn(5000)
@@ -103,7 +103,7 @@ class GithubWrapperServiceSuite
         }
       }
     """
-    val languages = RepositoryWithLanguages.detectLanguage("scala").getOrElse(List())
+    val languages = GitRepository.detectLanguage("scala").getOrElse(List())
 
     // Behavior
     when(mockConfig.getInt("gitinsp.timeout")).thenReturn(5000)

@@ -62,7 +62,7 @@ enum Category(val value: String):
 // RepositoryWithLanguages
 // ============================
 
-object RepositoryWithLanguages extends LazyLogging:
+object GitRepository extends LazyLogging:
   /** Trims the part after the last dash in a string
     *  For example: "repo1-text" becomes "repo1"
     */
@@ -115,7 +115,7 @@ final case class RepositoryWithCategories(
   docs: List[CodeFile],
 )
 
-final case class RepositoryWithLanguages(url: URL, languages: List[Language], docs: List[CodeFile]):
+final case class GitRepository(url: URL, languages: List[Language], docs: List[CodeFile]):
   val indexNames = languages.map(lang => url.toAIServiceURL().toQdrantURL(lang.category))
   assert(indexNames.length == languages.length, s"Length mismatch: $indexNames, $languages")
 
@@ -229,6 +229,5 @@ final case class CodeFile(
         },
       )
 
-type TextSegment      = Content
-type SearchResults    = TextSegment
+type SearchResult     = Content
 type StreamedResponse = Source[String, NotUsed]

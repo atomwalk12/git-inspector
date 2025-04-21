@@ -8,8 +8,8 @@ import dev.langchain4j.store.embedding.EmbeddingSearchRequest
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
 import gitinsp.domain.Pipeline
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
@@ -71,7 +71,7 @@ class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen 
 
       And("A valid GitHub repository URL")
       val validUrl  = URL(repoName)
-      val languages = RepositoryWithLanguages.detectLanguages("scala,md")
+      val languages = GitRepository.detectLanguages("scala,md")
 
       When("The URL is processed")
       val startTime      = System.currentTimeMillis()
@@ -95,7 +95,7 @@ class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen 
     Scenario("Invalid GitHub URL is rejected with quick feedback", externalServiceTag) {
       Given("A configured GitHub service")
       val githubService = GithubWrapperService(config, FetchingService())
-      val languages     = RepositoryWithLanguages.detectLanguages("scala")
+      val languages     = GitRepository.detectLanguages("scala")
 
       When("An invalid URL is processed")
       val startTime      = System.currentTimeMillis()
@@ -116,7 +116,7 @@ class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen 
       val validUrl      = URL(repoName)
 
       When("Multiple extensions are specified")
-      val languages = RepositoryWithLanguages.detectLanguages("scala,md,py")
+      val languages = GitRepository.detectLanguages("scala,md,py")
       val result    = githubService.buildRepository(validUrl, languages)
 
       Then("All specified extensions should be included")
@@ -165,7 +165,7 @@ class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen 
 
       Then("The result should be a list of code files")
       result.matches should not be empty
-      if ENABLE_LOGGING then result.matches.asScala.foreach(m => println(m.score))
+      if ENABLE_LOGGING then result.matches.asScala.foreach(m => println(m.score)) // EmbeddingMatch
       if ENABLE_LOGGING then result.matches.asScala.foreach(m => println(m.embedded().text()))
     }
 
@@ -200,7 +200,7 @@ class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen 
       val githubService = GithubWrapperService(config, FetchingService())
       val ragFactory    = RAGComponentFactoryImpl(config)
       val validUrl      = URL(repoName)
-      val languages     = RepositoryWithLanguages.detectLanguages("scala,md")
+      val languages     = GitRepository.detectLanguages("scala,md")
 
       When("Repository content is analyzed")
       val repoResult = githubService.buildRepository(validUrl, languages)
@@ -298,7 +298,7 @@ class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen 
       Given("A configured GitHub wrapper service")
       val githubService = GithubWrapperService(config, FetchingService())
       val validUrl      = URL(repoName)
-      val languages     = RepositoryWithLanguages.detectLanguages("scala,md")
+      val languages     = GitRepository.detectLanguages("scala,md")
 
       When("A repository is fetched")
       val startTime = System.currentTimeMillis()
@@ -325,7 +325,7 @@ class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen 
       Given("A configured GitHub wrapper service")
       val githubService = GithubWrapperService(config, FetchingService())
       val validUrl      = URL(repoName)
-      val languages     = RepositoryWithLanguages.detectLanguages("scala")
+      val languages     = GitRepository.detectLanguages("scala")
 
       When("A repository is built with code files")
       val repoResult = githubService.buildRepository(validUrl, languages)

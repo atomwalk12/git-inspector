@@ -23,8 +23,8 @@ import gitinsp.domain.interfaces.infrastructure.RAGComponentFactory
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.Category
 import gitinsp.domain.models.CodeFile
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
@@ -118,7 +118,7 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
 
     val pipe = Pipeline(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
     val url  = URL("https://github.com/atomwalk12/PPS-22-git-insp")
-    val repository = RepositoryWithLanguages(
+    val repository = GitRepository(
       url,
       List(Language.SCALA, Language.MARKDOWN),
       List(),
@@ -184,12 +184,12 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
 
     // Setup data
     val pipe      = Pipeline(mockChatService, mockCacheService, ingestorService, mockGithubWrapper)
-    val languages = RepositoryWithLanguages.detectLanguages("scala,md")
+    val languages = GitRepository.detectLanguages("scala,md")
     val doc1      = CodeFile("def test()", Language.SCALA, "test.scala", 1000, 100)
     val doc2      = CodeFile("# Hello, world!", Language.MARKDOWN, "test.md", 1000, 100)
     val docs      = List(doc1, doc2, doc1, doc2)
     val url       = URL("https://github.com/atomwalk12/PPS-22-git-insp")
-    val repo      = RepositoryWithLanguages(url, languages, docs)
+    val repo      = GitRepository(url, languages, docs)
 
     // Execute
     pipe.regenerateIndex(repo)

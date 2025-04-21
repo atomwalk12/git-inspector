@@ -6,8 +6,8 @@ import com.typesafe.scalalogging.LazyLogging
 import gitinsp.domain.interfaces.infrastructure.FetchingService
 import gitinsp.domain.interfaces.infrastructure.GithubWrapperService
 import gitinsp.domain.models.CodeFile
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.domain.models.URL
 import io.circe.Json
 import io.circe.parser.*
@@ -38,7 +38,7 @@ object GithubWrapperService:
       // Fetch the repository in plain text (use for showing the content in the UI)
       fetch(url, languages, false)
 
-    def buildRepository(url: URL, languages: List[Language]): Try[RepositoryWithLanguages] =
+    def buildRepository(url: URL, languages: List[Language]): Try[GitRepository] =
       // Fetch the repository in JSON (used for indexing)
       fetch(url, languages, true).flatMap {
         responseText =>
@@ -47,7 +47,7 @@ object GithubWrapperService:
             val codeFiles = fromGithub(responseText)
 
             // Return the index with languages (will be used for indexing)
-            RepositoryWithLanguages(url, languages, codeFiles)
+            GitRepository(url, languages, codeFiles)
           }
       }.recoverWith {
         // If the request fails...
@@ -96,7 +96,7 @@ object GithubWrapperService:
                       // Parse the content field from the file object
                       fileJson.hcursor.downField("content").as[String] match {
                         case Right(content) => {
-                          val languageOpt = RepositoryWithLanguages.detectLanguageFromFile(filePath)
+                          val languageOpt = GitRepository.detectLanguageFromFile(filePath)
                           languageOpt.map(
                             language => {
                               val category = language.category

@@ -7,7 +7,7 @@ import com.typesafe.config.ConfigFactory
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
 import gitinsp.domain.Pipeline
-import gitinsp.domain.models.RepositoryWithLanguages
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
@@ -64,7 +64,7 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
 
       And("A repository has been setup and indexed")
       val validUrl  = URL(repoName)
-      val languages = RepositoryWithLanguages.detectLanguages("scala,md")
+      val languages = GitRepository.detectLanguages("scala,md")
       val repository = githubService.buildRepository(
         validUrl,
         languages,
@@ -101,7 +101,7 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
 
       And("A repository has been successfully built")
       val validUrl  = URL("https://github.com/atomwalk12/deep-bridge-survey")
-      val languages = RepositoryWithLanguages.detectLanguages("scala,md")
+      val languages = GitRepository.detectLanguages("scala,md")
       val repository = githubService.buildRepository(
         validUrl,
         languages,

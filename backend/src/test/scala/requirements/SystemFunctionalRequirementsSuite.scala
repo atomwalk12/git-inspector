@@ -7,8 +7,8 @@ import com.typesafe.config.ConfigFactory
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
 import gitinsp.domain.Pipeline
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
@@ -61,7 +61,7 @@ class SystemFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThe
 
       And("A set of specific languages to filter")
       val validUrl  = URL(repoName)
-      val languages = RepositoryWithLanguages.detectLanguages("scala,md")
+      val languages = GitRepository.detectLanguages("scala,md")
 
       When("The repository is cloned")
       val startTime      = System.currentTimeMillis()
@@ -86,7 +86,7 @@ class SystemFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThe
       Given("An invalid repository URL")
       val githubService = GithubWrapperService(config, FetchingService())
       val invalidUrl    = URL("https://github.com/nonexistent/repository")
-      val languages     = RepositoryWithLanguages.detectLanguages("scala")
+      val languages     = GitRepository.detectLanguages("scala")
 
       When("Attempting to clone the repository")
       val result = githubService.buildRepository(invalidUrl, languages)
@@ -122,7 +122,7 @@ class SystemFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThe
       val pipeline        = Pipeline(chatService, cacheService, ingestorService, githubService)
 
       val validUrl  = URL("https://github.com/atomwalk12/deep-bridge-survey")
-      val languages = RepositoryWithLanguages.detectLanguages("py,md")
+      val languages = GitRepository.detectLanguages("py,md")
 
       And("A repository has been successfully built")
       val repository = githubService.buildRepository(

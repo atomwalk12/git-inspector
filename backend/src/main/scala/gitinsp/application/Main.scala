@@ -50,7 +50,7 @@ object GitInspector extends LazyLogging:
     val pipeline        = Pipeline(chatService, cacheService, ingestorService, gitService)
 
     // Config
-    val langchainCoordinator = LangchainCoordinator(pipeline, gitService, prettyFmt)
+    val langchainCoordinator = LangchainCoordinator(pipeline, prettyFmt)
 
     // Used for listing current indexes
     val listIndexes: Route = path("list_indexes"):

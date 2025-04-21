@@ -1,30 +1,30 @@
 package gitinsp.components
 import com.raquo.laminar.api.L.*
+import gitinsp.models.ChatMessage
+import gitinsp.models.ChatSession
 import gitinsp.services.ContentService
 import gitinsp.util.IDGenerator
 import org.scalajs.dom
 object ChatInterface {
 
-  case class ChatMessage(id: String, isBot: Boolean, content: String)
-
   def handleNewMessage(
     content: String,
-    chatMessagesVar: Var[Seq[ChatMessage]],
+    chatSessionVar: Var[ChatSession],
     selectedIndexVar: Var[String],
     chatStatusVar: Var[String],
     contentService: ContentService,
   ): Unit =
     // Add user message
     val userMsgId = IDGenerator.generateId("user")
-    chatMessagesVar.update(
+    chatSessionVar.update(
       msgs =>
-        msgs :+ ChatInterface.ChatMessage(userMsgId, false, content),
+        msgs :+ ChatMessage(userMsgId, false, content),
     )
 
     // Add an initial bot message that will be updated as streaming progresses
     val botMsgId          = IDGenerator.generateId("bot")
-    val initialBotMessage = ChatInterface.ChatMessage(botMsgId, true, "...")
-    chatMessagesVar.update(msgs => msgs :+ initialBotMessage)
+    val initialBotMessage = ChatMessage(botMsgId, true, "...")
+    chatSessionVar.update(msgs => msgs :+ initialBotMessage)
 
     // Get the current index name
     val indexName = selectedIndexVar.now()
@@ -34,7 +34,7 @@ object ChatInterface {
       .foreach {
         streamedContent =>
           // Update the bot message with the latest content
-          chatMessagesVar.update {
+          chatSessionVar.update {
             messages =>
               messages.map {
                 msg =>
@@ -60,7 +60,7 @@ object ChatInterface {
       }(unsafeWindowOwner)
 
   def apply(
-    messagesSignal: Signal[Seq[ChatMessage]],
+    messagesSignal: Signal[ChatSession],
     onSendMessage: String => Unit,
   ): HtmlElement =
     val inputVar       = Var("")

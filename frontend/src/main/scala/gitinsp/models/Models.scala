@@ -21,3 +21,5 @@ case class IndexOption(id: String, label: String)
 
 object IndexOption:
   val default = new IndexOption("default", "None")
+
+type ChatSession = Seq[ChatMessage]

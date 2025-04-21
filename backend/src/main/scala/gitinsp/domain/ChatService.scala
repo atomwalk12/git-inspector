@@ -7,8 +7,8 @@ import dev.langchain4j.rag.content.Content
 import gitinsp.domain.interfaces.application.ChatService
 import gitinsp.domain.interfaces.infrastructure.ContentService
 import gitinsp.domain.models.Assistant
+import gitinsp.domain.models.SearchResult
 import gitinsp.domain.models.StreamedResponse
-import gitinsp.domain.models.TextSegment
 
 import java.util.List
 
@@ -37,7 +37,7 @@ object ChatService:
       ai.chat(msg)
         .onRetrieved {
           // This is triggered when data is retrieved from the index
-          (resp: List[TextSegment]) =>
+          (resp: List[SearchResult]) =>
             resp.asScala.toList.zipWithIndex.foreach {
               (content, idx) =>
                 val text      = content.textSegment().text()

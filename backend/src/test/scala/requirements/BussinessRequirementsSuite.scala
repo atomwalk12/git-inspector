@@ -77,7 +77,7 @@ class BussinessRequirementsSuite extends AnyFeatureSpec with GivenWhenThen with 
       val gitService           = GithubWrapperService()
       val chatService          = ChatService(prettyFmt = true, ContentService)
       val pipeline             = Pipeline(chatService, cacheService, ingestorService, gitService)
-      val langchainCoordinator = LangchainCoordinator(pipeline, gitService, prettyFmt = true)
+      val langchainCoordinator = LangchainCoordinator(pipeline, prettyFmt = true)
       val repository           = Some(storeName)
 
       And("A user query")

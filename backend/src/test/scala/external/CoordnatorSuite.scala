@@ -47,7 +47,7 @@ class CoordinatorSuite extends AnyFlatSpec with Matchers with MockitoSugar with 
   val cacheService    = CacheService(factory)
   val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
   val pipeline        = Pipeline(chatService, cacheService, ingestorService, gitWrapper)
-  val coordinator     = LangchainCoordinator(pipeline, gitWrapper, prettyFmt = true)
+  val coordinator     = LangchainCoordinator(pipeline, prettyFmt = true)
 
   "Langchain Coordinator" should "be able to list indexes" taggedAs externalServiceTag in:
     // Execute directly against Pipeline instead of through the coordinator

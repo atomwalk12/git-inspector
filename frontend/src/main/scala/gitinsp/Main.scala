@@ -3,12 +3,13 @@ package gitinsp
 import com.raquo.laminar.api.L.*
 import gitinsp.api.HttpClient
 import gitinsp.components.ChatInterface
-import gitinsp.components.ChatInterface.ChatMessage
 import gitinsp.components.IndexSelector
 import gitinsp.components.LinkViewer
 import gitinsp.components.StatusBar
 import gitinsp.components.TabContainer
 import gitinsp.components.TabContainer.Tab
+import gitinsp.models.ChatMessage
+import gitinsp.models.ChatSession
 import gitinsp.models.IndexEvent
 import gitinsp.models.IndexGenerated
 import gitinsp.models.IndexOption
@@ -30,7 +31,7 @@ object GitInspectorFrontend:
 
   // State management
   private val selectedTabVar: Var[String] = Var("chat")
-  private val chatMessagesVar: Var[Seq[ChatMessage]] = Var(Seq(
+  private val chatSession: Var[ChatSession] = Var(Seq(
     ChatMessage(id = "welcome", isBot = true, content = "Hello, how can I help you?"),
   ))
   private val availableIndexesVar = Var(Seq(
@@ -68,7 +69,7 @@ object GitInspectorFrontend:
       case RemoveIndexRequested(name) =>
         removeIndex(name)
         selectedIndexVar.set(IndexOption.default.id)
-        chatMessagesVar.update(messages => messages.filter(_.id == "welcome"))
+        chatSession.update(messages => messages.filter(_.id == "welcome"))
     }(unsafeWindowOwner)
 
   private def removeIndex(name: String): Unit =
@@ -153,7 +154,7 @@ object GitInspectorFrontend:
       div(
         cls := "chat-interface-container",
         ChatInterface(
-          messagesSignal = chatMessagesVar.signal, // Readonly variable
+          messagesSignal = chatSession.signal, // Readonly variable
           onSendMessage = handleChatMessage,
         ),
       ),
@@ -164,7 +165,7 @@ object GitInspectorFrontend:
   private def handleChatMessage(content: String): Unit =
     ChatInterface.handleNewMessage(
       content = content,
-      chatMessagesVar = chatMessagesVar,
+      chatSessionVar = chatSession,
       selectedIndexVar = selectedIndexVar,
       chatStatusVar = chatStatusVar,
       contentService = contentService,

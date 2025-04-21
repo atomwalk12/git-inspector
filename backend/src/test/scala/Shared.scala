@@ -12,3 +12,7 @@ val storeName      = "github.com[slash]atomwalk12[slash]PPS-22-git-insp-code"
 val repoName       = "https://github.com/atomwalk12/PPS-22-git-insp"
 
 val externalServiceTag = ExternalService
+
+// TODO: NFR1
+val TARGETED_REPOSITORIES = List()
+val Timeout               = 10000 // 10 seconds

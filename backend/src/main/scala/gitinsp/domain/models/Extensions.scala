@@ -13,7 +13,7 @@ object Given:
 
 object IngestorServiceExtensions:
   extension (ingestor: EmbeddingStoreIngestor)
-    def ingest(repository: RepositoryWithLanguages, lang: Language): Unit =
+    def ingest(repository: GitRepository, lang: Language): Unit =
       // Get all documents of the specified language
       repository.docs.filter(_.language == lang).foreach(
         doc => doc.createLangchainDocument().fold(())(ingestor.ingest),

@@ -3,9 +3,9 @@ package gitinsp.tests.cacheservice
 import com.typesafe.config.Config
 import dev.langchain4j.model.scoring.ScoringModel
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
 import gitinsp.domain.models.QdrantURL
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.factories.RAGComponentFactory
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory as ISF
@@ -61,7 +61,7 @@ class CacheServiceSuite
     val indexURL1         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-code")
     val indexURL2         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-text")
     val qdrantCollections = List(indexURL1, indexURL2)
-    val repositories      = RepositoryWithLanguages.from(qdrantCollections)
+    val repositories      = GitRepository.from(qdrantCollections)
 
     // Get the CacheService implementation
     val cache = CacheService(mockFactory)
@@ -74,7 +74,7 @@ class CacheServiceSuite
     val indexURL1         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-code")
     val indexURL2         = QdrantURL("github.com[slash]langchain-ai[slash]langchain-text")
     val qdrantCollections = List(indexURL1, indexURL2, indexURL1) // Duplicate indexURL1
-    val repository        = RepositoryWithLanguages.from(qdrantCollections)
+    val repository        = GitRepository.from(qdrantCollections)
 
     // Services
     val cacheService = CacheService(mockFactory)

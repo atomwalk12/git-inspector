@@ -7,9 +7,9 @@ import dev.langchain4j.model.scoring.ScoringModel
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import gitinsp.domain.IngestorService
 import gitinsp.domain.models.CodeFile
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.IngestorServiceExtensions.ingest
 import gitinsp.domain.models.Language
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.factories.RAGComponentFactory
@@ -32,7 +32,7 @@ import java.util.Collections as C
 import scala.concurrent.ExecutionContext
 import scala.util.Success
 
-import RepositoryWithLanguages.detectLanguages
+import GitRepository.detectLanguages
 
 class CacheServiceSuite
     extends AnyFlatSpec
@@ -88,7 +88,7 @@ class CacheServiceSuite
     val doc2       = CodeFile("Hello, world!", Language.SCALA, "README.scala", 1000, 100)
     val doc3       = CodeFile("Hello, world!", Language.PYTHON, "README.py", 1000, 100)
     val docs       = List(doc1, doc2, doc3)
-    val repository = RepositoryWithLanguages(url, detectLanguages(languages), docs)
+    val repository = GitRepository(url, detectLanguages(languages), docs)
 
     // Mocks
     val mockCacheService = spy(CacheService(mockFactory))
