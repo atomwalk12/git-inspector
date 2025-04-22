@@ -18,9 +18,12 @@ import gitinsp.models.RemoveIndexRequested
 import gitinsp.services.ContentService
 import org.scalajs.dom
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 
 object GitInspectorFrontend:
+
+  // Create a custom execution context for the application
+  implicit val ec: ExecutionContext = scala.scalajs.concurrent.JSExecutionContext.queue
 
   // ================================
   // Application State
@@ -82,7 +85,7 @@ object GitInspectorFrontend:
           refreshAvailableIndices()
         case None =>
           chatStatusVar.set("Failed to remove index. Ensure the backend is running.")
-      }(global)
+      }(ec)
 
   private def refreshAvailableIndices(): Unit =
     chatStatusVar.set("Refreshing available indices...")
@@ -91,13 +94,13 @@ object GitInspectorFrontend:
       .map {
         case Some(indices) =>
           availableIndexesVar.set(indices)
-          if indices.size == 1 then
+          if indices.sizeIs == 1 then
             chatStatusVar.set("No indices found")
           else
             chatStatusVar.set(s"Found ${indices.size - 1} indices")
         case None =>
           chatStatusVar.set("Failed to refresh indices. Ensure the backend is running.")
-      }(global)
+      }(ec)
 
   // ================================
   // UI Components

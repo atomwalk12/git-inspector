@@ -12,14 +12,16 @@ import java.util.Locale
 
 import scala.jdk.CollectionConverters.*
 
+// The EmbeddingStoreContentRetriever actually overrides the toString method.
+// Because of this, it is safe to suppress the warning.
+@SuppressWarnings(Array("org.wartremover.warts.ToString"))
 /** Strategy that conditionally uses retrievers based on LLM classification of the query.
   * Uses an LLM to determine if the query explicitly asks not to use RAG.
   */
 class ConditionalQueryStrategy(modelRouter: OllamaChatModel) extends QueryRoutingStrategy:
   private val PROMPT_TEMPLATE = PromptTemplate.from(
-    "Did the user ask to avoid querying the vector database?" +
-      "Answer only 'yes' or 'no'. " +
-      "Query: {{it}}",
+    "Did the user ask to query only the code index, only the text index or both?" +
+      "Answer only 'code', 'text' or 'both'.",
   )
 
   override def determineRetrievers(
@@ -31,8 +33,10 @@ class ConditionalQueryStrategy(modelRouter: OllamaChatModel) extends QueryRoutin
 
     // This basically allows to bypass fetching the RAG index if the modelk asked explicitly not to
     // Check for standalone word "no"
-    if aiMessage.text().toLowerCase(Locale.ROOT).matches(".*\\byes\\b.*") then
-      java.util.Collections.emptyList()
+    if aiMessage.text().toLowerCase(Locale.ROOT).matches(".*\\bcode\\b.*") then
+      retrievers.filter(r => r.toString().contains("code")).asJava
+    else if aiMessage.text().toLowerCase(Locale.ROOT).matches(".*\\btext\\b.*") then
+      retrievers.filter(r => r.toString().contains("text")).asJava
     else
       retrievers.asJava
 

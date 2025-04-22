@@ -3,7 +3,7 @@ import com.raquo.laminar.api.L.*
 import gitinsp.models.GenerateIndex
 import gitinsp.services.ContentService
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 import scala.util.Failure
 import scala.util.Success
 object LinkViewer:
@@ -20,7 +20,7 @@ object LinkViewer:
   def apply(
     contentService: ContentService,
     onIndexGenerated: Observer[String],
-  ): HtmlElement =
+  )(implicit ec: ExecutionContext): HtmlElement =
     // Fetch content function defined within closure to access the variables
     def fetchContent: Observer[Unit] =
       Observer[Unit] {
@@ -85,7 +85,7 @@ object LinkViewer:
                 case Failure(error) =>
                   statusVar.set(s"Error generating index: no languages detected")
                   isGeneratingVar.set(false)
-              }(global)
+              }(ec)
 
             case Some((_, _, false)) =>
               statusVar.set("Please wait for the previous operation to complete")
