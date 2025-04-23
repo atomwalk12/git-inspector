@@ -52,10 +52,5 @@ Checkout the [daily progress updates](./daily_updates/) folder for detailed day-
 ## Sprint Retrospective
 
 - **What went well?**
-  - 
-
-- **What could be improved?**
-  - 
-
-- **What did I learn?**
-  - 
+  - Managed to solve most of the issues, with the work related to the redaction of the report outstanding.
+  - During the next sprint, I will focus on completing the report, including the evaluation of the library through experiments.
