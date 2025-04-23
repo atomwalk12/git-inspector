@@ -5,7 +5,7 @@ import dev.langchain4j.model.ollama.OllamaChatModel
 import dev.langchain4j.rag.query.Query
 import dev.langchain4j.store.embedding.filter.Filter
 import gitinsp.domain.interfaces.application.QueryFilterService
-import gitinsp.infrastructure.factories.QueryFilterStrategyFactory
+import gitinsp.infrastructure.strategies.QueryFilterStrategyFactory
 
 /** Implementation of the QueryFilterService that uses the Strategy pattern
   * to determine which filter to apply to a query.

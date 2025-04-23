@@ -23,12 +23,12 @@ import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.Language
-import gitinsp.infrastructure.factories.QueryRoutingStrategyFactory
 import gitinsp.infrastructure.factories.RAGComponentFactoryImpl
 import gitinsp.infrastructure.factories.RouterWithStrategy
 import gitinsp.infrastructure.strategies.ConditionalQueryStrategy
 import gitinsp.infrastructure.strategies.DefaultQueryStrategy
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory
+import gitinsp.infrastructure.strategies.QueryRoutingStrategyFactory
 import io.qdrant.client.QdrantClient
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.verify

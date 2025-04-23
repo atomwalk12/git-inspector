@@ -28,6 +28,7 @@ import gitinsp.domain.interfaces.infrastructure.RAGComponentFactory
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.Language
 import gitinsp.infrastructure.QueryFilterService
+import gitinsp.infrastructure.strategies.QueryRoutingStrategyFactory
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.QdrantGrpcClient
 import io.qdrant.client.grpc.Collections
