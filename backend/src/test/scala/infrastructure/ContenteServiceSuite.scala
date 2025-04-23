@@ -51,6 +51,7 @@ class ContentFormatterSuite extends AnyFlatSpec with Matchers with BeforeAndAfte
     val chatResponse = mock(classOf[ChatResponse])
     val metadata     = mock(classOf[Metadata])
     val userMessage  = mock(classOf[UserMessage])
+    when(config.getString("gitinsp.rag.filter-strategy")).thenReturn("llm")
 
     // Setup data
     val formatter      = ContentService
