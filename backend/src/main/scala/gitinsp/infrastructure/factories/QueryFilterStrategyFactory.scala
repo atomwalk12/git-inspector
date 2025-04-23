@@ -1,8 +1,8 @@
 package gitinsp.infrastructure.factories
 
 import gitinsp.domain.interfaces.application.QueryFilterStrategy
-import gitinsp.infrastructure.strategies.filter.LLMClassificationFilterStrategy
-import gitinsp.infrastructure.strategies.filter.NoFilterStrategy
+import gitinsp.infrastructure.strategies.LLMClassificationFilterStrategy
+import gitinsp.infrastructure.strategies.NoFilterStrategy
 
 import java.util.Locale
 

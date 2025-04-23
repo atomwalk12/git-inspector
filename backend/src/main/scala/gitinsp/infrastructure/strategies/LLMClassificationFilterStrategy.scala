@@ -1,4 +1,4 @@
-package gitinsp.infrastructure.strategies.filter
+package gitinsp.infrastructure.strategies
 
 import dev.langchain4j.model.input.PromptTemplate
 import dev.langchain4j.model.ollama.OllamaChatModel
