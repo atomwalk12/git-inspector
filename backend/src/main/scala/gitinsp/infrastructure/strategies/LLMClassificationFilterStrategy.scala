@@ -33,7 +33,7 @@ class LLMClassificationFilterStrategy extends QueryFilterStrategy:
 
   override def createFilter(query: Query, modelRouter: OllamaChatModel): Option[Filter] =
     val prompt = PromptTemplate.from(promptTemplate)
-      .apply(query.metadata().userMessage().contents())
+      .apply(query.metadata().userMessage().text())
 
     // This retrieves the response from the model
     val response = modelRouter

@@ -10,7 +10,6 @@ import gitinsp.domain.interfaces.infrastructure.RAGComponentFactory
 import gitinsp.domain.models.AIServiceURL
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.Category
-import gitinsp.domain.models.Given.given_Conversion_AIServiceURL_String
 import gitinsp.domain.models.Language
 import gitinsp.domain.models.QdrantURL
 import gitinsp.domain.models.RepositoryWithCategories
@@ -75,14 +74,18 @@ object CacheService:
                         _qdrantClient,
                         s"$name-${Category.TEXT}",
                       )
-                      List(factory.createMarkdownRetriever(markdownStore, textEmbeddingModel, name))
+                      List(factory.createMarkdownRetriever(
+                        markdownStore,
+                        textEmbeddingModel,
+                        s"$name-${Category.TEXT}",
+                      ))
                     case Category.CODE =>
                       val codeStore =
                         factory.createEmbeddingStore(_qdrantClient, s"$name-${Category.CODE}")
                       List(factory.createCodeRetriever(
                         codeStore,
                         codeEmbeddingModel,
-                        name,
+                        s"$name-${Category.CODE}",
                         modelRouter,
                       ))
               }

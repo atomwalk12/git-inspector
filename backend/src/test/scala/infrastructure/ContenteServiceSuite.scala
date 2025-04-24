@@ -64,6 +64,8 @@ class ContentFormatterSuite extends AnyFlatSpec with Matchers with BeforeAndAfte
     when(config.getBoolean("gitinsp.rag.use-dynamic-filter")).thenReturn(true)
     when(query.metadata()).thenReturn(metadata)
     when(metadata.userMessage()).thenReturn(userMessage)
+    when(userMessage.text()).thenReturn("This is the query")
+    when(metadata.userMessage()).thenReturn(userMessage)
     when(userMessage.contents()).thenReturn(Arrays.asList(TextContent.from("test")))
     when(model.chat(any(classOf[UserMessage]))).thenReturn(chatResponse)
     when(chatResponse.aiMessage()).thenReturn(aiMessage)
