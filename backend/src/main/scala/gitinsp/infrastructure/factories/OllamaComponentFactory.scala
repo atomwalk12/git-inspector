@@ -323,7 +323,10 @@ class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with L
     * @param name The name of the collection
     */
   override def createCollection(name: String, client: QdrantClient, distance: Distance): Try[Unit] =
-    val dimension = config.getInt("gitinsp.qdrant.dimension")
+    val dimension = name.endsWith("code") match {
+      case true  => config.getInt("gitinsp.code-embedding.size")
+      case false => config.getInt("gitinsp.text-embedding.size")
+    }
     Try {
       client.createCollectionAsync(
         name,

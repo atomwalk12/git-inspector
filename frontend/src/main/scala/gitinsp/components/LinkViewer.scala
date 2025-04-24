@@ -45,7 +45,7 @@ object LinkViewer:
               future.onComplete {
                 case Success(response) =>
                   contentVar.set(response)
-                  statusVar.set("Content fetched successfully")
+                  statusVar.set("Operation completed.")
                   isFetchingVar.set(false)
                 case Failure(error) =>
                   statusVar.set(s"Error: ${error.getMessage}")
