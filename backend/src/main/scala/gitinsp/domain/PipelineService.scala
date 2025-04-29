@@ -20,7 +20,7 @@ import gitinsp.domain.models.URL
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-object Pipeline extends LazyLogging:
+object PipelineService extends LazyLogging:
   def apply(cs: ChatService, cas: CacheService, is: IngestorService, ws: GithubWrapperService)(using
     ActorSystem,
     Materializer,

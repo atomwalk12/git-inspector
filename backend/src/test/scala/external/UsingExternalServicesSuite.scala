@@ -6,7 +6,7 @@ import akka.stream.scaladsl.Sink
 import akka.stream.scaladsl.Source
 import com.typesafe.config.Config
 import gitinsp.domain.ChatService
-import gitinsp.domain.Pipeline
+import gitinsp.domain.PipelineService
 import gitinsp.domain.interfaces.application.IngestorService
 import gitinsp.domain.interfaces.infrastructure.GithubWrapperService
 import gitinsp.domain.interfaces.infrastructure.RAGComponentFactory
@@ -68,7 +68,8 @@ class UsingExternalServicesSuite extends AnyFlatSpec with Matchers with MockitoS
 
   "Pipeline with external services" should "be able to execute" taggedAs externalServiceTag in:
     // Setup
-    val pipe = Pipeline(mockChatService, mockCacheService, mockIngestorService, githubService)
+    val pipe =
+      PipelineService(mockChatService, mockCacheService, mockIngestorService, githubService)
 
     // Execute
     val index     = url.toAIServiceURL()
@@ -94,7 +95,8 @@ class UsingExternalServicesSuite extends AnyFlatSpec with Matchers with MockitoS
 
   it should "be able to execute with content retrieval" taggedAs externalServiceTag in:
     // Setup
-    val pipe  = Pipeline(mockChatService, mockCacheService, mockIngestorService, githubService)
+    val pipe =
+      PipelineService(mockChatService, mockCacheService, mockIngestorService, githubService)
     val index = url.toAIServiceURL()
 
     // Execute
@@ -120,7 +122,8 @@ class UsingExternalServicesSuite extends AnyFlatSpec with Matchers with MockitoS
 
   it should "be able to process documents" taggedAs externalServiceTag in:
     // Setup classes
-    val pipe = Pipeline(mockChatService, mockCacheService, mockIngestorService, githubService)
+    val pipe =
+      PipelineService(mockChatService, mockCacheService, mockIngestorService, githubService)
 
     // Setup data
     val languages = GitRepository.detectLanguages("scala,md,py")

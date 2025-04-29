@@ -7,7 +7,7 @@ import com.typesafe.config.ConfigFactory
 import dev.langchain4j.store.embedding.EmbeddingSearchRequest
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
-import gitinsp.domain.Pipeline
+import gitinsp.domain.PipelineService
 import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
 import gitinsp.domain.models.URL
@@ -67,7 +67,7 @@ class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen 
       val cacheService    = CacheService(ragFactory)
       val chatService     = ChatService(false, ContentService)
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
-      val pipeline        = Pipeline(chatService, cacheService, ingestorService, githubService)
+      val pipeline = PipelineService(chatService, cacheService, ingestorService, githubService)
 
       And("A valid GitHub repository URL")
       val validUrl  = URL(repoName)
@@ -378,8 +378,8 @@ class UserFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen 
       val chatService     = ChatService(false, ContentService)
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
       val githubService   = GithubWrapperService(config, FetchingService())
-      val pipeline        = Pipeline(chatService, cacheService, ingestorService, githubService)
-      val aiServiceUrl    = Some(URL(repoName).toAIServiceURL())
+      val pipeline     = PipelineService(chatService, cacheService, ingestorService, githubService)
+      val aiServiceUrl = Some(URL(repoName).toAIServiceURL())
 
       When("A user asks to remember a keyword")
       pipeline.getAIService(aiServiceUrl)

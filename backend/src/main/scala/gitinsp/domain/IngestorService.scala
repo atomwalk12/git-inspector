@@ -57,7 +57,8 @@ object IngestorService:
       // Get all collections
       val collections = listCollections().getOrElse(List.empty).map(QdrantURL(_))
 
-      // Delete the collection if it exists
+      // Delete the collection if it exists.
+      // This is usually done when a repository is regenerated.
       Try {
         repository.indexNames
           .filter(index => collections.contains(index))

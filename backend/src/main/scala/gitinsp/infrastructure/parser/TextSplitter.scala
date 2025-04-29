@@ -36,15 +36,21 @@ abstract class TextSplitter(
     s"Got a larger chunk overlap ($chunkOverlap) than chunk size ($chunkSize), should be smaller.",
   )
 
+  /** Entry point for splitting a single Langchain4j Document. */
   def split(doc: Document): java.util.List[TextSegment] = {
     // createDocuments(doc)
     createDocuments(List(doc.text()), Some(List(doc.metadata())))
   }
 
-  /** Split text into multiple components. */
+  /** Abstract method to be implemented by subclasses. Defines the core splitting logic for a
+    * given text.
+    */
   def splitText(text: String): List[String]
 
-  /** Create documents from a list of texts. */
+  /** Creates TextSegment objects from a list of texts and optional metadata. It calls the
+    * subclass's splitText implementation to get initial chunks and then formats them into
+    * TextSegments, potentially adding start index metadata.
+    */
   def createDocuments(
     texts: List[String],
     metadatas: Option[List[Metadata]] = None,
@@ -57,8 +63,10 @@ abstract class TextSplitter(
       var index            = 0
       var previousChunkLen = 0
 
+      // Calls the specific splitText implementation (e.g., RecursiveCharacterTextSplitter)
       for chunk <- splitText(texts(i)) do {
         val metadata = _metadatas(i)
+        // Optionally add the start index of the chunk within the original text
         val updatedMetadata = if addStartIndex then {
           val offset = index + previousChunkLen - chunkOverlap
           index = texts(i).indexOf(chunk, math.max(0, offset))
@@ -74,6 +82,7 @@ abstract class TextSplitter(
       }
     }
 
+    // Convert internal Document representations to TextSegments for the final output
     documents.map(doc => createSegment(doc.text, doc, index.getAndIncrement())).toList.asJava
   }
 
@@ -82,7 +91,7 @@ abstract class TextSplitter(
     TextSegment.from(text, metadata)
   }
 
-  /** Split documents. */
+  /** Splits multiple documents into a list of TextSegments. */
   def splitDocuments(documents: Iterable[Document]): List[TextSegment] = {
     val texts     = ListBuffer[String]()
     val metadatas = ListBuffer[Metadata]()
@@ -95,7 +104,7 @@ abstract class TextSplitter(
     createDocuments(texts.toList, Some(metadatas.toList)).asScala.toList
   }
 
-  /** Join docs with a separator. */
+  /** Helper to join a list of strings with a separator, optionally trimming whitespace. */
   protected def joinDocs(docs: List[String], separator: String): Option[String] = {
     val text          = docs.mkString(separator)
     val processedText = if stripWhitespace then text.trim else text
@@ -103,18 +112,19 @@ abstract class TextSplitter(
     if processedText.isEmpty then None else Some(processedText)
   }
 
-  /** Merge splits into chunks. */
+  /** Merges smaller text splits into larger chunks that respect the `chunkSize`. It attempts to
+    * maximize chunk size without exceeding it, while also considering `chunkOverlap`.
+    */
   protected def mergeSplits(splits: Iterable[String], separator: String): List[String] = {
-    // We now want to combine these smaller pieces into medium size
-    // chunks to send to the LLM.
     val separatorLen = lengthFunction(separator)
 
-    val docs       = ListBuffer[String]()
-    var currentDoc = ListBuffer[String]()
-    var total      = 0
+    val docs       = ListBuffer[String]() // Final merged chunks
+    var currentDoc = ListBuffer[String]() // Current chunk being built
+    var total      = 0                    // Current length of the chunk being built
 
     for d <- splits do {
       val len = lengthFunction(d)
+      // Check if adding the next split exceeds the chunkSize
       if total + len + (if currentDoc.nonEmpty then separatorLen else 0) > chunkSize then {
         if total > chunkSize then {
           logger.warn(
@@ -123,30 +133,33 @@ abstract class TextSplitter(
           )
         }
 
+        // Finalize the current chunk if it's not empty
         if currentDoc.nonEmpty then {
           val doc = joinDocs(currentDoc.toList, separator)
           if doc.isDefined then {
             docs += doc.get
           }
-          // Keep on popping if:
-          // - we have a larger chunk than in the chunk overlap
-          // - or if we still have any chunks and the length is long
+          // Overlap Handling: Remove splits from the beginning of `currentDoc`
+          // until the total length allows adding the new split `d` without exceeding `chunkSize`,
+          // OR until the remaining length is less than `chunkOverlap`.
+          // This ensures continuity between the finalized chunk and the next one being started.
           while total > chunkOverlap ||
             (total + len + (if currentDoc.nonEmpty then separatorLen
                             else 0) > chunkSize && total > 0)
           do {
-
             total -= lengthFunction(currentDoc.head) + (if currentDoc.length > 1 then separatorLen
                                                         else 0)
-            currentDoc = currentDoc.tail
+            currentDoc = currentDoc.tail // Remove the first element
           }
         }
       }
 
+      // Add the current split to the chunk being built
       currentDoc += d
       total += len + (if currentDoc.length > 1 then separatorLen else 0)
     }
 
+    // Add the last remaining chunk after the loop finishes
     val doc = joinDocs(currentDoc.toList, separator)
     if doc.isDefined then {
       docs += doc.get

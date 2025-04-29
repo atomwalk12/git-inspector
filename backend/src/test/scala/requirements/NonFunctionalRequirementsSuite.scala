@@ -6,7 +6,7 @@ import akka.stream.scaladsl.Sink
 import com.typesafe.config.ConfigFactory
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
-import gitinsp.domain.Pipeline
+import gitinsp.domain.PipelineService
 import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
@@ -60,7 +60,7 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
       val cacheService    = CacheService(ragFactory)
       val chatService     = ChatService(false, ContentService)
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
-      val pipeline        = Pipeline(chatService, cacheService, ingestorService, githubService)
+      val pipeline = PipelineService(chatService, cacheService, ingestorService, githubService)
 
       And("A repository has been setup and indexed")
       val validUrl  = URL(repoName)
@@ -124,7 +124,7 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
       val chatService     = ChatService(false, ContentService)
       val githubService   = GithubWrapperService(config, FetchingService())
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
-      val pipeline        = Pipeline(chatService, cacheService, ingestorService, githubService)
+      val pipeline = PipelineService(chatService, cacheService, ingestorService, githubService)
 
       When("A simple chat query is performed")
       val query     = "Hi, what can you help me with?"

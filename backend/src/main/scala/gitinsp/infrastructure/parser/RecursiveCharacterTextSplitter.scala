@@ -54,6 +54,7 @@ class CharacterTextSplitter(
           val splitPattern = s"($separator)" // NOTE: used to keep separators in the result
           val splits       = splitPattern.r.split(text).toList
 
+          // Logic to reconstruct chunks with separator at start or end
           val result = keepMode match {
             case KeepAtStart if splits.length > 1 =>
               // Keep separator at the start of each split
@@ -84,7 +85,7 @@ class CharacterTextSplitter(
               else
                 pairs
 
-            case _ => splits
+            case _ => splits // Handle cases where split didn't produce expected pairs
           }
 
           result.filter(_.nonEmpty)
@@ -127,8 +128,19 @@ import scala.collection.mutable.ListBuffer
   "org.wartremover.warts.Var",
   "org.wartremover.warts.Throw",
 ))
-/** Helper function to split text with regex */
+/** Utility object containing the refined logic for splitting text with regular expressions,
+  * handling the `keepSeparator` parameter correctly ('start', 'end', or false).
+  */
 object TextSplitterUtils {
+
+  /** Splits text using a regex separator, with options to keep the separator.
+    *   - `keepSeparator = Left(false)`: Discards the separator.
+    *   - `keepSeparator = Left(true) | Right("start")`: Keeps the separator at the beginning of
+    *     the chunk that follows it.
+    *   - `keepSeparator = Right("end")`: Keeps the separator at the end of the chunk that precedes
+    *     it.
+    *   - If `separator` is empty, splits into individual characters.
+    */
   def splitTextWithRegex(
     text: String,
     separator: String,
@@ -152,7 +164,7 @@ object TextSplitterUtils {
           // Create splits including the separators
           val result = ListBuffer[String]()
 
-          // Add first chunk if needed
+          // Add first chunk if needed (text before the first separator)
           if separatorPositions.nonEmpty && separatorPositions.head > 0 then {
             result += text.substring(0, separatorPositions.head)
           }
@@ -163,6 +175,7 @@ object TextSplitterUtils {
             val sepStart = sepMatch.start
             val sepEnd   = sepMatch.end
 
+            // Determine the end of the text for this chunk (start of next separator or end of text)
             val nextStart = if i + 1 < separatorPositions.length then {
               separatorPositions(i + 1)
             }
@@ -170,7 +183,7 @@ object TextSplitterUtils {
               text.length
             }
 
-            // Add the separator plus text
+            // Add the separator plus the text following it, up to the next separator
             if sepEnd < nextStart then {
               result += text.substring(sepStart, nextStart)
             }
@@ -201,7 +214,7 @@ object TextSplitterUtils {
             prevEnd = sepPos + separator.length
           }
 
-          // Add final chunk if there's text after the last separator
+          // Add the final chunk if there's text after the last separator
           if prevEnd < text.length then {
             result += text.substring(prevEnd)
           }
@@ -227,8 +240,10 @@ object TextSplitterUtils {
   "org.wartremover.warts.Equals",
   "org.wartremover.warts.Recursion",
 ))
-/** Splitting text by recursively looking at characters. Recursively tries to split by different
-  * characters to find one that works.
+/** Implements TextSplitter by recursively splitting text based on a prioritized list of
+  * separators. It attempts to split by the highest-priority separator first. If resulting chunks
+  * are still too large, it recursively calls itself on those chunks using the next lower-priority
+  * separators.
   */
 class RecursiveCharacterTextSplitter(
   separators: Option[List[String]] = None,
@@ -248,61 +263,79 @@ class RecursiveCharacterTextSplitter(
       stripWhitespace,
     ) {
 
+  // Default separators if none provided
   private val _separators: List[String] = separators.getOrElse(List("\n\n", "\n", " ", ""))
 
-  /** Split incoming text and return chunks. */
+  /** Internal recursive function to split text.
+    * @param text
+    *   The text to split.
+    * @param separators
+    *   The prioritized list of separators to try at this level.
+    * @return
+    *   A list of text chunks.
+    */
   private def _split_text(text: String, separators: List[String]): List[String] = {
     val finalChunks = ListBuffer[String]()
 
-    // Get appropriate separator to use
-    var separator     = separators.last
+    // ----- 1. Find the highest-priority separator present in the current text -----
+    var separator     = separators.last // Default to the last (most granular)
     var newSeparators = List.empty[String]
-
+    var found         = false
+    // Iterate through separators by priority
     val iterator = separators.iterator.zipWithIndex
-    var found    = false
 
     while iterator.hasNext && !found do {
       val (s, i)     = iterator.next()
-      val _separator = if isSeparatorRegex then s else Regex.quote(s)
+      val _separator = if isSeparatorRegex then s else Regex.quote(s) // Escape if not regex
 
-      if s.isEmpty then {
+      if s.isEmpty then { // Empty string separator always matches
         separator = s
         found = true
       }
-      else if _separator.r.findFirstIn(text).isDefined then {
+      else if _separator.r.findFirstIn(text).isDefined then { // Check if separator exists
         separator = s
-        newSeparators = separators.drop(i + 1)
+        newSeparators = separators.drop(i + 1) // Store remaining separators for recursion
         found = true
       }
     }
 
+    // ----- 2. Split the text using the chosen separator -----
     val _separator = if isSeparatorRegex then separator else Regex.quote(separator)
-    val splits     = TextSplitterUtils.splitTextWithRegex(text, _separator, keepSeparator)
+    // Use the utility function for consistent splitting logic
+    val splits = TextSplitterUtils.splitTextWithRegex(text, _separator, keepSeparator)
 
-    // Now go merging things, recursively splitting longer texts
-    val goodSplits      = ListBuffer[String]()
+    // ----- 3. Process the resulting splits -----
+    val goodSplits = ListBuffer[String]() // Buffer for splits smaller than chunkSize
+    // Determine the actual separator used for merging (empty if keepSeparator is true)
     val actualSeparator = if keepSeparator == Left(false) then separator else ""
 
     for s <- splits do
       if lengthFunction(s) < chunkSize then {
+        // If split is small enough, add to buffer
         goodSplits += s
       }
       else {
+        // If split is too large:
+        // a. First, merge and add any buffered smaller splits
         if goodSplits.nonEmpty then {
           val mergedText = mergeSplits(goodSplits.toList, actualSeparator)
           finalChunks ++= mergedText
           goodSplits.clear()
         }
 
+        // b. Process the large split:
         if newSeparators.isEmpty then {
+          // If no more separators to try, add the large chunk as is
           finalChunks += s
         }
         else {
+          // Otherwise, recursively split this large chunk with remaining separators
           val otherChunks = _split_text(s, newSeparators)
           finalChunks ++= otherChunks
         }
       }
 
+    // ----- 4. Merge any remaining splits in the buffer after the loop -----
     if goodSplits.nonEmpty then {
       val mergedText = mergeSplits(goodSplits.toList, actualSeparator)
       finalChunks ++= mergedText
@@ -311,7 +344,7 @@ class RecursiveCharacterTextSplitter(
     finalChunks.toList
   }
 
-  /** Split the input text into smaller chunks based on predefined separators. */
+  /** Overrides the abstract splitText method to initiate the recursive splitting process. */
   override def splitText(text: String): List[String] = _split_text(text, _separators)
 }
 
@@ -319,7 +352,14 @@ class RecursiveCharacterTextSplitter(
   "org.wartremover.warts.DefaultArguments",
   "org.wartremover.warts.Throw",
 ))
+/** Companion object for RecursiveCharacterTextSplitter. Provides factory methods like
+  * `fromLanguage` to create instances with language-specific separators.
+  */
 object RecursiveCharacterTextSplitter {
+
+  /** Factory method to create a RecursiveCharacterTextSplitter configured with separators
+    * appropriate for a given programming language.
+    */
   def fromLanguage(
     language: Language,
     keepSeparator: Either[Boolean, String] = Left(true),
@@ -332,7 +372,7 @@ object RecursiveCharacterTextSplitter {
     val separators = getSeparatorsForLanguage(language)
     new RecursiveCharacterTextSplitter(
       separators = Some(separators),
-      isSeparatorRegex = true,
+      isSeparatorRegex = true, // Assume language separators might be regex patterns
       chunkSize = chunkSize,
       chunkOverlap = chunkOverlap,
       keepSeparator = keepSeparator,

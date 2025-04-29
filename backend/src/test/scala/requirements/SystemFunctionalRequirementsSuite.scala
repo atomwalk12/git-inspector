@@ -6,7 +6,7 @@ import akka.stream.scaladsl.Sink
 import com.typesafe.config.ConfigFactory
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
-import gitinsp.domain.Pipeline
+import gitinsp.domain.PipelineService
 import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
 import gitinsp.domain.models.URL
@@ -119,7 +119,7 @@ class SystemFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThe
       val githubService   = GithubWrapperService(config, FetchingService())
       val chatService     = ChatService(false, ContentService)
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
-      val pipeline        = Pipeline(chatService, cacheService, ingestorService, githubService)
+      val pipeline = PipelineService(chatService, cacheService, ingestorService, githubService)
 
       val validUrl  = URL("https://github.com/atomwalk12/deep-bridge-survey")
       val languages = GitRepository.detectLanguages("py,md")
@@ -171,7 +171,7 @@ class SystemFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThe
       val validUrl        = Some(URL(repoName).toAIServiceURL())
       val githubService   = GithubWrapperService(config, FetchingService())
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
-      val pipeline        = Pipeline(chatService, cacheService, ingestorService, githubService)
+      val pipeline = PipelineService(chatService, cacheService, ingestorService, githubService)
 
       When("Querying the chat service about code in the repository")
       val query    = "What functional programming patterns are used in this repository?"

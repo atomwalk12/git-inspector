@@ -10,7 +10,7 @@ import com.typesafe.config.ConfigFactory
 import gitinsp.application.LangchainCoordinator
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
-import gitinsp.domain.Pipeline
+import gitinsp.domain.PipelineService
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
 import gitinsp.infrastructure.GithubWrapperService
@@ -71,12 +71,12 @@ class BussinessRequirementsSuite extends AnyFeatureSpec with GivenWhenThen with 
       externalServiceTag,
     ) {
       Given("A configured pipeline with necessary services")
-      val factory              = RAGComponentFactoryImpl(config)
-      val cacheService         = CacheService(factory)
-      val ingestorService      = IngestorService(cacheService, config, IngestionStrategyFactory)
-      val gitService           = GithubWrapperService()
-      val chatService          = ChatService(prettyFmt = true, ContentService)
-      val pipeline             = Pipeline(chatService, cacheService, ingestorService, gitService)
+      val factory         = RAGComponentFactoryImpl(config)
+      val cacheService    = CacheService(factory)
+      val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
+      val gitService      = GithubWrapperService()
+      val chatService     = ChatService(prettyFmt = true, ContentService)
+      val pipeline        = PipelineService(chatService, cacheService, ingestorService, gitService)
       val langchainCoordinator = LangchainCoordinator(pipeline, prettyFmt = true)
       val repository           = Some(storeName)
 

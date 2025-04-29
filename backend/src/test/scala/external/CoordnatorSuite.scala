@@ -10,7 +10,7 @@ import dev.langchain4j.model.scoring.ScoringModel
 import gitinsp.application.LangchainCoordinator
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
-import gitinsp.domain.Pipeline
+import gitinsp.domain.PipelineService
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
 import gitinsp.infrastructure.GithubWrapperService
@@ -46,7 +46,7 @@ class CoordinatorSuite extends AnyFlatSpec with Matchers with MockitoSugar with 
   doReturn(mockScoringModel).when(factory).createScoringModel()
   val cacheService    = CacheService(factory)
   val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
-  val pipeline        = Pipeline(chatService, cacheService, ingestorService, gitWrapper)
+  val pipeline        = PipelineService(chatService, cacheService, ingestorService, gitWrapper)
   val coordinator     = LangchainCoordinator(pipeline, prettyFmt = true)
 
   "Langchain Coordinator" should "be able to list indexes" taggedAs externalServiceTag in:
