@@ -19,19 +19,24 @@ object ClaudeFactoryProvider:
   */
 class ClaudeFactoryProviderImpl(config: Config) extends ChatModelFactory with LazyLogging:
 
-  val modelName       = config.getString("gitinsp.claude.model")
-  val envVariable     = config.getString("gitinsp.claude.antrophic-api-key")
-  val antrophicApiKey = System.getenv(envVariable)
+  private val _modelName       = config.getString("gitinsp.claude.model")
+  private val _envVariable     = config.getString("gitinsp.claude.antrophic-api-key")
+  private val _antrophicApiKey = System.getenv(_envVariable)
+
+  // Renamed methods to follow factory pattern naming convention
+  def createModelName(): String   = _modelName
+  def createEnvVariable(): String = _envVariable
+  def createApiKey(): String      = _antrophicApiKey
 
   /** Creates a standard (non-streaming) chat model.
     *
     * @return A ClaudeChatModel
     */
   override def createChatModel(): ChatLanguageModel =
-    logger.debug(s"Creating chat model with model=$modelName")
+    logger.debug(s"Creating chat model with model=${createModelName()}")
     AnthropicChatModel.builder()
-      .apiKey(antrophicApiKey)
-      .modelName(modelName)
+      .apiKey(createApiKey())
+      .modelName(createModelName())
       .logRequests(true)
       .logResponses(true)
       .build();
@@ -41,9 +46,9 @@ class ClaudeFactoryProviderImpl(config: Config) extends ChatModelFactory with La
     * @return A ClaudeStreamingChatModel
     */
   override def createStreamingChatModel(): StreamingChatLanguageModel =
-    logger.debug(s"Creating chat model with model=$modelName")
+    logger.debug(s"Creating chat model with model=${createModelName()}")
     AnthropicStreamingChatModel.builder()
-      .apiKey(antrophicApiKey)
-      .modelName(modelName)
+      .apiKey(createApiKey())
+      .modelName(createModelName())
       .logRequests(true)
       .build();

@@ -1,6 +1,6 @@
 package gitinsp.tests.cacheservice
 
-import com.typesafe.config.Config
+import com.typesafe.config.ConfigFactory
 import dev.langchain4j.model.scoring.ScoringModel
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import gitinsp.domain.models.GitRepository
@@ -34,22 +34,10 @@ class CacheServiceSuite
   )
 
   // Create the mocks
-  val config           = setupConfig()
+  val config           = ConfigFactory.load()
   val mockFactory      = spy(RAGComponentFactory(config))
   val mockQdrantClient = mock[QdrantClient]
   val scoringModel     = mock[ScoringModel]
-
-  def setupConfig() =
-    val config = mock[Config]
-    // Setup the configuration
-    when(config.getString("gitinsp.ollama.url")).thenReturn("http://localhost:11434")
-    when(config.getString("gitinsp.code-embedding.model")).thenReturn("nomic-embed-text")
-    when(config.getString("gitinsp.text-embedding.model")).thenReturn("nomic-embed-text")
-    when(config.getString("gitinsp.models.default-model")).thenReturn("llama3.3")
-    when(config.getString("gitinsp.rag.model")).thenReturn("llama3.3")
-    when(config.getInt("gitinsp.chat.memory")).thenReturn(10)
-    when(config.getString("gitinsp.models.provider")).thenReturn("ollama")
-    config
 
   override def beforeAll(): Unit =
     // Setup the mock to return our mock client

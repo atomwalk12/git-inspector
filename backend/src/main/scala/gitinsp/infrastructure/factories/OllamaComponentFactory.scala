@@ -327,7 +327,7 @@ class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with L
       case true  => config.getInt("gitinsp.code-embedding.size")
       case false => config.getInt("gitinsp.text-embedding.size")
     }
-    Try {
+    Try:
       client.createCollectionAsync(
         name,
         Collections.VectorParams
@@ -337,7 +337,6 @@ class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with L
           .build(),
       ).get()
       logger.info(s"Collection '$name' created successfully with dimension $dimension")
-    }
 
 /** A custom router that uses a query routing strategy.
   * This is an adapter that bridges the gap between the QueryRouter interface and the

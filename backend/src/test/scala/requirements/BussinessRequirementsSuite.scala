@@ -18,7 +18,7 @@ import gitinsp.infrastructure.factories.RAGComponentFactoryImpl
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory
 import gitinsp.tests.ENABLE_LOGGING
 import gitinsp.tests.externalServiceTag
-import gitinsp.tests.storeName
+import gitinsp.tests.repoName
 import org.scalatest.GivenWhenThen
 import org.scalatest.featurespec.AnyFeatureSpec
 import org.scalatest.matchers.should.Matchers
@@ -48,28 +48,11 @@ class BussinessRequirementsSuite extends AnyFeatureSpec with GivenWhenThen with 
     else
       Sink.seq[T]
 
-  /*
-  Code Search Productivity (BR1)
-
-  - Choice: Focus on developing a Git repository search tool that improves efficiency of developers.
-    - Rationale: Developers spend significant time searching through codebases, and improving this process directly impacts productivity.
-    - Success Criteria:
-      - At least 85% of test users report improved workflow efficiency in post-usage surveys
-      - Average query-to-result time under 10 seconds for repositories up to 100MB
-    - Implementation Considerations:
-      - Design UI workflows optimized for developer search patterns. This can be done by using common chat interface layouts (i.e. Gradio can help).
-      - Focus on search result quality and relevance (i.e. analyze the effectiveness of the generated embeddings)
-      - Ensure integration with common development workflows (i.e. differentiate between AI and user messages, check code prior to generating embeddings).
-    - Related Requirements:
-      - FR1.2 (Search)
-      - FR1.5 (Context)
-      - FR1.6 (Chat)
-   */
-  Feature("BR1: Code Search Productivity") {
+  Feature("BR1: Code Search Productivity"):
     Scenario(
       "As a user, I can search for code using keywords or natural language queries.",
       externalServiceTag,
-    ) {
+    ):
       Given("A configured pipeline with necessary services")
       val factory         = RAGComponentFactoryImpl(config)
       val cacheService    = CacheService(factory)
@@ -78,7 +61,7 @@ class BussinessRequirementsSuite extends AnyFeatureSpec with GivenWhenThen with 
       val chatService     = ChatService(prettyFmt = true, ContentService)
       val pipeline        = PipelineService(chatService, cacheService, ingestorService, gitService)
       val langchainCoordinator = LangchainCoordinator(pipeline, prettyFmt = true)
-      val repository           = Some(storeName)
+      val repository           = Some(repoName)
 
       And("A user query")
       val query = "find all functions that handle user authentication"
@@ -107,5 +90,5 @@ class BussinessRequirementsSuite extends AnyFeatureSpec with GivenWhenThen with 
           responses.foreach { (response: String) => response shouldNot be(empty) }
         }
       }
-    }
-  }
+
+  // ----- NOTE: BR2 is assessed using the SUS survey -----
