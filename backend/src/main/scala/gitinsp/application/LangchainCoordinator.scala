@@ -19,16 +19,51 @@ import scala.concurrent.ExecutionContext
 import scala.util.Failure
 import scala.util.Success
 import scala.util.Try
+
+/** Main coordinator for the Langchain application
+  * Handles all interactions with the AI services and repositories
+  */
 trait LangchainCoordinator:
   // Aliases
   type StreamingResponse = Source[ServerSentEvent, NotUsed]
 
   // Methods
+  /** Retrieves a list of all available indexes in the system
+    * @return A JSON string containing the list of index names wrapped in a Try
+    */
   def listIndexes(): Try[String]
+
+  /** Performs a chat interaction with an AI service
+    * @param msg The user's message to send to the AI
+    * @param indexNameOpt Optional name of the index to use for RAG context
+    * @return A streaming response containing AI-generated content wrapped in a Try
+    */
   def chat(msg: String, indexNameOpt: Option[String]): Try[StreamingResponse]
+
+  /** Generates a new index for a repository
+    * @param repoUrl URL of the repository to index
+    * @param languages Comma-separated list of file extensions to include
+    * @return A JSON string with the result and index name wrapped in a Try
+    */
   def generateIndex(repoUrl: String, languages: String): Try[String]
+
+  /** Fetches repository content
+    * @param link URL of the repository to fetch
+    * @param format Format of the content to retrieve
+    * @param extension File extensions to filter for
+    * @return Repository content as a string wrapped in a Try
+    */
   def fetchRepository(link: String, format: String, extension: String): Try[String]
+
+  /** Deletes an index from the system
+    * @param indexName Name of the index to delete
+    * @return A JSON string containing the result of the deletion wrapped in a Try
+    */
   def deleteIndex(indexName: String): Try[String]
+
+  /** Starts the HTTP server with the specified routes
+    * @param routes The configured API routes
+    */
   def start(routes: Route): Unit
 
 object LangchainCoordinator:

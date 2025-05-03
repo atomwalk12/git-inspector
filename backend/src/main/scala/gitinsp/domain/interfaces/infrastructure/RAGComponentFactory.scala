@@ -18,8 +18,9 @@ import io.qdrant.client.grpc.Collections.Distance
 
 import scala.util.Try
 
-/** Factory trait for creating components of the Retrieval Augmented Generation (RAG) pipeline.
-  * This interface allows for different implementations and configurations of RAG components.
+/** Factory for creating components of the Retrieval Augmented Generation (RAG) pipeline
+  * Provides methods to instantiate and configure all necessary elements for vector search,
+  * document ingestion, query processing, and AI-assisted retrieval
   */
 trait RAGComponentFactory:
 
@@ -42,7 +43,7 @@ trait RAGComponentFactory:
     * @param embeddingStore The embedding store
     * @param embeddingModel The embedding model
     * @param indexName The specific collection to be used
-    * @param dynamicFilter Allows to filter the documents based on a specific language
+    * @param modelRouter The LLM router used for dynamic filtering
     * @return A retriever for the specified index
     */
   def createCodeRetriever(
@@ -55,6 +56,7 @@ trait RAGComponentFactory:
   /** Creates a QueryRouter based on the provided retrievers
     *
     * @param retrievers List of content retrievers to use
+    * @param modelRouter The LLM model used for query routing decisions
     * @return A configured QueryRouter
     */
   def createQueryRouter(
@@ -65,6 +67,7 @@ trait RAGComponentFactory:
   /** Creates a content aggregator for ranking and filtering retrieved content.
     * This allows to rerank results, potentially yielding more relevant content.
     *
+    * @param scoringModel The scoring model used to rank retrieved content
     * @return A configured ReRankingContentAggregator
     */
   def createContentAggregator(scoringModel: ScoringModel): ReRankingContentAggregator
@@ -98,9 +101,9 @@ trait RAGComponentFactory:
     */
   def createStreamingChatModel(): StreamingChatLanguageModel
 
-  /** Create model router
+  /** Creates a model router for routing queries
     *
-    * @return An OllamaChatModel
+    * @return An OllamaChatModel configured for query routing
     */
   def createModelRouter(): OllamaChatModel
 
@@ -117,6 +120,8 @@ trait RAGComponentFactory:
 
   /** Creates an embedding store.
     *
+    * @param client The Qdrant client to use
+    * @param name The name of the collection to store embeddings
     * @return A QdrantEmbeddingStore
     */
   def createEmbeddingStore(client: QdrantClient, name: String): QdrantEmbeddingStore
@@ -133,9 +138,13 @@ trait RAGComponentFactory:
     */
   def createScoringModel(): ScoringModel
 
-  /** Creates an ingestor.
+  /** Creates an ingestor for adding document embeddings to the vector database
     *
-    * @return An EmbeddingStoreIngestor
+    * @param language The programming language of the documents to ingest
+    * @param embeddingModel The embedding model to use for vectorizing documents
+    * @param embeddingStore The vector store where embeddings will be saved
+    * @param strategy The strategy defining how documents are processed and split
+    * @return A configured EmbeddingStoreIngestor for the specified parameters
     */
   def createIngestor(
     language: Language,
@@ -147,5 +156,8 @@ trait RAGComponentFactory:
   /** Creates a collection in Qdrant.
     *
     * @param name The name of the collection
+    * @param client The Qdrant client to use
+    * @param distance The distance metric to use for vector similarity
+    * @return A Try indicating success or failure of the operation
     */
   def createCollection(name: String, client: QdrantClient, distance: Distance): Try[Unit]
