@@ -35,10 +35,6 @@ The following sections build on the [Requirements Specifications](../../static/r
 For detailed sprint backlog items, see [Sprint Backlog](./sprint_backlog.md).
 
 
-## Daily Updates
-
-Checkout the [daily progress updates](./daily_updates/) folder for detailed day-by-day developments.
-
 
 ## Sprint Retrospective
 

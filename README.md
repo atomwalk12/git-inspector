@@ -7,7 +7,9 @@
 
 LLM powered agent for answering questions about Github Repositories.
 
-Checkout out the report, poster, website and the documentation of the development process.
+Checkout out the [report](docs/report/report.pdf), [poster](docs/report/poster.pdf), [website](https://atomwalk12.github.io/PPS-22-git-insp/) and the documentation of the [development process](https://atomwalk12.github.io/PPS-22-git-insp/process).
+
+![poster](https://github.com/user-attachments/assets/50a20106-5bf8-40d3-9725-a7dc16ea6aa1)
 
 ## Features
 
