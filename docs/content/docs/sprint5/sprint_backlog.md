@@ -26,22 +26,22 @@ The sprint took two weeks instead of one. It was responsible of one larger task,
 
 ## Task Board
 
-Link to the main product backlog: {{< abslink url="../../static/product-backlog#task-board" text="Product Backlog">}}
+Link to the main product backlog: {{< abslink url="/process/docs/requirements#task-board" text="Product Backlog">}}
 
 {{< responsive-table>}}
 
-| SBI ID                                      | Task Description                                           | User Story    | PBI ID                                           | Est. Points | Status        |
-| :------------------------------------------ | :--------------------------------------------------------- | :------------ | :----------------------------------------------- | :---------- | :------------ |
-| **TESTING & QUALITY ASSURANCE (15 Points)** |                                                            |               |                                                  |             |               |
-| S5.1.1                                      | Implement testing strategy (ArchUnit, acceptance test) | Testing       | [E4](../../static/product-backlog.md#task-board) | 5           | ✓ (tests)     |
-| S5.1.3                                      | Define quality metrics  (PCA, Pairwise)                    | Testing       | [E4](../../static/product-backlog.md#task-board) | 5           | ✓ (report)    |
-| **VISUALIZATION & ANALYSIS (15 Points)**    |                                                            |               |                                                  |             |               |
-| S5.2.1                                      | Visualize code embeddings for quality analysis             | Visualization | [E5](../../static/product-backlog.md#task-board) | 5           | ✓ (scatter)   |
-| S5.2.2                                      | Provide metrics on search effectiveness                    | Visualization | [E5](../../static/product-backlog.md#task-board) | 5           | ✓ (pair-wise) |
-| S5.2.3                                      | Generate insights for documentation                        | Visualization | [E5](../../static/product-backlog.md#task-board) | 5           | ✓             |
-| **DOCUMENTATION (15 Points)**               |                                                            |               |                                                  |             |               |
-| S5.3.1                                      | Create user documentation                                  | Documentation | [E6](../../static/product-backlog.md#task-board) | 5           | ✓             |
-| S5.3.2                                      | Generate project report                                    | Documentation | [E6](../../static/product-backlog.md#task-board) | 5           | ✓             |
-| S5.3.3                                      | Document architecture and design decisions                 | Documentation | [E6](../../static/product-backlog.md#task-board) | 5           | ✓             |
+| SBI ID                                      | Task Description                                       | User Story    | PBI ID                              | Est. Points | Status        |
+| :------------------------------------------ | :----------------------------------------------------- | :------------ | :---------------------------------- | :---------- | :------------ |
+| **TESTING & QUALITY ASSURANCE (15 Points)** |                                                        |               |                                     |             |               |
+| S5.1.1                                      | Implement testing strategy (ArchUnit, acceptance test) | Testing       | [E4](../../requirements#task-board) | 5           | ✓ (tests)     |
+| S5.1.3                                      | Define quality metrics  (PCA, Pairwise)                | Testing       | [E4](../../requirements#task-board) | 5           | ✓ (report)    |
+| **VISUALIZATION & ANALYSIS (15 Points)**    |                                                        |               |                                     |             |               |
+| S5.2.1                                      | Visualize code embeddings for quality analysis         | Visualization | [E5](../../requirements#task-board) | 5           | ✓ (scatter)   |
+| S5.2.2                                      | Provide metrics on search effectiveness                | Visualization | [E5](../../requirements#task-board) | 5           | ✓ (pair-wise) |
+| S5.2.3                                      | Generate insights for documentation                    | Visualization | [E5](../../requirements#task-board) | 5           | ✓             |
+| **DOCUMENTATION (15 Points)**               |                                                        |               |                                     |             |               |
+| S5.3.1                                      | Create user documentation                              | Documentation | [E6](../../requirements#task-board) | 5           | ✓             |
+| S5.3.2                                      | Generate project report                                | Documentation | [E6](../../requirements#task-board) | 5           | ✓             |
+| S5.3.3                                      | Document architecture and design decisions             | Documentation | [E6](../../requirements#task-board) | 5           | ✓             |
 
 {{</ responsive-table>}}

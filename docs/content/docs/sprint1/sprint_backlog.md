@@ -31,7 +31,7 @@ The goal of the sprint is to set up the project infrastructure and CI/CD pipelin
 
 ## Task Board
 
-Link to the main product backlog: {{< abslink url="../../static/product-backlog#task-board" text="Product Backlog">}}
+Link to the main product backlog: {{< abslink url="../../static/product-backlog.md#task-board" text="Product Backlog">}}
 
 {{< responsive-table>}}
 

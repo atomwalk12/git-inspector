@@ -28,29 +28,28 @@ summary: "List of deliverables for Sprint 3 (April 7-13, 2025), focusing on natu
 
 ## Task Board
 
-Link to the main product backlog: {{< abslink url="../../static/product-backlog#task-board" text="Product Backlog">}}
+Link to the main product backlog: {{< abslink url="../../static/product-backlog.md#task-board" text="Product Backlog">}}
 
 {{< responsive-table>}}
 
-| SBI ID                                   | Task Description                                  | User Story         | PBI ID                                           | Est. Points | Status     |
-| :--------------------------------------- | :------------------------------------------------ | :----------------- | :----------------------------------------------- | :---------- | :--------- |
-| **SEARCH FUNCTIONALITY (20 Points)**     |                                                   |                    |                                                  |             |            |
-| S3.1.1                                   | Implement semantic search across codebase         | Code Search        | [C1](../../static/product-backlog.md#task-board) | 8           | ✓          |
-| S3.1.2                                   | Create language/extension filtering capabilities  | Code Search        | [C1](../../static/product-backlog.md#task-board) | 5           | ✓          |
-| S3.1.3                                   | Design results display with code context          | Code Search        | [C1](../../static/product-backlog.md#task-board) | 7           | ✓          |
-| **CHAT INTERFACE (25 Points)**           |                                                   |                    |                                                  |             |            |
-| S3.2.1                                   | Develop chat interface for code questions         | Code Understanding | [C2](../../static/product-backlog.md#task-board) | 8           | ✓          |
-| S3.2.2                                   | Implement context retrieval for queries           | Code Understanding | [C2](../../static/product-backlog.md#task-board) | 10          | ✓          |
-| S3.2.3                                   | Create response generation with code context      | Code Understanding | [C2](../../static/product-backlog.md#task-board) | 7           | ✓          |
-| **UI IMPLEMENTATION (20 Points)**        |                                                   |                    |                                                  |             |            |
-| S3.3.1                                   | Design intuitive frontend for search and chat     | UI Implementation  | [E1](../../static/product-backlog.md#task-board) | 7           | ✓          |
-| S3.3.2                                   | Implement Scala.js interface components           | UI Implementation  | [E1](../../static/product-backlog.md#task-board) | 8           | ✓          |
-| S3.3.3                                   | Ensure responsive and accessible design           | UI Implementation  | [E1](../../static/product-backlog.md#task-board) | 5           | ✓          |
-| **TECHNICAL DEBT & TESTING (15 Points)** |                                                   |                    |                                                  |             |            |
-| S3.4.1                                   | Implement ArchUnit tests for layered architecture | Technical Debt     | [F1](../../static/product-backlog.md#task-board) | 3           | ✓          |
-| S3.4.2                                   | Create acceptance tests for repository loading    | Technical Debt     | [F2](../../static/product-backlog.md#task-board) | 5           | ✓          |
-| S3.4.3                                   | Develop provider for results with score relevance | Testing            | [C1](../../static/product-backlog.md#task-board) | 4           | ✓          |
-| S3.4.4                                   | Implement chat accuracy evaluation                | Testing            | [C2](../../static/product-backlog.md#task-board) | 3           | ✓ (report) |
-|                                          |                                                   |                    |                                                  |             |            |
+| SBI ID                                   | Task Description                                  | User Story         | PBI ID                              | Est. Points | Status     |
+| :--------------------------------------- | :------------------------------------------------ | :----------------- | :---------------------------------- | :---------- | :--------- |
+| **SEARCH FUNCTIONALITY (20 Points)**     |                                                   |                    |                                     |             |            |
+| S3.1.1                                   | Implement semantic search across codebase         | Code Search        | [C1](../../requirements#task-board) | 8           | ✓          |
+| S3.1.2                                   | Create language/extension filtering capabilities  | Code Search        | [C1](../../requirements#task-board) | 5           | ✓          |
+| S3.1.3                                   | Design results display with code context          | Code Search        | [C1](../../requirements#task-board) | 7           | ✓          |
+| **CHAT INTERFACE (25 Points)**           |                                                   |                    |                                     |             |            |
+| S3.2.1                                   | Develop chat interface for code questions         | Code Understanding | [C2](../../requirements#task-board) | 8           | ✓          |
+| S3.2.2                                   | Implement context retrieval for queries           | Code Understanding | [C2](../../requirements#task-board) | 10          | ✓          |
+| S3.2.3                                   | Create response generation with code context      | Code Understanding | [C2](../../requirements#task-board) | 7           | ✓          |
+| **UI IMPLEMENTATION (20 Points)**        |                                                   |                    |                                     |             |            |
+| S3.3.1                                   | Design intuitive frontend for search and chat     | UI Implementation  | [E1](../../requirements#task-board) | 7           | ✓          |
+| S3.3.2                                   | Implement Scala.js interface components           | UI Implementation  | [E1](../../requirements#task-board) | 8           | ✓          |
+| S3.3.3                                   | Ensure responsive and accessible design           | UI Implementation  | [E1](../../requirements#task-board) | 5           | ✓          |
+| **TECHNICAL DEBT & TESTING (15 Points)** |                                                   |                    |                                     |             |            |
+| S3.4.1                                   | Implement ArchUnit tests for layered architecture | Technical Debt     | [F1](../../requirements#task-board) | 3           | ✓          |
+| S3.4.2                                   | Create acceptance tests for repository loading    | Technical Debt     | [F2](../../requirements#task-board) | 5           | ✓          |
+| S3.4.3                                   | Develop provider for results with score relevance | Testing            | [C1](../../requirements#task-board) | 4           | ✓          |
+| S3.4.4                                   | Implement chat accuracy evaluation                | Testing            | [C2](../../requirements#task-board) | 3           | ✓ (report) |
 
 {{</ responsive-table>}}
