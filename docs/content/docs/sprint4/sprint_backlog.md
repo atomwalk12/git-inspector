@@ -28,32 +28,32 @@ summary: "List of deliverables for Sprint 4 (April 14-20, 2025), focusing on per
 
 ## Task Board
 
-Link to the main product backlog: {{< abslink url="../../static/product-backlog.md#task-board" text="Product Backlog">}}
+Link to the main product backlog: {{< abslink url="/process/docs/product-backlog" text="Product Backlog">}}
 
 {{< responsive-table>}}
 
-| SBI ID                                   | Task Description                                  | User Story        | PBI ID                              | Est. Points | Status         |
-| :--------------------------------------- | :------------------------------------------------ | :---------------- | :---------------------------------- | :---------- | :------------- |
-| **PERFORMANCE OPTIMIZATION (18 Points)** |                                                   |                   |                                     |             |                |
-| S4.1.1                                   | Optimize repository lookup speed                  | Performance       | [E2](../../requirements#task-board) | 6           | ✓ (config)     |
-| S4.1.2                                   | Implement caching for embeddings                  | Performance       | [E2](../../requirements#task-board) | 7           | ✓              |
-| S4.1.3                                   | Ensure responsive search/chat experience          | Performance       | [E2](../../requirements#task-board) | 5           | ✓ (status-bar) |
-| **VISUALIZATION & ANALYSIS (15 Points)** |                                                   |                   |                                     |             |                |
-| S4.2.1                                   | Visualize code embeddings for quality analysis    | Visualization     | [E5](../../requirements#task-board) | 6           | ✓ (scatter)    |
-| S4.2.2                                   | Provide metrics on search effectiveness           | Visualization     | [E5](../../requirements#task-board) | 4           | ✓ (pair-wise)  |
-| S4.2.3                                   | Generate insights for documentation               | Visualization     | [E5](../../requirements#task-board) | 5           | ✓              |
-| **SCALA.JS FRONTEND (22 Points)**        |                                                   |                   |                                     |             |                |
-| S4.3.1                                   | Complete Scala.js interface components            | UI Implementation | [E1](../../requirements#task-board) | 8           | ✓              |
-| S4.3.2                                   | Integrate frontend with backend services          | UI Implementation | [E1](../../requirements#task-board) | 7           | ✓              |
-| S4.3.3                                   | Enhance user experience with responsive design    | UI Implementation | [E1](../../requirements#task-board) | 7           | ✓              |
-| **DOCUMENTATION (20 Points)**            |                                                   |                   |                                     |             |                |
-| S4.4.1                                   | Create comprehensive user documentation           | Documentation     | [E6](../../requirements#task-board) | 6           | ✓              |
-| S4.4.2                                   | Generate project report                           | Documentation     | [E6](../../requirements#task-board) | 8           | ✓              |
-| S4.4.3                                   | Document architecture and design decisions        | Documentation     | [E6](../../requirements#task-board) | 6           | ✓              |
-| **TECHNICAL DEBT (15 Points)**           |                                                   |                   |                                     |             |                |
-| S4.5.1                                   | Implement ArchUnit tests for layered architecture | Technical Debt    | [F1](../../requirements#task-board) | 5           | ✓              |
-| S4.5.2                                   | Complete chat accuracy evaluation                 | Technical Debt    | [C2](../../requirements#task-board) | 5           | ✓ (report)     |
-| S4.5.3                                   | Final code refactoring and cleanup                | Technical Debt    | [E4](../../requirements#task-board) | 5           | ✓              |
+| SBI ID                                   | Task Description                                  | User Story        | PBI ID                      | Est. Points | Status         |
+| :--------------------------------------- | :------------------------------------------------ | :---------------- | :-------------------------- | :---------- | :------------- |
+| **PERFORMANCE OPTIMIZATION (18 Points)** |                                                   |                   |                             |             |                |
+| S4.1.1                                   | Optimize repository lookup speed                  | Performance       | [E2](../../product-backlog) | 6           | ✓ (config)     |
+| S4.1.2                                   | Implement caching for embeddings                  | Performance       | [E2](../../product-backlog) | 7           | ✓              |
+| S4.1.3                                   | Ensure responsive search/chat experience          | Performance       | [E2](../../product-backlog) | 5           | ✓ (status-bar) |
+| **VISUALIZATION & ANALYSIS (15 Points)** |                                                   |                   |                             |             |                |
+| S4.2.1                                   | Visualize code embeddings for quality analysis    | Visualization     | [E5](../../product-backlog) | 6           | ✓ (scatter)    |
+| S4.2.2                                   | Provide metrics on search effectiveness           | Visualization     | [E5](../../product-backlog) | 4           | ✓ (pair-wise)  |
+| S4.2.3                                   | Generate insights for documentation               | Visualization     | [E5](../../product-backlog) | 5           | ✓              |
+| **SCALA.JS FRONTEND (22 Points)**        |                                                   |                   |                             |             |                |
+| S4.3.1                                   | Complete Scala.js interface components            | UI Implementation | [E1](../../product-backlog) | 8           | ✓              |
+| S4.3.2                                   | Integrate frontend with backend services          | UI Implementation | [E1](../../product-backlog) | 7           | ✓              |
+| S4.3.3                                   | Enhance user experience with responsive design    | UI Implementation | [E1](../../product-backlog) | 7           | ✓              |
+| **DOCUMENTATION (20 Points)**            |                                                   |                   |                             |             |                |
+| S4.4.1                                   | Create comprehensive user documentation           | Documentation     | [E6](../../product-backlog) | 6           | ✓              |
+| S4.4.2                                   | Generate project report                           | Documentation     | [E6](../../product-backlog) | 8           | ✓              |
+| S4.4.3                                   | Document architecture and design decisions        | Documentation     | [E6](../../product-backlog) | 6           | ✓              |
+| **TECHNICAL DEBT (15 Points)**           |                                                   |                   |                             |             |                |
+| S4.5.1                                   | Implement ArchUnit tests for layered architecture | Technical Debt    | [F1](../../product-backlog) | 5           | ✓              |
+| S4.5.2                                   | Complete chat accuracy evaluation                 | Technical Debt    | [C2](../../product-backlog) | 5           | ✓ (report)     |
+| S4.5.3                                   | Final code refactoring and cleanup                | Technical Debt    | [E4](../../product-backlog) | 5           | ✓              |
 
 
 {{</ responsive-table>}}
