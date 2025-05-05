@@ -26,7 +26,7 @@ The sprint took two weeks instead of one. It was responsible of one larger task,
 
 ## Task Board
 
-Link to the main product backlog: {{< abslink url="/static/product-backlog#task-board" text="Product Backlog">}}
+Link to the main product backlog: {{< abslink url="../../static/product-backlog#task-board" text="Product Backlog">}}
 
 {{< responsive-table>}}
 

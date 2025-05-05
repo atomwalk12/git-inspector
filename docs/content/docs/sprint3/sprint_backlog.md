@@ -28,7 +28,7 @@ summary: "List of deliverables for Sprint 3 (April 7-13, 2025), focusing on natu
 
 ## Task Board
 
-Link to the main product backlog: {{< abslink url="/static/product-backlog#task-board" text="Product Backlog">}}
+Link to the main product backlog: {{< abslink url="../../static/product-backlog#task-board" text="Product Backlog">}}
 
 {{< responsive-table>}}
 

@@ -29,7 +29,7 @@ summary: "List of deliverables for Sprint 2 (March 31-April 6, 2025), focusing o
 
 ## Task Board
 
-Link to the main product backlog: {{< abslink url="/static/product-backlog#task-board" text="Product Backlog">}}
+Link to the main product backlog: {{< abslink url="../../static/product-backlog#task-board" text="Product Backlog">}}
 
 {{< responsive-table>}}
 
