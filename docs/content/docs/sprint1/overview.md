@@ -39,11 +39,6 @@ Deliverables:
 For detailed sprint backlog items, see [Sprint Backlog](./sprint_backlog.md)
 
 
-## Daily Updates
-
-Checkout the [daily progress updates](./daily_updates/) folder for detailed day-by-day developments.
-
-
 ## Sprint Retrospective
 
 The following tools will help maintain code quality and automate tasks, freeing up time for more
