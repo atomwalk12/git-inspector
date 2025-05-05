@@ -5,4 +5,7 @@ aliases: ["sprint1"]
 tags: ["sprint1", "daily-updates"]
 weight: 1
 summary: "Daily updates for the first sprint."
+build:
+  list: never
+  render: always
 ---

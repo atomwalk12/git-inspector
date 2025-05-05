@@ -23,12 +23,12 @@ import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import dev.langchain4j.store.embedding.qdrant.QdrantEmbeddingStore
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.Language
-import gitinsp.infrastructure.factories.QueryRoutingStrategyFactory
 import gitinsp.infrastructure.factories.RAGComponentFactoryImpl
 import gitinsp.infrastructure.factories.RouterWithStrategy
 import gitinsp.infrastructure.strategies.ConditionalQueryStrategy
 import gitinsp.infrastructure.strategies.DefaultQueryStrategy
 import gitinsp.infrastructure.strategies.IngestionStrategyFactory
+import gitinsp.infrastructure.strategies.QueryRoutingStrategyFactory
 import io.qdrant.client.QdrantClient
 import org.mockito.ArgumentMatchers
 import org.mockito.Mockito.verify
@@ -39,6 +39,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.mockito.MockitoSugar
 
+@SuppressWarnings(Array("org.wartremover.warts.ToString"))
 class AnalysisTest
     extends AnyFlatSpec
     with Matchers
@@ -435,7 +436,7 @@ class AnalysisTest
     result.contains(retriever1) should be(true)
     result.contains(retriever2) should be(true)
 
-  "The Conditional Query Strategy" should "return all retrievers when the model answers 'no'" in:
+  "The Conditional Query Strategy" should "return all retrievers when the model answers 'both'" in:
     // Setup
     val mockChat = mock[OllamaChatModel]
     val strategy = ConditionalQueryStrategy(mockChat)
@@ -449,17 +450,18 @@ class AnalysisTest
     val query = Query.from("How does this code work? Please do not query the index.")
 
     // Mock the chat response indicating RAG should be used
-    val aiMessage = AiMessage.from("Yes, the user did ask to avoid using RAG.")
-    val response  = ChatResponse.builder().aiMessage(aiMessage).build()
+    val aiMessage =
+      AiMessage.from("Yes, the user asked to use both indexes to answer the question.")
+    val response = ChatResponse.builder().aiMessage(aiMessage).build()
     when(mockChat.chat(ArgumentMatchers.any(classOf[UserMessage]))).thenReturn(response)
 
     // Verify that all retrievers are returned
     val result = strategy.determineRetrievers(query, retrievers)
-    result.size() should be(0)
-    result.contains(retriever1) should be(false)
-    result.contains(retriever2) should be(false)
+    result.size() should be(2)
+    result.contains(retriever1) should be(true)
+    result.contains(retriever2) should be(true)
 
-  it should "return no retrievers when the model answers 'yes'" in:
+  it should "return one retriever when the model answers 'code index'" in:
     // Setup
     val mockChat = mock[OllamaChatModel]
     val strategy = ConditionalQueryStrategy(mockChat)
@@ -467,18 +469,20 @@ class AnalysisTest
     // Create mock retrievers
     val retriever1 = mock[EmbeddingStoreContentRetriever]
     val retriever2 = mock[EmbeddingStoreContentRetriever]
+    when(retriever1.toString()).thenReturn("text")
+    when(retriever2.toString()).thenReturn("code")
     val retrievers = List(retriever1, retriever2)
 
     // Test query that should not use RAG
     val query = Query.from("How does this code work? Please query the index for better results.")
 
     // Mock the chat response indicating RAG should not be used
-    val aiMessage = AiMessage.from("No.")
+    val aiMessage = AiMessage.from("code.")
     val response  = ChatResponse.builder().aiMessage(aiMessage).build()
     when(mockChat.chat(ArgumentMatchers.any(classOf[UserMessage]))).thenReturn(response)
 
     // Verify that no retrievers are returned
     val result = strategy.determineRetrievers(query, retrievers)
-    result.size() should be(2)
-    result.contains(retriever1) should be(true)
+    result.size() should be(1)
+    result.contains(retriever1) should be(false)
     result.contains(retriever2) should be(true)

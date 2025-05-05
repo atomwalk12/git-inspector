@@ -14,7 +14,7 @@ import dev.langchain4j.service.TokenStream
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
-import gitinsp.domain.Pipeline
+import gitinsp.domain.PipelineService
 import gitinsp.domain.interfaces.application.ChatService
 import gitinsp.domain.interfaces.application.IngestorService
 import gitinsp.domain.interfaces.infrastructure.CacheService
@@ -23,8 +23,8 @@ import gitinsp.domain.interfaces.infrastructure.RAGComponentFactory
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.Category
 import gitinsp.domain.models.CodeFile
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
@@ -89,8 +89,9 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     when(mockCacheService.getAIService(any())).thenReturn(Success(mockAssistant))
 
     // Execute the pipeline
-    val pipe  = Pipeline(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
-    val index = None
+    val pipe =
+      PipelineService(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
+    val index     = None
     val aiService = pipe.getAIService(index)
 
     // Verify
@@ -116,9 +117,10 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     val mockTokenStream    = mock[TokenStream]
     val mockGithubWrapper  = mock[GithubWrapperService]
 
-    val pipe = Pipeline(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
-    val url  = URL("https://github.com/atomwalk12/PPS-22-git-insp")
-    val repository = RepositoryWithLanguages(
+    val pipe =
+      PipelineService(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
+    val url = URL("https://github.com/atomwalk12/PPS-22-git-insp")
+    val repository = GitRepository(
       url,
       List(Language.SCALA, Language.MARKDOWN),
       List(),
@@ -183,13 +185,14 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     val ingestorService = IngestorService(mockCacheService, config, IngestionStrategyFactory)
 
     // Setup data
-    val pipe      = Pipeline(mockChatService, mockCacheService, ingestorService, mockGithubWrapper)
-    val languages = RepositoryWithLanguages.detectLanguages("scala,md")
+    val pipe =
+      PipelineService(mockChatService, mockCacheService, ingestorService, mockGithubWrapper)
+    val languages = GitRepository.detectLanguages("scala,md")
     val doc1      = CodeFile("def test()", Language.SCALA, "test.scala", 1000, 100)
     val doc2      = CodeFile("# Hello, world!", Language.MARKDOWN, "test.md", 1000, 100)
     val docs      = List(doc1, doc2, doc1, doc2)
     val url       = URL("https://github.com/atomwalk12/PPS-22-git-insp")
-    val repo      = RepositoryWithLanguages(url, languages, docs)
+    val repo      = GitRepository(url, languages, docs)
 
     // Execute
     pipe.regenerateIndex(repo)
@@ -226,7 +229,8 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     // Execute
     val mockCacheService = spy(CacheService(mockRAGFactory))
 
-    val pipe = Pipeline(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
+    val pipe =
+      PipelineService(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
     val tryResults = pipe.listIndexes()
 
     tryResults.isSuccess shouldBe true
@@ -253,7 +257,8 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     when(mockCacheService.qdrantClient).thenReturn(mockQdrantClient)
 
     // Execute
-    val pipe = Pipeline(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
+    val pipe =
+      PipelineService(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
 
     // Use intercept instead of throwAn
     val tryResults = pipe.listIndexes()

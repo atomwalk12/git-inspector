@@ -12,7 +12,9 @@ TocOpen: true
 summary: "Comprehensive list of tasks and deliverables for Sprint 1 (March 24-30, 2025), focusing on establishing project infrastructure, development environment, and CI/CD pipeline setup."
 ---
 
-## Sprint 1 Backlog
+## Sprint Goal
+
+The goal of the sprint is to set up the project infrastructure and CI/CD pipeline so we can start developing the application.
 
 ### User Stories
 1. **Development Setup**
@@ -42,9 +44,8 @@ Link to the main product backlog: {{< abslink url="/static/product-backlog#task-
 | S1.B4                                 | Configure memory settings for tests          | Development Setup | 1           | ✓      |
 | S1.B5                                 | Enable code coverage with Codecov            | Development Setup | 2           | ✓      |
 | S1.B6                                 | Configure automatic documentation generation | Development Setup | 1           | ✓      |
-| S1.B7                                 | Configure Dependabot for security updates    | Development Setup | 1           | To Do  |
-| S1.B8                                 | Set up project website                       | Development Setup | 1           | ✓      |
-| S1.B9                                 | Code quality badges                          | CI/CD             | 1           | ✓      |
+| S1.B7                                 | Set up project website                       | Development Setup | 1           | ✓      |
+| S1.B8                                 | Code quality badges                          | CI/CD             | 1           | ✓      |
 | **CODE QUALITY TOOLS (10 Points)**    |                                              |                   |             |        |
 | S1.Q1                                 | Set up Scalafmt with formatting rules        | Code Quality      | 2           | ✓      |
 | S1.Q2                                 | Implement Wartremover for code analysis      | Code Quality      | 3           | ✓      |
@@ -59,21 +60,19 @@ Link to the main product backlog: {{< abslink url="/static/product-backlog#task-
 | S1.I2                                 | Configure CI/CD pipeline                     | CI/CD Pipeline    | 4           | ✓      |
 | S1.I3                                 | Define high-level architecture               | Development Setup | 2           | ✓      |
 | **CORE DOMAIN MODEL (5 Points)**      |                                              |                   |             |        |
-| S1.D1                                 | Design repository data model                 | Basic Repository  | 2           | To Do  |
-| S1.D2                                 | Design initial API contracts                 | Basic Repository  | 2           | To Do  |
-| S1.D3                                 | Generate API documentation                   | Basic Repository  | 1           | To Do  |
+| S1.D1                                 | Design repository data model                 | Basic Repository  | 2           | ✓      |
+| S1.D2                                 | Design initial API contracts                 | Basic Repository  | 2           | ✓      |
+| S1.D3                                 | Generate API documentation                   | Basic Repository  | 1           | ✓      |
 | **BASIC GIT OPERATIONS (3 Points)**   |                                              |                   |             |        |
-| S1.O1                                 | Implement repository loading                 | Basic Repository  | 1           | To Do  |
-| S1.O2                                 | Extract repository metadata                  | Basic Repository  | 1           | To Do  |
-| S1.O3                                 | Create error handling                        | Basic Repository  | 1           | To Do  |
+| S1.O1                                 | Implement repository loading                 | Basic Repository  | 1           | ✓      |
+| S1.O2                                 | Extract repository metadata                  | Basic Repository  | 1           | ✓      |
+| S1.O3                                 | Create error handling                        | Basic Repository  | 1           | ✓      |
 | **TESTING (3 Points)**                |                                              |                   |             |        |
-| S1.T1                                 | Write domain model unit tests                | Basic Repository  | 2           | To Do  |
-| S1.T2                                 | Create integration tests                     | Basic Repository  | 1           | To Do  |
+| S1.T1                                 | Write domain model unit tests                | Basic Repository  | 2           | ✓      |
+| S1.T2                                 | Create integration tests                     | Basic Repository  | 1           | ✓      |
 | **DOCUMENTATION (5 Points)**          |                                              |                   |             |        |
 | S1.P1                                 | Document development process                 | Documentation     | 2           | ✓      |
 | S1.P2                                 | Complete sprint retrospective                | Documentation     | 2           | ✓      |
 | S1.P3                                 | Plan next sprint                             | Documentation     | 1           | ✓      |
 
 {{</ responsive-table>}}
-
-### TOTAL: 52 Points

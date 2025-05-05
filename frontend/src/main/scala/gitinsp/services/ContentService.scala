@@ -15,12 +15,12 @@ import upickle.default.macroRW
 import upickle.default.read
 import upickle.default.write
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.scalajs.js.URIUtils.encodeURIComponent
 import scala.util.Try
 
-class ContentService(httpClient: HttpClient):
+class ContentService(httpClient: HttpClient)(implicit val ec: ExecutionContext):
 
   // Define implicit readers/writers for model classes
   implicit val fetchContentRequest: RW[FetchContentRequest]       = macroRW
@@ -76,7 +76,7 @@ class ContentService(httpClient: HttpClient):
       }
 
   def fetchAvailableIndices(): Future[Option[Seq[IndexOption]]] =
-    httpClient.get("list_indexes")
+    httpClient.get("list_indexes", Map.empty)
       .map {
         response =>
           Try {

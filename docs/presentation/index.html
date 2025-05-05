@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description"
+        content="Git Inspector, Chatbot for Codebases">
+  <meta name="keywords" content="Git Inspector, Chatbot for Codebases">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Git Inspector: Chatbot for Codebases</title>
+
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+
+    function gtag() {
+      dataLayer.push(arguments);
+    }
+
+    gtag('js', new Date());
+
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro"
+        rel="stylesheet">
+
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/logos/unibo-logo.png">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+</head>
+<body>
+
+<nav class="navbar" role="navigation" aria-label="main navigation">
+  <div class="navbar-brand">
+    <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+      <span aria-hidden="true"></span>
+    </a>
+  </div>
+  </div>
+</nav>
+
+
+<section class="hero">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Git Inspector! Inspecting Github Repositories with Open-Source LLMs</h1>
+          <div class="is-size-5 publication-authors">
+            <span class="author-block">
+              <a href="razvanflorian.vasile@studio.unibo.it">Razvan Florian Vasile</a><sup>1</sup>,</span>
+          </div>
+
+          <div class="is-size-5 publication-authors">
+            <span class="author-block"><sup>1</sup>University of Bologna</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <!-- PDF Link. -->
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/pdf/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-image"></i>
+                  </span>
+                  <span>Poster</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2011.12948"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-project-diagram"></i>
+                  </span>
+                  <span>Process</span>
+                </a>
+              </span>
+              <!-- Video Link. -->
+              <span class="link-block">
+                <a href="https://www.youtube.com/watch?v=MrKrnHhk8IA"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-chart-line"></i>
+                  </span>
+                  <span>Coverage</span>
+                </a>
+              </span>
+              <!-- Documentation Link. -->
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-book"></i>
+                  </span>
+                  <span>Documentation</span>
+                  </a>
+              </span>
+              <!-- Code Link. -->
+              <span class="link-block">
+                <a href="https://github.com/google/nerfies/releases/tag/0.1"
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-code"></i>
+                  </span>
+                  <span>Code TODO</span>
+                  </a>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img id="teaser" src="./static/images/poster.png" alt="Git Inspector Teaser" />
+      <h2 class="subtitle has-text-centered">
+        <span class="dnerf">Git Inspector</span> is a tool that allows to search and understand codebases using Open-Source LLMs.
+      </h2>
+    </div>
+  </div>
+</section>
+
+
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <!-- Abstract. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Abstract</h2>
+        <div class="content has-text-justified">
+          <p>
+            Large Language Models (LLMs) have gained significant popularity in recent years due to their
+            remarkable question answering capabilities. However, when tackling a large codebase, the quality
+            of the answers varies, largely due to the model's inability to focus on contextualized
+            information. To address this challenge, this work presents a Retrieval Augmented Generation (RAG)
+            pipeline designed to facilitate code retrieval and understanding with Github repositories.
+            The approach empowers LLMs by combining non-parametric memory (retrieved code snippets) with
+            parametric memory (pre-trained LLM weights) to generate insightful information.
+          </p>
+          <p>
+            The project emphasises the engineering process, adhering to the agile methodology and documenting
+            the development process. Notably, the system utilizes open-source technologies such as Ollama and
+            Qdrant, enabling the utilisation of various open LLMs through local indexing and retrieval of code
+            snippets without reliance on proprietary services.
+          </p>
+          <p>
+            The work is meant to reduce the steep learning curve associated with understanding large codebases,
+            and provide insightful explanations for complex coding concepts. The library is built in Scala, on
+            top of the Langchain4j framework, and facilitates the integration with the LLM through interfaces
+            built with Gradio and Scala.js. The library is available at
+            <a href="https://github.com/atomwalk12/PPS-22-git-insp">https://github.com/atomwalk12/PPS-22-git-insp</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+    <!--/ Abstract. -->
+
+    <!-- Paper video. -->
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Workflow</h2>
+        <img src = "./static/images/PPS-workflow.svg" alt="My Happy SVG"/>
+        <figcaption>An illustration of the development process</figcaption>
+      </div>
+    </div>
+    <!--/ Paper video. -->
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Tools</h2>
+    <div class="columns is-centered">
+      <!-- Visual Effects. -->
+      <div class="column">
+        <div class="content">
+          <h3 class="title is-4">Code Quality</h3>
+          <p>
+            Libraries that facilitate consistent coding practices:
+            <ul>
+              <li><i>Scalafmt</i> - Code formatter</li>
+              <li><i>Scalafix</i> - Code refactoring tool</li>
+              <li><i>Wartremover</i> - Static code analyzer</li>
+              <li><i>Trunk</i> - Code quality tool</li>
+              <li><i>ArchUnit</i> - Architecture testing tool</li>
+            </ul>
+          </p>
+        </div>
+      </div>
+      <!--/ Visual Effects. -->
+
+      <!-- Matting. -->
+      <div class="column">
+        <h3 class="title is-4">Libraries</h3>
+        <div class="columns is-centered">
+          <div class="column content">
+            <p>
+              Dependencies that ease development:
+              <ul>
+                <li><i>Langchain4j</i> - Framework for building agents</li>
+                <li><i>Ollama</i> - LLM provider</li>
+                <li><i>Qdrant</i> - Vector database</li>
+                <li><i>Laminar</i> - Web framework built on top of <i>Scala.js</i></li>
+                <li><i>Gradio</i> - Web interface for LLMs</li>
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="content">
+      <p>
+        The project also uses conventional commits and the the Gemini chatbot to review pull requests.
+      </p>
+    </div>
+    <!--/ Matting. -->
+
+    <!-- Animation. -->
+
+    <!-- Paper video. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Requirements</h2>
+        <p>
+          Below are the summarized requirements, while the full requirements document is available <a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/docs/requirements.md">TODO</a>.
+        </p>
+
+        <div class="container is-max-desktop">
+          <div class="content" style="text-align: center;">
+            <figure>
+              <img src="./static/images/requirements.png" width="65%" style="margin: 0 auto; display: block;">
+              <figcaption>Key requirements for the Git Inspector library</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!--/ Paper video. -->
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Project Requirements</h2>
+
+        <h3 class="title is-4">Requirements</h3>
+        <!-- Re-rendering. -->
+        <h3 class="title is-4">Acceptance Tests</h3>
+        <div class="content has-text-justified">
+          <p>
+            The requirements document is available TODO. Below is a summary of the requirements:
+          </p>
+          <p>
+            Acceptance tests that verify the correct behavior of the application with respect to the
+            requirements defined in table TODO are present under the 
+            <a href="https://github.com/atomwalk12/PPS-22-git-insp/tree/main/backend/src/test/scala/requirements">test directory</a>.
+          </p>
+        </div>
+        <!--/ Re-rendering. -->
+
+      </div>
+    </div>
+
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Features</h2>
+
+        <!-- Interpolating. -->
+        <h3 class="title is-4">Conditional Index Retrieval</h3>
+        <div class="content has-text-justified">
+          <p>
+            Considering the two indexes produced for each Git Repository, it is possible to determine
+            at runtime, using the query produced by the user, whether documentation (markdown content)
+            or code (files with a code-file extension) should be retrieved. This is done automatically
+            using a separate local LLM through an evaluation of the user's query
+            (<a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/scala/gitinsp/infrastructure/strategies/QueryRoutingStrategy.scala">Source Code</a>).
+          </p>
+        </div>
+        <br/>
+        <!--/ Interpolating. -->
+
+        <!-- Re-rendering. -->
+        <h3 class="title is-4">Filtering by extension type</h3>
+        <div class="content has-text-justified">
+          <p>
+            Since the code index is built of potentially more than one extension type, it may be
+            necessary to strip down the search to a specific extension type. This is done using the 
+            <i>QueryFilterService</i> class, which allows to filter at runtime which files should be
+            included in the search (<a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/scala/gitinsp/infrastructure/QueryFilterService.scala">Source Code</a>).
+          </p>
+        </div>
+        <br/>
+        <!--/ Re-rendering. -->
+
+        <!-- Re-rendering. -->
+        <h3 class="title is-4">Parsing algorithm</h3>
+        <div class="content has-text-justified">
+          <p>
+            The parsing algorithm was ported from the Langchain Python library <a href="https://github.com/langchain-ai/langchain/blob/master/langchain/text_splitter/recursive_character.py">available here</a>.
+            Below is pseudocode describing the key ideas:
+          </p>
+          <div class="columns is-centered">
+            <div class="column is-5">
+              <div class="content has-text-centered">
+                <figure>
+                  <img src="./static/images/parsing_algorithm.png" width="100%" style="margin: 0 auto; display: block;">
+                  <figcaption>Recursive text splitting algorithm</figcaption>
+                </figure>
+              </div>
+            </div>
+            <div class="column is-5">
+              <div class="content">
+                <h4 class="title is-5 has-text-centered">Algorithm Description</h4>
+                <p>
+                  This recursive text splitting algorithm efficiently parses text into manageable chunks:
+                </p>
+                <ol>
+                  <li>Choose a high-priority separator from the available options</li>
+                  <li>Split the text using the selected separator</li>
+                  <li>Process each resulting split:
+                    <ul>
+                      <li>Small chunks are buffered for later merging</li>
+                      <li>Large chunks are processed recursively with remaining separators</li>
+                    </ul>
+                  </li>
+                  <li>Finally, merge any remaining small chunks in the buffer</li>
+                </ol>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--/ Re-rendering. -->
+
+        <!-- Re-rendering. -->
+        <h3 class="title is-4">Local Inference with optional pay-to-use inference</h3>
+        <div class="content has-text-justified">
+          <p>
+            The application allows for local inference using the Ollama backend with minimal configuration,
+            however there is also the posibility to use it with a pay-to-use API using Gemini or Anthropic. This requires
+            setting the correct API key in the <i><a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/resources/application.conf">application.conf</a></i> file.
+          </p>
+        </div>
+        <!--/ Re-rendering. -->
+
+        <!-- Re-rendering. -->
+        <h3 class="title is-4">Traceability matrix</h3>
+        <div class="content has-text-justified">
+          <p>
+            TODO
+          </p>
+        </div>
+        <!--/ Re-rendering. -->
+
+      </div>
+    </div>
+    <!--/ Animation. -->
+    
+    <h2 class="title is-3">Evaluation</h2>
+    <p>Visualizations of code and text embeddings across different repositories</p>
+    
+    <div class="columns is-centered m-6" style="margin-top: 1em !important; margin-bottom: 1em !important;">
+      <div class="column is-full content">
+        <div class="container">
+          <div id="results-carousel" class="carousel results-carousel">
+            <!-- Code Embeddings - PCA and t-SNE Slide -->
+            <div class="item">
+              <div class="content has-text-centered">
+                <h3 class="title is-4" style="margin-top: 1em;">Code Embeddings Distribution</h3>
+                <div class="columns is-centered">
+                  <div class="column">
+                    <figure>
+                      <img src="static/images/openai-scala-client-code,scipy-code,scala3-code/query_distribution_t-sne.png" alt="t-SNE code" class="stats-image">
+                      <figcaption>t-SNE visualization of code query embeddings</figcaption>
+                    </figure>
+                  </div>
+                  <div class="column">
+                    <figure>
+                      <img src="static/images/openai-scala-client-code,scipy-code,scala3-code/query_distribution_PCA.png" alt="PCA code" class="stats-image">
+                      <figcaption>PCA visualization of code query embeddings</figcaption>
+                    </figure>
+                  </div>
+                </div>
+                <p class="mt-4">Distribution of code embeddings across OpenAI Scala client, SciPy, and Scala 3 repositories</p>
+              </div>
+            </div>
+            
+            <!-- Code Embeddings - Similarity Heatmap Slide -->
+            <div class="item">
+              <div class="content has-text-centered">
+                <h3 class="title is-4" style="margin-top: 1em;">Code Embeddings Similarity</h3>
+                <div class="columns is-centered">
+                  <div class="column is-half">
+                    <figure>
+                      <img src="static/images/openai-scala-client-code,scipy-code,scala3-code/cosine_similarity_heatmap.png" alt="Cosine similarity code" class="stats-image">
+                      <figcaption>Cosine similarity heatmap between code embeddings</figcaption>
+                    </figure>
+                  </div>
+                </div>
+                <p class="mt-4">Similarity analysis of code embeddings across OpenAI Scala client, SciPy, and Scala 3 repositories</p>
+              </div>
+            </div>
+            
+            <!-- Text Embeddings - PCA and t-SNE Slide -->
+            <div class="item">
+              <div class="content has-text-centered">
+                <h3 class="title is-4" style="margin-top: 1em;">Text Embeddings Distribution</h3>
+                <div class="columns is-centered">
+                  <div class="column">
+                    <figure>
+                      <img src="static/images/openai-scala-client-text,scipy-text,scala3-text/query_distribution_t-sne.png" alt="t-SNE text" class="stats-image">
+                      <figcaption>t-SNE visualization of text query embeddings</figcaption>
+                    </figure>
+                  </div>
+                  <div class="column">
+                    <figure>
+                      <img src="static/images/openai-scala-client-text,scipy-text,scala3-text/query_distribution_PCA.png" alt="PCA text" class="stats-image">
+                      <figcaption>PCA visualization of text query embeddings</figcaption>
+                    </figure>
+                  </div>
+                </div>
+                <p class="mt-4">Distribution of text embeddings across OpenAI Scala client, SciPy, and Scala 3 repositories</p>
+              </div>
+            </div>
+            
+            <!-- Text Embeddings - Similarity Heatmap Slide -->
+            <div class="item">
+              <div class="content has-text-centered">
+                <h3 class="title is-4" style="margin-top: 1em;">Text Embeddings Similarity</h3>
+                <div class="columns is-centered">
+                  <div class="column is-half">
+                    <figure>
+                      <img src="static/images/openai-scala-client-text,scipy-text,scala3-text/cosine_similarity_heatmap.png" alt="Cosine similarity text" class="stats-image">
+                      <figcaption>Cosine similarity heatmap between text embeddings</figcaption>
+                    </figure>
+                  </div>
+                </div>
+                <p class="mt-4">Similarity analysis of text embeddings across OpenAI Scala client, SciPy, and Scala 3 repositories</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <h2 class="title is-3">System Usability Scale (SUS)</h2>
+    <p>The questionnaire is complements the requirements document TODO-add-link, where it is heavily referenced.</p>
+    
+    <div class="columns is-centered m-6" style="margin-top: 1em !important;">
+      <div class="column is-full content">
+        <div class="container">
+          <div class="content has-text-centered">
+            <h3 class="title is-4">SUS Questionnaire Bar Chart</h3>
+            <div class="columns is-centered">
+              <div class="column">
+                <figure>
+                  <img src="static/images/SUS-graph.png" alt="SUS results chart" class="stats-image" style="width: 100%;">
+                </figure>
+              </div>
+            </div>
+            <p class="mt-4">User Evaluation of the Web Interface</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      // Initialize the carousel when the page loads
+      document.addEventListener('DOMContentLoaded', function() {
+        bulmaCarousel.attach('#results-carousel', {
+          slidesToScroll: 1,
+          slidesToShow: 1,
+          pagination: true,
+          infinite: true,
+          autoplay: false,
+          autoplaySpeed: 6000 // 6 seconds per slide
+        });
+      });
+    </script>
+
+    <!-- Concurrent Work. -->
+    <div class="columns is-centered">
+      <div class="column is-full-width">
+        <h2 class="title is-3">Related Notes</h2>
+
+        <div class="content has-text-justified">
+          <p>
+            The release is available <a href="https://github.com/atomwalk12/PPS-22-git-insp/releases/tag/0.1">on Github TODO</a>.
+          </p>
+
+        </div>
+      </div>
+    </div>
+    <!--/ Concurrent Work. -->
+
+  </div>
+</section>
+
+
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code>@article{vasile2025gitinspector,
+  author    = {Razvan Florian Vasile},
+  title     = {Git Inspector! Inspecting Github Repositories with Open-Source LLM},
+  year      = {2025},
+}</code></pre>
+  </div>
+</section>
+
+<section class="section" id="affiliation" style="padding-top: 0;">
+  <div class="container is-max-desktop">
+    <div class="has-text-centered">
+      <a href="https://www.unibo.it/" target="_blank" rel="external">
+        <img src="static/logos/unibo-logo.webp" alt="University of Bologna Logo" style="max-width: 700px;">
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link"
+         href="./static/videos/gitinspector_paper.pdf TODO">
+        <i class="fas fa-file-pdf"></i>
+      </a>
+      <a class="icon-link" href="https://github.com/atomwalk12/PPS-22-git-insp" class="external-link" disabled>
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-12 has-text-centered">
+        <div class="content">
+          <p>
+            This website is adapted from <a href="https://nerfies.github.io/">Nerfies</a>, licensed under a Creative Commons Attribution-ShareAlike 4.0 International License.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

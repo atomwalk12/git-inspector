@@ -6,8 +6,8 @@ import akka.stream.scaladsl.Sink
 import com.typesafe.config.ConfigFactory
 import gitinsp.domain.ChatService
 import gitinsp.domain.IngestorService
-import gitinsp.domain.Pipeline
-import gitinsp.domain.models.RepositoryWithLanguages
+import gitinsp.domain.PipelineService
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.URL
 import gitinsp.infrastructure.CacheService
 import gitinsp.infrastructure.ContentService
@@ -36,35 +36,22 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
   implicit val executionContext: ExecutionContext = system.dispatcher
   val config                                      = ConfigFactory.load()
 
-  /*
-    System Performance Optimization (NFR1)
-
-    - Choice: Optimize performance for conversations with and without codebases.
-      - Rationale: Users expect fast responses even with large codebases.
-      - Validation Criteria:
-        - Search queries return results in under 40 seconds for repositories up to 100MB
-        - Embedding generation completes in under 30 seconds for repositories up to 100MB
-        - Chat responses for simple search (without code context) arrives within 20 seconds for 90% of queries
-      - Implementation Considerations:
-        - Embeddings are stored in a persistent memory.
-        - Data can be regenerated from the repository code.
-   */
-  Feature("NFR1: System Performance Optimization") {
+  Feature("NFR1: System Performance Optimization"):
     Scenario(
       "Search queries return results in under 40 seconds for repositories up to 100MB",
       externalServiceTag,
-    ) {
+    ):
       Given("A valid repository URL and language configuration")
       val githubService   = GithubWrapperService(config, FetchingService())
       val ragFactory      = RAGComponentFactoryImpl(config)
       val cacheService    = CacheService(ragFactory)
       val chatService     = ChatService(false, ContentService)
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
-      val pipeline        = Pipeline(chatService, cacheService, ingestorService, githubService)
+      val pipeline = PipelineService(chatService, cacheService, ingestorService, githubService)
 
       And("A repository has been setup and indexed")
       val validUrl  = URL(repoName)
-      val languages = RepositoryWithLanguages.detectLanguages("scala,md")
+      val languages = GitRepository.detectLanguages("scala,md")
       val repository = githubService.buildRepository(
         validUrl,
         languages,
@@ -87,12 +74,11 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
       Then("At least one response item should be received within the specified time")
       firstResult should not be empty
       processingTime should be <= 40000L
-    }
 
     Scenario(
       "Embedding generation completes in under 30 seconds for repositories up to 100MB",
       externalServiceTag,
-    ) {
+    ):
       Given("A valid repository URL and language configuration")
       val githubService   = GithubWrapperService(config, FetchingService())
       val ragFactory      = RAGComponentFactoryImpl(config)
@@ -101,7 +87,7 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
 
       And("A repository has been successfully built")
       val validUrl  = URL("https://github.com/atomwalk12/deep-bridge-survey")
-      val languages = RepositoryWithLanguages.detectLanguages("scala,md")
+      val languages = GitRepository.detectLanguages("scala,md")
       val repository = githubService.buildRepository(
         validUrl,
         languages,
@@ -115,16 +101,15 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
       Then("The ingestion should succeed within the specified time")
       ingestResult.isSuccess shouldBe true
       processingTime should be <= 30000L // 30 seconds max
-    }
 
-    Scenario("Chat responses for simple search arrive within 20 seconds", externalServiceTag) {
+    Scenario("Chat responses for simple search arrive within 20 seconds", externalServiceTag):
       Given("A configured chat service")
       val ragFactory      = RAGComponentFactoryImpl(config)
       val cacheService    = CacheService(ragFactory)
       val chatService     = ChatService(false, ContentService)
       val githubService   = GithubWrapperService(config, FetchingService())
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
-      val pipeline        = Pipeline(chatService, cacheService, ingestorService, githubService)
+      val pipeline = PipelineService(chatService, cacheService, ingestorService, githubService)
 
       When("A simple chat query is performed")
       val query     = "Hi, what can you help me with?"
@@ -138,41 +123,13 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
       Then("The response should arrive within the specified time")
       result should not be empty
       processingTime should be <= 20000L // 20 seconds max
-    }
-  }
 
-  /*
-    System Usability Testing (NFR2)
-
-    - Choice: The design of the interfaces should be evaluated by the users.
-      - Rationale: This ensures that the system is usable, as evaluated through Usability Testing.
-      - Success Criteria:
-        - First-time users find the interface easy to use without assistance in >80% of cases (SUS)
-        - 90% of users rate UI intuitiveness as "good" or "excellent" (SUS)
-        - Keyboard shortcuts reduce interaction time by >30% for experienced users
-      - Implementation Considerations:
-        - Implement clean, intuitive UI. Rely on established patterns such as the Gradio UI components.
-        - Update the user for the progress of the system.
-   */
-  Feature("NFR2: System Usability Testing") {
-    Scenario("Usability metrics are tracked via System Usability Scale (SUS)") {
+  Feature("NFR2: System Usability Testing"):
+    Scenario("Usability metrics are tracked via System Usability Scale (SUS)"):
       info("This is a placeholder. SUS questionnaire to be conducted with users")
-    }
-  }
 
-  /*
-    User Interface Security (NFR3)
-
-    - Choice: Implement input validation.
-      - Rationale: User inputs (especially repository URLs and search queries) could contain malicious content.
-      - Success Criteria:
-        - 100% of malformed/malicious URLs rejected before processing
-      - Implementation Considerations:
-        - Validate repository URLs against known valid patterns.
-        - Test against standard Github URLs.
-   */
-  Feature("NFR3: User Interface Security") {
-    Scenario("Malformed repository URLs are rejected") {
+  Feature("NFR3: User Interface Security"):
+    Scenario("Malformed repository URLs are rejected"):
       Given("A GithubWrapperService")
       val githubService = GithubWrapperService(config, FetchingService())
 
@@ -191,23 +148,7 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
           val isValidGithubUrl = Try(URL(urlStr)).isSuccess
           isValidGithubUrl shouldBe false
       }
-    }
-  }
 
-  /*
-    Embedding Visualization Requirement (NFR4)
-
-    - Choice: Implement visualization tools for code embeddings analysis.
-      - Rationale: Visualizing embeddings helps analyze and improve search quality.
-      - Success Criteria:
-        - Visualization correctly clusters similar code types
-        - Report analysis identifies at least 3 insights from embedding visualization
-      - Implementation Considerations:
-        - Implement dimension reduction techniques (t-SNE, UMAP) for 2D visualization.
-        - Used in the report to strengthen the analysis of the generated embeddings.
-   */
-  Feature("NFR4: Embedding Visualization") {
-    Scenario("Embedding visualization for code analysis") {
+  Feature("NFR4: Embedding Visualization"):
+    Scenario("Embedding visualization for code analysis"):
       info("This is a placeholder. Embedding visualization to be included in the project report")
-    }
-  }

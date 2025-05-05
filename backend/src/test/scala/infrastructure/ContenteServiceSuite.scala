@@ -51,6 +51,7 @@ class ContentFormatterSuite extends AnyFlatSpec with Matchers with BeforeAndAfte
     val chatResponse = mock(classOf[ChatResponse])
     val metadata     = mock(classOf[Metadata])
     val userMessage  = mock(classOf[UserMessage])
+    when(config.getString("gitinsp.rag.filter-strategy")).thenReturn("llm")
 
     // Setup data
     val formatter      = ContentService
@@ -62,6 +63,8 @@ class ContentFormatterSuite extends AnyFlatSpec with Matchers with BeforeAndAfte
     // Setup behaviour
     when(config.getBoolean("gitinsp.rag.use-dynamic-filter")).thenReturn(true)
     when(query.metadata()).thenReturn(metadata)
+    when(metadata.userMessage()).thenReturn(userMessage)
+    when(userMessage.text()).thenReturn("This is the query")
     when(metadata.userMessage()).thenReturn(userMessage)
     when(userMessage.contents()).thenReturn(Arrays.asList(TextContent.from("test")))
     when(model.chat(any(classOf[UserMessage]))).thenReturn(chatResponse)

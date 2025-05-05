@@ -150,9 +150,6 @@ lazy val frontend = project
     scalaJSUseMainModuleInitializer := true,
     Compile / mainClass := Some("gitinsp.GitInspectorFrontend"),
 
-    // Disable WartRemover for the frontend project
-    wartremoverErrors := Seq(),
-    wartremoverWarnings := Seq(),
     // Disable coverage for frontend to avoid conflicts
     coverageEnabled := false,
 

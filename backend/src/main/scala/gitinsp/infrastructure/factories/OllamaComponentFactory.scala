@@ -28,6 +28,7 @@ import gitinsp.domain.interfaces.infrastructure.RAGComponentFactory
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.Language
 import gitinsp.infrastructure.QueryFilterService
+import gitinsp.infrastructure.strategies.QueryRoutingStrategyFactory
 import io.qdrant.client.QdrantClient
 import io.qdrant.client.QdrantGrpcClient
 import io.qdrant.client.grpc.Collections
@@ -322,8 +323,11 @@ class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with L
     * @param name The name of the collection
     */
   override def createCollection(name: String, client: QdrantClient, distance: Distance): Try[Unit] =
-    val dimension = config.getInt("gitinsp.qdrant.dimension")
-    Try {
+    val dimension = name.endsWith("code") match {
+      case true  => config.getInt("gitinsp.code-embedding.size")
+      case false => config.getInt("gitinsp.text-embedding.size")
+    }
+    Try:
       client.createCollectionAsync(
         name,
         Collections.VectorParams
@@ -333,7 +337,6 @@ class RAGComponentFactoryImpl(config: Config) extends RAGComponentFactory with L
           .build(),
       ).get()
       logger.info(s"Collection '$name' created successfully with dimension $dimension")
-    }
 
 /** A custom router that uses a query routing strategy.
   * This is an adapter that bridges the gap between the QueryRouter interface and the

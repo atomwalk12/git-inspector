@@ -14,14 +14,14 @@ import org.scalajs.dom.MessageEvent
 import org.scalajs.dom.RequestInit
 import org.scalajs.dom.fetch
 
-import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.ExecutionContext
 import scala.concurrent.Future
 import scala.scalajs.js
 import scala.scalajs.js.Dynamic.global as jsGlobal
 
-class HttpClient(baseUrl: String):
+class HttpClient(baseUrl: String)(implicit val ec: ExecutionContext):
 
-  def get(endpoint: String, params: Map[String, String] = Map.empty): Future[String] =
+  def get(endpoint: String, params: Map[String, String]): Future[String] =
     val url = s"$baseUrl/$endpoint"
 
     // Build query string from params
@@ -89,7 +89,7 @@ class HttpClient(baseUrl: String):
     // The callback to listen to messages
     eventSource.onmessage = (event: MessageEvent) =>
       // All messages are within the data property (the SSE spec)
-      val rawData = event.data.toString
+      val rawData = String.valueOf(event.data)
 
       // Parse the responses
       parse(rawData).flatMap(_.as[StreamResponse]) match

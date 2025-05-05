@@ -47,8 +47,6 @@ object IndexSelector:
       ),
       button(
         cls := "load-index-button",
-
-        // TODO: the time it takes to load the indices is short, so this may not be needed
         cls("loading-button") <-- isLoadingVar.signal,
         child.text <-- isLoadingVar.signal.map(
           loading =>

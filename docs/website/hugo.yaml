@@ -3,7 +3,7 @@
 baseURL: https://atomwalk12.github.io/PPS-22-git-insp/
 title: Git Inspector
 pagination:
-  pagerSize: 7
+  pagerSize: 8
 theme: [papermod, hugo-cite]
 contentDir: ../content
 
@@ -36,12 +36,12 @@ languages:
         - name: Archive
           url: archives
           weight: 5
-        - name: Search
-          url: search
-          weight: 10
-        - name: Tags
-          url: tags
-          weight: 10
+        # - name: Search
+        #   url: search
+        #   weight: 10
+        # - name: Tags
+        #   url: tags
+        #   weight: 10
         - name: Backend ScalaDoc
           url: backend/scaladoc
           weight: 15

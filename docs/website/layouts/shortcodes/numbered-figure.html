@@ -14,3 +14,26 @@
     Fig. {{ $figureNum }}: {{ .Get "caption" }}
   </figcaption>
 </figure>
+
+<style>
+.custom_table_style th:last-child {
+  width: 100%;
+}
+
+/* Style for side-by-side figures */
+.figures-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 20px;
+}
+
+.figures-container figure {
+  width: 48%;
+}
+
+.figures-container figure img {
+  width: 100%;
+  height: auto;
+}
+</style>

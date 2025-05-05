@@ -6,7 +6,7 @@ description: "The product backlog consisting of a high-level overview of the req
 aliases: ["product-backlog"]
 tocopen: true
 tags: ["requirements", "product-backlog"]
-summary: "A summary of the product backlog."
+summary: "The product backlog from which tasks are derived for each sprint."
 bibFile: /assets/bibliography.json
 ---
 

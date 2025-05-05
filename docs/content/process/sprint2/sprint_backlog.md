@@ -36,36 +36,19 @@ Link to the main product backlog: {{< abslink url="/static/product-backlog#task-
 | SBI ID                           | Task Description                                              | User Story       | PBI ID                                           | Est. Points | Status |
 | :------------------------------- | :------------------------------------------------------------ | :--------------- | :----------------------------------------------- | :---------- | :----- |
 | **ARCHITECTURE & SETUP**         |                                                               |                  |                                                  |             |        |
-| S1.A1                            | Set up basic layered project structure (Scala)                | *(Foundation)*   | [F1](../../static/product-backlog.md#task-board) | 10          | DONE   |
-| S1.A2                            | Define core interfaces between initial layers                 | *(Foundation)*   | [F1](../../static/product-backlog.md#task-board) | 5           | DONE   |
-| S1.A3                            | Implement design patterns discussed during the course         | *(Foundation)*   | [F1](../../static/product-backlog.md#task-board) | 10          | DONE   |
+| S1.A1                            | Set up basic layered project structure (Scala)                | *(Foundation)*   | [F1](../../static/product-backlog.md#task-board) | 10          | ✓      |
+| S1.A2                            | Define core interfaces between initial layers                 | *(Foundation)*   | [F1](../../static/product-backlog.md#task-board) | 5           | ✓      |
+| S1.A3                            | Implement design patterns discussed during the course         | *(Foundation)*   | [F1](../../static/product-backlog.md#task-board) | 10          | ✓      |
 | **REPOSITORY INPUT (15 Points)** |                                                               |                  |                                                  |             |        |
-| S1.1.1                           | Create UI component for repository URL input                  | Repository Input | [F2](../../static/product-backlog.md#task-board) | 5           | DONE   |
-| S1.1.2                           | Implement URL validation with clear feedback                  | Repository Input | [F2](../../static/product-backlog.md#task-board) | 3           | DONE   |
-| S1.1.3                           | Create Git wrapper for repository fetching                    | Repository Input | [F2](../../static/product-backlog.md#task-board) | 7           | DONE   |
+| S1.1.1                           | Create UI component for repository URL input                  | Repository Input | [F2](../../static/product-backlog.md#task-board) | 5           | ✓      |
+| S1.1.2                           | Implement URL validation with clear feedback                  | Repository Input | [F2](../../static/product-backlog.md#task-board) | 3           | ✓      |
+| S1.1.3                           | Create Git wrapper for repository fetching                    | Repository Input | [F2](../../static/product-backlog.md#task-board) | 7           | ✓      |
 | **CODE PROCESSING (20 Points)**  |                                                               |                  |                                                  |             |        |
-| S1.2.1                           | Implement file traversal & content extraction                 | Code Processing  | [F2](../../static/product-backlog.md#task-board) | 8           | DONE   |
-| S1.2.2                           | Add language detection & basic file filtering                 | Code Processing  | [F2](../../static/product-backlog.md#task-board) | 4           | DONE   |
-| S1.2.3                           | Create code chunking strategy for indexing                    | Code Processing  | [F3](../../static/product-backlog.md#task-board) | 8           | DONE   |
+| S1.2.1                           | Implement file traversal & content extraction                 | Code Processing  | [F2](../../static/product-backlog.md#task-board) | 8           | ✓      |
+| S1.2.2                           | Add language detection & basic file filtering                 | Code Processing  | [F2](../../static/product-backlog.md#task-board) | 4           | ✓      |
+| S1.2.3                           | Create code chunking strategy for indexing                    | Code Processing  | [F3](../../static/product-backlog.md#task-board) | 8           | ✓      |
 | **SEARCH INDEXING (15 Points)**  |                                                               |                  |                                                  |             |        |
-| S1.3.1                           | Implement code embedding generation (Langchain4J)             | Search Indexing  | [F3](../../static/product-backlog.md#task-board) | 8           | DONE   |
-| S1.3.2                           | Create vector database integration (Qdrant) using Langchain4j | Search Indexing  | [F3](../../static/product-backlog.md#task-board) | 7           | DONE   |
-|                                  |                                                               |                  |                                                  |             |        |
+| S1.3.1                           | Implement code embedding generation (Langchain4J)             | Search Indexing  | [F3](../../static/product-backlog.md#task-board) | 8           | ✓      |
+| S1.3.2                           | Create vector database integration (Qdrant) using Langchain4j | Search Indexing  | [F3](../../static/product-backlog.md#task-board) | 7           | ✓      |
+
 {{</ responsive-table>}}
-
-**Definition of Done:**
-- Repository loading completes in <30 seconds for repos up to 100MB (*NFR1*)
-  - The repository loading functionality is complete, as well as unit and integration tests
-  - Acceptance tests are necessary to verify the time requirements are met
-
-- Initial indexing operations demonstrate successful embedding storage (*FR2.2, FR2.3*)
-  - The embedding storage functionality is complete
-  - Tests exist that ensure correctness
-  - Test notes are necessary to track requirement coverage
-
-- 90% of unit test cases for validation and processing pass (*FR1.1, FR2.1, FR2.2*)
-  - The unit tests that use mockups are complete and runnable using CI
-  - There do exist integration tests that do not use mockups, but require the backend to be running
-
-- Code adheres to basic layered structure principles (*IR4*)
-  - Need to use ArchUnit to verify the layered structure

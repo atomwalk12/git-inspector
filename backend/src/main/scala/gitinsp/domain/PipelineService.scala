@@ -11,16 +11,16 @@ import gitinsp.domain.interfaces.infrastructure.GithubWrapperService
 import gitinsp.domain.models.AIServiceURL
 import gitinsp.domain.models.Assistant
 import gitinsp.domain.models.Category
+import gitinsp.domain.models.GitRepository
 import gitinsp.domain.models.Language
 import gitinsp.domain.models.QdrantURL
-import gitinsp.domain.models.RepositoryWithLanguages
 import gitinsp.domain.models.StreamedResponse
 import gitinsp.domain.models.URL
 
 import scala.concurrent.ExecutionContext
 import scala.util.Try
 
-object Pipeline extends LazyLogging:
+object PipelineService extends LazyLogging:
   def apply(cs: ChatService, cas: CacheService, is: IngestorService, ws: GithubWrapperService)(using
     ActorSystem,
     Materializer,
@@ -42,7 +42,7 @@ object Pipeline extends LazyLogging:
       // Stream the response
       chatService.chat(message, aiService)
 
-    def generateIndex(repository: RepositoryWithLanguages, regenerate: Boolean): Try[Unit] =
+    def generateIndex(repository: GitRepository, regenerate: Boolean): Try[Unit] =
       Try {
         // Delete current repository if it exists
         if regenerate then ingestorService.deleteRepository(repository)
@@ -51,7 +51,7 @@ object Pipeline extends LazyLogging:
         ingestorService.ingest(repository)
       }
 
-    def regenerateIndex(repository: RepositoryWithLanguages): Try[Unit] =
+    def regenerateIndex(repository: GitRepository): Try[Unit] =
       // This deletes the existing index if it exists and creates a new one
       generateIndex(repository, true).map {
         _ => cacheService.initializeAIServices(Some(repository.toRepositoryWithCategories()))
@@ -83,14 +83,18 @@ object Pipeline extends LazyLogging:
       for {
         qdrantCollections <- cacheService.listCollections()
         indexes      = qdrantCollections.map(QdrantURL(_)).distinctBy(_.value)
-        repositories = RepositoryWithLanguages.from(indexes)
+        repositories = GitRepository.from(indexes)
         _            = repositories.foreach(repo => cacheService.initializeAIServices(Some(repo)))
         _            = cacheService.initializeAIServices(None)
       } yield ()
 
-    def fetchRepository(url: URL, languages: List[Language]): Try[RepositoryWithLanguages] =
-      // Used to display the repository content to the UI
+    def buildRepository(url: URL, languages: List[Language]): Try[GitRepository] =
+      // Used to build the repository for indexing
       githubWrapperService.buildRepository(url, languages)
+
+    def fetchRepository(url: URL, languages: List[Language]): Try[String] =
+      // Used to fetch repository content as a string for display in the UI
+      githubWrapperService.fetchRepository(url, languages)
 
     def getAIService(index: Option[AIServiceURL]): Try[Assistant] =
       // Get the AI service from the cache (used when chatting)

@@ -12,14 +12,26 @@ import java.util.Locale
 
 import scala.jdk.CollectionConverters.*
 
+// The EmbeddingStoreContentRetriever actually overrides the toString method.
+// Because of this, it is safe to suppress the warning.
+@SuppressWarnings(Array("org.wartremover.warts.ToString"))
 /** Strategy that conditionally uses retrievers based on LLM classification of the query.
   * Uses an LLM to determine if the query explicitly asks not to use RAG.
   */
 class ConditionalQueryStrategy(modelRouter: OllamaChatModel) extends QueryRoutingStrategy:
   private val PROMPT_TEMPLATE = PromptTemplate.from(
-    "Did the user ask to avoid querying the vector database?" +
-      "Answer only 'yes' or 'no'. " +
-      "Query: {{it}}",
+    """Determine which knowledge index should be searched based on the user query:
+      - Respond with 'code' ONLY if the user explicitly requests code-specific results or limits the search to programming/technical content
+      - Respond with 'text' ONLY if the user explicitly requests text-specific results or limits the search to non-code content
+      - Respond with 'both' for any query that doesn't explicitly specify a preference or limitation to one type
+
+      By default, choose 'both' unless there's a clear instruction to search only one index type.
+
+      Respond with ONLY one of these three options: 'code', 'text', or 'both'.
+
+      USER QUERY:
+      {{it}}
+    """,
   )
 
   override def determineRetrievers(
@@ -31,8 +43,10 @@ class ConditionalQueryStrategy(modelRouter: OllamaChatModel) extends QueryRoutin
 
     // This basically allows to bypass fetching the RAG index if the modelk asked explicitly not to
     // Check for standalone word "no"
-    if aiMessage.text().toLowerCase(Locale.ROOT).matches(".*\\byes\\b.*") then
-      java.util.Collections.emptyList()
+    if aiMessage.text().toLowerCase(Locale.ENGLISH).contains("code") then
+      retrievers.filter(r => r.toString().contains("code")).asJava
+    else if aiMessage.text().toLowerCase(Locale.ENGLISH).contains("text") then
+      retrievers.filter(r => r.toString().contains("text")).asJava
     else
       retrievers.asJava
 

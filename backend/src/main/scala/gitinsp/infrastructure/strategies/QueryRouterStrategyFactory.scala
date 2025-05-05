@@ -1,9 +1,7 @@
-package gitinsp.infrastructure.factories
+package gitinsp.infrastructure.strategies
 
 import dev.langchain4j.model.ollama.OllamaChatModel
 import gitinsp.domain.interfaces.infrastructure.QueryRoutingStrategy
-import gitinsp.infrastructure.strategies.ConditionalQueryStrategy
-import gitinsp.infrastructure.strategies.DefaultQueryStrategy
 
 import java.util.Locale
 

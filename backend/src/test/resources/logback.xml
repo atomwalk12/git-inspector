@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+  <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- Suppress warnings from HuggingFaceTokenizer. These warnings are rather noisy. -->
+  <!-- <logger name="ai.djl.huggingface.tokenizers.HuggingFaceTokenizer" level="ERROR" /> -->
+
+
+  <root level="OFF">
+    <appender-ref ref="CONSOLE" />
+  </root>
+
+
+  <logger name="gitinsp" level="INFO" additivity="false">
+    <appender-ref ref="CONSOLE" />
+  </logger>
+</configuration> 

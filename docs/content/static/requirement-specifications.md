@@ -1,68 +1,67 @@
 ```md
 Code Search Productivity (BR1)
 
-- Choice: Focus on developing a Git repository search tool that improves efficiency of developers.
+- Choice: Enable developers to efficiently search and understand code within Git repositories.
   - Rationale: Developers spend significant time searching through codebases, and improving this process directly impacts productivity.
-  - Success Criteria:
-    - At least 85% of test users report improved workflow efficiency in post-usage surveys
-    - Average query-to-result time under 10 seconds for repositories up to 100MB
+  - Validation Criteria:
+    - At least 85\% of test users report improved workflow efficiency in post-usage surveys (SUS).
+    - Average query-to-result time under 10 seconds for the predetermined repositories.
   - Implementation Considerations:
-    - Design UI workflows optimized for developer search patterns. This can be done by using common chat interface layouts (i.e. Gradio can help).
-    - Focus on search result quality and relevance (i.e. analyze the effectiveness of the generated embeddings - embedding diagrams)
-    - Ensure integration with common development workflows (i.e. differentiate between AI and user messages).
+    - Ensure integration with common development workflows. This can be done using Gradio interfaces.
+    - Focus on search result quality and relevance (i.e. analyze the effectiveness of the generated embeddings).
   - Related Requirements:
     - FR1.2 (Search)
     - FR1.5 (Context)
     - FR1.6 (Chat)
 ```
 
+
 ```md
 Improving Code Understanding (BR2)
 
-- Choice: Use AI capabilities to reduce time spent understanding code.
+- Choice: Improve developer productivity by facilitating code search/understanding workflows.
   - Rationale: Understanding existing code is often more time-consuming than writing new code.
-  - Success Criteria:
-    - Code explanations rated as "accurate and helpful" by at least 80% of test users
+  - Validation Criteria:
+    - Code explanations rated as "accurate and helpful" by at least 70\% of test users (SUS).
   - Implementation Considerations:
     - Implement contextual code explanations (i.e. use separate models that understand code and natural language).
-    - Provide relationship visualization between code components. This can be done in the report by analyzing the generated embeddings.
-    - Prioritize speed and accuracy in responses (i.e. allow users to select any open source model).
+    - Provide relationship visualization between embedding by using a 2D visualization tool.
+    - Prioritize speed and accuracy in responses by allowing the users to select any open source model.
   - Related Requirements:
-    - FR1.6 (Chat Functionality)
-    - FR2.4 (LLM Integration)
+    - FR1.6 (Chat)
+    - FR2.4 (LLM integration)
     - NFR2 (Usability)
-    - IR5 (Embedding Visualization)
+    - NFR4 (Visualization)
 ```
+
 
 ```md
 Repository URL Input Interface (FR1.1)
 
-- Choice: Create a flexible and robust repository input mechanism.
-  - Rationale: The system needs a secure and user-friendly way to accept Git repository URLs.
-  - Success Criteria:
-    - 100% of valid GitHub URLs successfully accepted and processed
-    - Error feedback displayed within 500ms of validation failure
-    - Multiple extension selection functions correctly in 100% of test cases
-    - URL validation completes within 5 seconds for all inputs
+- Choice: As a user, I can specify a Git repository URL to inspect its code, so that I can access and analyze specific codebases I'm interested in.
+  - Rationale: The system needs a secure and user-friendly way to fetch Git repository URLs.
+  - Validation Criteria:
+    - The acceptance tests parse valid GitHub URLs successfully.
+    - Error feedback displayed within 2 seconds of validation failure.
+    - URL validation completes within half a second for all inputs.
   - Implementation Considerations:
-    - Provide a common interface to select Github repositories and select multiple extensions at once.
-    - Implement URL validation and sanitization by using common sanitization libraries.
-    - Provide clear feedback for invalid URLs (i.e. use common UI elements to display errors).
+    - Implement URL validation and display clear feedback in case of parsing errors.
   - Related Requirements:
     - FR2.1 (Repository Cloning)
     - NFR3 (Security)
 ```
 
+
 ```md
 Code Search Using Markdown (FR1.2)
 
-- Choice: Implement dual-approach search combining keyword matching and semantic search.
+- Choice: As a user, I can search for code using keywords or natural language, so that I can quickly find relevant code sections without manually browsing through files.
+  - Rationale: This allows users to search for code using natural language, making it easier to find relevant code sections.
   - Validation Criteria:
-    - Search results return in under 2 seconds for repositories up to 100MB
-    - Language filtering correctly categorizes at least 95% of code files
+    - Search results return in under 2 seconds for the predetermined repositories.
+    - Language filtering correctly categorizes at least 95\% of code files.
   - Implementation Considerations:
     - Use embedding model to convert natural language queries to vectors.
-    - Implement hybrid ranking that combines exact matches and semantic similarity.
     - Support filtering by language, content type and extension.
   - Related Requirements:
     - FR2.2 (Code Indexing)
@@ -73,13 +72,12 @@ Code Search Using Markdown (FR1.2)
 ```md
 Search Results Display System (FR1.3)
 
-- Choice: Implement a comprehensive search displaying answers with code context.
-  - Rationale: Users need to quickly scan and evaluate search results to find relevant code.
-  - Success Criteria:
-    - 95% of users can correctly identify file locations from the display (SUS)
-    - Code snippets maintain proper indentation and formatting (Python, Scala frontend)
+- Choice: As a user, I can view the search results with code snippets and links to the original files in the repository, so that I can efficiently evaluate search results and navigate to the full context when needed.
+  - Validation Criteria:
+    - 95\% of users can correctly identify file locations from the display assessed via the SUS survey.
+    - Code snippets maintain proper indentation and formatting (Python, Scala frontend).
   - Implementation Considerations:
-    - Display code snippets with syntax highlighting.
+    - Display code snippets with syntax highlighting (Python).
     - Show file path and location information.
   - Related Requirements:
     - FR1.2 (Search)
@@ -90,13 +88,11 @@ Search Results Display System (FR1.3)
 ```md
 Code Search using Code Embeddings (FR1.4)
 
-- Choice: Implement programming language filters for search results.
+- Choice: As a user, I can filter search results by programming language, so that I can focus on code written in languages relevant to my current task.
   - Rationale: Developers often need to restrict searches to specific languages or file types.
-  - Success Criteria:
-    - Language detection accuracy >95% across all common programming languages
-    - Filter application occurs within 500ms after selection
-    - Multiple simultaneous filters function correctly in 100% of test cases
-    - Filter UI elements receive >90% positive usability rating from test users (SUS)
+  - Validation Criteria:
+    - Language detection accuracy >95\% across all common programming languages (see partser impl.).
+    - Multiple simultaneous filters function correctly in 100\% as assessed by the acceptance tests.
   - Implementation Considerations:
     - Detect and classify programming languages during indexing.
     - Create efficient language metadata for fast filtering.
@@ -108,14 +104,15 @@ Code Search using Code Embeddings (FR1.4)
     - FR2.2 (Code Indexing)
 ```
 
+
 ```md
 Code Context Visualization (FR1.5)
 
-- Choice: Provide context around code snippets in search results.
-  - Rationale: Code snippets without surrounding context are often difficult to understand.
-  - Success Criteria:
-    - Fetching a repository loads within 5 seconds for repositories under 100MB
-    - 90% of users report sufficient context for understanding code purpose (SUS)
+- Choice: As a user, I can view the context around a code snippet in the search results, so that I can better understand how the code fits into the broader implementation.
+  - Rationale: This allows users to view the context around a code snippet in the search results, making it easier to understand how the code fits into the broader implementation.
+  - Validation Criteria:
+    - Fetching a repository loads within 5 seconds for the predetermined repositories.
+    - 90\% of users report sufficient context for understanding code purpose (SUS)
   - Implementation Considerations:
     - Display the entire code being indexed in the search results.
     - When answering questions, display relevant snippets from the codebase.
@@ -125,14 +122,14 @@ Code Context Visualization (FR1.5)
     - NFR2 (Usability)
 ```
 
-
 ```md
 Model with Past Chat History (FR1.6)
 
-- Choice: Create a chat interface with model memory.
-  - Rationale: User questions often build on previous questions and require remembering previous messages.
-  - Success Criteria:
-    - Context-aware responses remain relevant for at least 2 consecutive related questions
+- Choice: As a user, I can ask code-related questions via chat, and the chat history is preserved, so that I can have a continuous conversation with the system.
+  - Rationale: This allows users to have a continuous conversation with the system, making it easier to understand how the code fits into the broader implementation.
+  - Validation Criteria:
+    - Context-aware responses remain relevant for at least 2 consecutive related questions.
+    - Chat history can be cleared by regenerating the index.
   - Implementation Considerations:
     - Maintain chat history within session scope.
     - Structure LLM prompts to include chat history and retrieved code.
@@ -145,14 +142,14 @@ Model with Past Chat History (FR1.6)
 ```md
 Repository Cloning and Management (FR2.1)
 
-- Choice: Implement asynchronous repository cloning with progress tracking.
-  - Rationale: Repository cloning can be time-consuming for large codebases and should not block the UI.
-  - Success Criteria:
-    - Repositories under 100MB clone successfully within 30 seconds
-    - UI remains responsive (no blocking) during 100% of cloning operations
-    - Invalid repository URLs are handled gracefully
+- Choice: As a developer, I need the system to fetch and clone Git repositories from provided URLs, so that I can work with up-to-date code without performing these operations manually.
+  - Rationale: This allows developers to work with up-to-date code without performing these operations manually.
+  - Validation Criteria:
+    - Predetermined repositories clone successfully within 30 seconds.
+    - UI remains responsive (no blocking) during 100\% of cloning operations.
+    - Invalid repository URLs are handled gracefully.
   - Implementation Considerations:
-    - Use Github for extracting the repository code.
+    - Use Uithub for extracting the repository code.
     - Implement caching mechanism for previously cloned repositories.
     - Add repository verification to ensure valid Git URLs.
   - Related Requirements:
@@ -164,46 +161,41 @@ Repository Cloning and Management (FR2.1)
 ```md
 Vector Database Generation for RAG (FR2.2)
 
-- Choice: Use a vector database for code embeddings.
-  - Rationale: Since repositories can be large, it is necessary to split the data into chunks.
-  - Success Criteria:
-    - Generated embeddings cluster similar code types
-    - Metadata correctly captures language and file type
+- Choice: As a developer, I need the system to index the code of the fetched repositories, so that I can perform fast and accurate searches across the entire codebase.
+  - Validation Criteria:
+    - The clusters generated by the embeddings are well defined, suggesting successful embedding generation.
+    - Metadata correctly captures language and file type.
   - Implementation Considerations:
     - Use Qdrant for caching code embeddings.
     - Utilize metadata to enhance search results relevance.
   - Related Requirements:
-    - NFR1 (Performance)
     - FR2.2 (Code Indexing)
+    - NFR1 (Performance)
 ```
 
-
 ```md
-Vector Database Implementation (FR2.3)
+Semantic Search (FR2.3)
 
-- Choice: Use Qdrant as the vector database for semantic search.
-  - Rationale: Vector databases are optimized for similarity search operations.
-  - Success Criteria:
-    - Queries complete in less than 300ms for repositories up to 100MB
-    - Vector similarity scores correctly correlate with semantic relevance
+- Choice: As a developer, I need the system to use a vector database to store code embeddings, so that I can perform semantic searches that understand code context beyond simple keyword matching.
+  - Validation Criteria:
+    - Queries complete in less than 300ms for the predetermined repositories.
+    - Vector similarity scores correctly correlate with semantic relevance as determined by the cluster analysis.
   - Implementation Considerations:
     - Configure Qdrant collection schema for code embeddings.
-    - Implement efficient querying patterns for semantic search.
-    - Design metadata structure for filtering.
+    - Use metadata for filtering specific file types.
   - Related Requirements:
     - FR1.2 (Search)
     - FR2.2 (Code Indexing)
     - NFR1 (Performance)
-    - IR2 (Qdrant Requirement)
+    - IR2 (Qdrant)
 ```
 
 ```md
-LLM Integration for Code Understanding (FR2.4)
+LLM Integration for Natural Language Queries (FR2.4)
 
-- Choice: Integrate with Ollama and Langchain4J for language model capabilities.
-  - Rationale: Local LLM deployment provides better privacy control and lower latency compared to cloud services.
-  - Success Criteria:
-    - Ollama integration successfully handles queries within tests without errors
+- Choice: As a developer, I need the system to integrate with an LLM to process natural language queries, so that I can interact with the codebase using plain English rather than specialized query syntax.
+  - Validation Criteria:
+    - Ollama integration successfully handles queries within tests without errors.
   - Implementation Considerations:
     - Implement prompt engineering techniques to guide responses (i.e. conditional RAG, search by file type).
     - Design context management for large repositories (limit the amount of tokens being processed).
@@ -216,15 +208,14 @@ LLM Integration for Code Understanding (FR2.4)
 ```md
 System Performance Optimization (NFR1)
 
-- Choice: Optimize performance for conversations with and without codebases.
-  - Rationale: Users expect fast responses even with large codebases.
-  - Validation Criteria:
-    - Search queries return results in under 40 seconds for repositories up to 100MB
-    - Embedding generation completes in under 30 seconds for repositories up to 100MB
-    - Chat responses for simple search (without code context) arrives within 20 seconds for 90% of queries
+- Choice: The system will index code for targeted repositories within 10 seconds on the specified hardware.
+  - Success Criteria:
+    - Search queries return results in under 40 seconds for the predetermined repositories.
+    - Embedding generation completes in under 30 seconds for the predetermined repositories.
+    - Chat responses for simple search (without code context) arrives within 20 seconds for all tests.
   - Implementation Considerations:
-    - Embeddings are stored in a persistent memory.
-    - Data can be regenerated from the repository code.
+    - Embeddings are stored in the Qdrant vector database.
+    - The embeddings for retrieving chunks are generated using Ollama.
   - Related Requirements:
     - FR2.1 (Repository Cloning)
     - FR2.2 (Code Indexing)
@@ -232,18 +223,17 @@ System Performance Optimization (NFR1)
     - FR1.6 (Chat)
 ```
 
+
 ```md
 System Usability Testing (NFR2)
 
-- Choice: The design of the interfaces should be evaluated by the users.
-  - Rationale: This ensures that the system is usable, as evaluated through Usability Testing.
-  - Success Criteria:
-    - First-time users find the interface easy to use without assistance in >80% of cases (SUS)
-    - 90% of users rate UI intuitiveness as "good" or "excellent" (SUS)
-    - Keyboard shortcuts reduce interaction time by >30% for experienced users
+- Choice: The system should achieve a System Usability Scale (SUS) score of 70+ based on at least 5 target users.
+  - Rationale: This ensures that the system is usable, as evaluated by a group of users.
+  - Validation Criteria:
+    - First-time users find the interface easy to use without assistance in >70\% of cases (SUS)
+    - 80\% of users rate UI intuitiveness as "good" or "excellent" (SUS)
   - Implementation Considerations:
-    - Implement clean, intuitive UI. Rely on established patterns such as the Gradio UI components.
-    - Update the user for the progress of the system.
+    - Implement clean, intuitive UI. Rely on established UX design patterns by using Gradio components.
   - Related Requirements:
     - FR1.3 (Search Results)
     - FR1.5 (Context)
@@ -253,10 +243,9 @@ System Usability Testing (NFR2)
 ```md
 User Interface Security (NFR3)
 
-- Choice: Implement input validation.
-  - Rationale: User inputs (especially repository URLs and search queries) could contain malicious content.
-  - Success Criteria:
-    - 100% of malformed/malicious URLs rejected before processing
+- Choice: The system should sanitize user search query inputs to prevent Cross-Site Scripting (XSS) attacks.
+  - Validation Criteria:
+    - 100\% of malformed/malicious URLs rejected before processing
   - Implementation Considerations:
     - Validate repository URLs against known valid patterns.
     - Test against standard Github URLs.
@@ -266,17 +255,17 @@ User Interface Security (NFR3)
     - FR1.6 (Chat)
 ```
 
+
 ```md
 Embedding Visualization Requirement (NFR4)
 
-- Choice: Implement visualization tools for code embeddings analysis.
-  - Rationale: Visualizing embeddings helps analyze and improve search quality.
-  - Success Criteria:
-    - Visualization correctly clusters similar code types
-    - Report analysis identifies at least 3 insights from embedding visualization
+- Choice: A 2D visualization tool will display code embeddings to help analyze and improve indexing and search.
+  - Validation Criteria:
+    - Visualization correctly clusters similar code types.
+    - Report analysis identifies strategies for improving search quality.
   - Implementation Considerations:
     - Implement dimension reduction techniques (t-SNE, UMAP) for 2D visualization.
-    - Used in the report to strengthen the analysis of the generated embeddings.
+    - Used to make informed decisions about the search quality.
   - Related Requirements:
     - FR2.2 (Code Indexing)
     - FR2.3 (Vector Database)
@@ -286,15 +275,13 @@ Embedding Visualization Requirement (NFR4)
 ```md
 Scala Implementation Requirement (IR1)
 
-- Choice: Implement backend components in Scala using functional programming principles.
-  - Rationale: Scala provides strong typing, functional capabilities.
+- Choice: The system should be implemented in Scala, following functional programming principles.
   - Success Criteria:
-    - 100% of backend components implemented in Scala
-    - Functional programming patterns are used
+    - Scala tools are used to ensure consisent.
+    - Functional programming patterns are used to ensure consistent code quality.
   - Implementation Considerations:
-    - Follow functional programming patterns (immutability, pure functions)
-    - Use appropriate abstraction mechanisms (type classes, higher-order functions)
-    - Implement error handling using functional approaches (Either, Option)
+    - Use appropriate abstraction mechanisms (strategies, factories, memoization, etc.)
+    - Implement error handling using functional approaches (Try, Option)
   - Related Requirements:
     - FR2.2 (Code Indexing)
     - FR2.3 (Vector Database)
@@ -304,15 +291,13 @@ Scala Implementation Requirement (IR1)
 ```md
 Qdrant Vector Database Requirement (IR2)
 
-- Choice: Use Qdrant as the vector database for semantic search.
+- Choice: The system should use Qdrant as the vector database for code embeddings.
   - Rationale: Qdrant provides efficient vector search capabilities with filtering options needed for code search.
-  - Success Criteria:
-    - Qdrant client wrapper handles all required vector operations
-    - Collection schema correctly configures vector dimensions
+  - Validation Criteria:
+    - Qdrant client wrapper handles all required vector operations.
     - Collection schemas designed for code embeddings and text embeddings.
   - Implementation Considerations:
-    - Implement Qdrant client wrapper.
-    - Configure appropriate vector dimensions and distance metrics.
+    - Implement the AIServices wrapper around the Qdrant module. Configure distance metrics.
   - Related Requirements:
     - FR2.3 (Vector Database)
     - NFR1 (Performance)
@@ -321,30 +306,25 @@ Qdrant Vector Database Requirement (IR2)
 ```md
 Ollama Integration Requirement (IR3)
 
-- Choice: Integrate with Ollama for local LLM capabilities.
-  - Rationale: Ollama provides locally-hosted LLM capabilities with reduced latency and privacy benefits.
+- Choice: The system should integrate with Ollama for LLM functionalities.
+  - Rationale: Ollama provides locally-hosted LLM models, yielding good privacy and reduced latency.
   - Success Criteria:
-    - API client successfully communicates with Ollama.
+    - The application successfully communicates with Ollama.
   - Implementation Considerations:
-    - Implement client for Ollama API.
-    - Design prompt templates optimized for code understanding.
+    - Implement the AIServices wrapper around the Ollama module.
+    - Use prompt templates optimized for code understanding.
   - Related Requirements:
     - FR1.6 (Chat)
     - FR2.4 (LLM Integration)
     - NFR1 (Performance)
 ```
 
+
 ```md
 Layered Architecture (IR4)
 
-- Choice: Implement system using a layered architecture.
-  - Rationale: Layered architecture promotes separation of concerns and modularity.
-  - Validation Criteria:
-    - All components separated into Presentation, Application, Domain, and Infrastructure layers
-    - 100% unidirectional dependencies between layers
-    - System passes all ArchUnit tests
-  - Implementation Considerations:
-    - Document the architecture.
-  - Related Requirements:
-    - All System Functional Requirements
+- Choice: The system should follow a layered architecture approach, ensuring better modularity.
+  - Success Criteria:
+    - All components separated into Presentation, Application, Domain, and Infrastructure layers.
+    - The separation is assessed via ArchUnit tests.
 ```

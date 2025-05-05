@@ -19,20 +19,25 @@ object GeminiChatModelFactory:
   */
 class GeminiChatModelFactoryImpl(config: Config) extends ChatModelFactory with LazyLogging:
 
-  val modelName = config.getString("gitinsp.gemini.model")
-  val project   = config.getString("gitinsp.gemini.project")
-  val location  = config.getString("gitinsp.gemini.location")
+  private val _modelName = config.getString("gitinsp.gemini.model")
+  private val _project   = config.getString("gitinsp.gemini.project")
+  private val _location  = config.getString("gitinsp.gemini.location")
+
+  // Renamed methods to follow factory pattern naming convention
+  def createModelName(): String = _modelName
+  def createProject(): String   = _project
+  def createLocation(): String  = _location
 
   /** Creates a standard (non-streaming) chat model.
     *
     * @return A GeminiChatModel
     */
   override def createChatModel(): ChatLanguageModel =
-    logger.debug(s"Creating chat model with model=$modelName, project=$project")
+    logger.debug(s"Creating chat model with model=${createModelName()}, project=${createProject()}")
     VertexAiGeminiChatModel.builder()
-      .project(project)
-      .location(location)
-      .modelName(modelName)
+      .project(createProject())
+      .location(createLocation())
+      .modelName(createModelName())
       .build();
 
   /** Creates a streaming chat model.
@@ -40,9 +45,9 @@ class GeminiChatModelFactoryImpl(config: Config) extends ChatModelFactory with L
     * @return A GeminiStreamingChatModel
     */
   override def createStreamingChatModel(): StreamingChatLanguageModel =
-    logger.debug(s"Creating streaming chat model with model=$modelName, project=$project")
+    logger.debug(s"Streaming model with model=${createModelName()}, project=${createProject()}")
     VertexAiGeminiStreamingChatModel.builder()
-      .project(project)
-      .location(location)
-      .modelName(modelName)
+      .project(createProject())
+      .location(createLocation())
+      .modelName(createModelName())
       .build()
