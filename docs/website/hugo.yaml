@@ -31,7 +31,7 @@ languages:
     menu:
       main:
         - name: Process
-          url: process
+          url: docs
           weight: 1
         - name: Archive
           url: archives
@@ -42,11 +42,8 @@ languages:
         # - name: Tags
         #   url: tags
         #   weight: 10
-        - name: Backend ScalaDoc
-          url: backend/scaladoc
-          weight: 15
-        - name: Frontend ScalaDoc
-          url: frontend/scaladoc
+        - name: ScalaDoc
+          url: ../backend/scaladoc
           weight: 15
         - name: Coverage
           url: https://app.codecov.io/gh/atomwalk12/pps-22-git-insp
