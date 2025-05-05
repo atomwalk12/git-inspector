@@ -1,3 +1,11 @@
+
+<style>
+/* Override the global style for this page only */
+.custom_table_style th:last-child {
+  width: auto !important;
+}
+</style>
+
 <!-- trunk-ignore-all(markdownlint/MD041) -->
 # Project Tasks
 
@@ -47,3 +55,9 @@ The project was divided into 5 separate sprints, each with its focus described b
 The following table shows evidence for the requirements in the [Requirements Specifications](../static/requirement-specifications.md) document.
 
 {{< insert-text "traceability-matrix.md" >}}
+
+# Test Results
+
+The acceptance tests are not executable using the traditional CI/CD pipeline, so below are the results ran locally.
+
+{{< numbered-figure id="fig:sequence-diagram-chat" align="center" src="../../static/figures/acceptance-tests-results.png" caption="Sample run of the unit tests, including the acceptance tests" >}}
