@@ -1,3 +1,9 @@
+## [1.9.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.8.0...v1.9.0) (2025-05-05)
+
+### Features
+
+* **release:** add new poster artifact and update report PDF labels in package.json ([54be28e](https://github.com/atomwalk12/PPS-22-git-insp/commit/54be28e7f5f9c8098f479435f6155dd8b7940557))
+
 ## [1.8.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.7.0...v1.8.0) (2025-05-05)
 
 ### Features
