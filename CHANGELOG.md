@@ -1,3 +1,16 @@
+## [1.8.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.7.0...v1.8.0) (2025-05-05)
+
+### Features
+
+* **ci:** add GitHub Actions workflow for Codecov coverage reporting ([fe0cadc](https://github.com/atomwalk12/PPS-22-git-insp/commit/fe0cadc19f107cb371e3f985e33e3f9079a89329))
+* **filter:** implement dynamic query filtering strategy with LLM classification ([3c9e268](https://github.com/atomwalk12/PPS-22-git-insp/commit/3c9e268d124806c11ca51bb9409a0b0441577b41))
+* **models:** improve domain models and services with detailed documentation and new structures ([903ae05](https://github.com/atomwalk12/PPS-22-git-insp/commit/903ae05202583c4dea0b7940e24d9ff9fa82b7ef))
+* **presentation:** add presentation website and update CI workflows ([ce79fd5](https://github.com/atomwalk12/PPS-22-git-insp/commit/ce79fd55cf102e8938e1b591058276c64bc34e59))
+
+### Bug Fixes
+
+* **llm-classifier:** use contents of the AI prompt instead of its parent class ([54c077c](https://github.com/atomwalk12/PPS-22-git-insp/commit/54c077ccb3260a8f2133b1e43ba3f216b96abf68))
+
 ## [1.7.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.6.0...v1.7.0) (2025-04-16)
 
 ### Features
