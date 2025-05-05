@@ -7,7 +7,7 @@ aliases: ["sprint4", "sprint4-overview", "optimization-and-documentation"]
 tags: ["sprint4", "performance-optimization", "visualization", "documentation", "scala-js"]
 ShowToc: true
 TocOpen: true
-weight: 298
+weight: 250
 ShowBreadCrumbs: true
 summary: "Fourth sprint (April 14-20, 2025) overview, focused on implementing performance optimizations, visualization features, and comprehensive documentation."
 ---
@@ -42,11 +42,6 @@ The following sections build on the [Requirements Specifications](../../static/r
 ## Sprint Backlog
 
 For detailed sprint backlog items, see [Sprint Backlog](./sprint_backlog.md).
-
-
-## Daily Updates
-
-Checkout the [daily progress updates](./daily_updates/) folder for detailed day-by-day developments.
 
 
 ## Sprint Retrospective
