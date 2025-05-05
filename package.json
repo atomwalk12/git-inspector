@@ -77,8 +77,13 @@
             },
             {
               "path": ".release-assets/report.pdf",
-              "label": "Project Report PDF",
+              "label": "report.pdf",
               "name": "report-v${nextRelease.version}.pdf"
+            },
+            {
+              "path": ".release-assets/poster.pdf",
+              "label": "poster.pdf",
+              "name": "poster-v${nextRelease.version}.pdf"
             }
           ]
         }
