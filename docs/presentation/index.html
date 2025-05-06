@@ -276,8 +276,8 @@
         <h3 class="title is-4">Acceptance Tests</h3>
         <div class="content has-text-justified">
           <p>
-            Acceptance tests that verify the correct behavior of the application according to the specification in the requirements document are present under the
-            <a href="https://github.com/atomwalk12/PPS-22-git-insp/tree/main/backend/src/test/scala/requirements">test directory</a>.
+            Acceptance tests that verify correct behavior according to the specification document are present under the
+            <a href="https://github.com/atomwalk12/PPS-22-git-insp/tree/main/backend/src/test/scala/requirements">test directory</a>, and the traceability matrix is <a href="https://atomwalk12.github.io/PPS-22-git-insp/process/docs/product_backlog/#traceability-matrix">available here</a>.
           </p>
         </div>
         <!--/ Re-rendering. -->
@@ -293,11 +293,8 @@
         <h3 class="title is-4">Conditional Index Retrieval</h3>
         <div class="content has-text-justified">
           <p>
-            Considering the two indexes produced for each Git Repository, it is possible to determine
-            at runtime, using the query produced by the user, whether documentation (markdown content)
-            or code (files with a code-file extension) should be retrieved. This is done automatically
-            using a separate local LLM through an evaluation of the user's query
-            (<a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/scala/gitinsp/infrastructure/strategies/QueryRoutingStrategy.scala">Source Code</a>).
+            Two indexes are produced for each Git Repositories containing the two data modalities (code and natural language instructions). The user can query at runtime whether to retrieve information from either collection using
+            the <i><a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/scala/gitinsp/infrastructure/strategies/QueryRoutingStrategy.scala">QueryRoutingStrategy</a></i> class. This is done by assessing the query using a separate LLM.
           </p>
         </div>
         <br/>
@@ -307,10 +304,8 @@
         <h3 class="title is-4">Filtering by extension type</h3>
         <div class="content has-text-justified">
           <p>
-            Since the code index is built of potentially more than one extension type, it may be
-            necessary to strip down the search to a specific extension type. This is done using the 
-            <i>QueryFilterService</i> class, which allows to filter at runtime which files should be
-            included in the search (<a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/scala/gitinsp/infrastructure/QueryFilterService.scala">Source Code</a>).
+            The code index supports multiple extension types. To narrow down the search to specific code file types, it is possible to use the
+            <i><a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/scala/gitinsp/infrastructure/strategies/LLMClassificationFilterStrategy.scala">LLMClassificationFilterStrategy</a></i> class. This class enables runtime filtering to include one specific extension type in the search.
           </p>
         </div>
         <br/>
@@ -320,7 +315,7 @@
         <h3 class="title is-4">Parsing algorithm</h3>
         <div class="content has-text-justified">
           <p>
-            The parsing algorithm was ported from the Langchain Python library <a href="https://github.com/langchain-ai/langchain/blob/master/langchain/text_splitter/recursive_character.py">available here</a>.
+            The parsing algorithm was ported from the Langchain Python library <a href="https://github.com/langchain-ai/langchain/blob/3072e4610aca919f7bda2ef26f54e60e43b9c617/libs/text-splitters/langchain_text_splitters/character.py#L77">available here</a>.
             Below is pseudocode describing the key ideas:
           </p>
           <div class="columns is-centered">
@@ -366,14 +361,6 @@
         </div>
         <!--/ Re-rendering. -->
 
-        <!-- Re-rendering. -->
-        <h3 class="title is-4">Traceability matrix</h3>
-        <div class="content has-text-justified">
-          <p>
-            The traceability matrix that documents the completion of the requirements is <a href="https://atomwalk12.github.io/PPS-22-git-insp/process/docs/product_backlog/#traceability-matrix">available here</a>.
-          </p>
-        </div>
-        <!--/ Re-rendering. -->
 
       </div>
     </div>
