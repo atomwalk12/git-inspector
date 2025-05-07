@@ -21,12 +21,12 @@ class LLMClassificationFilterStrategy extends QueryFilterStrategy:
       |QUERY: {{it}}
       |
       |INSTRUCTIONS:
-      |1. If the query is requesting code, respond with exactly "yes: <extension>" where extension is one of:
+      |1. If the query is requesting a specific language extension, respond with exactly "yes: <extension>" where extension is one of:
       |   - "py" for Python
       |   - "java" for Java
       |   - "cpp" for C++
       |   - "scala" for Scala
-      |2. If the query is not requesting code, respond with exactly "no"
+      |2. If the query is not requesting code, or if it requests code but does not specify a language, respond with exactly 'no'.
       |
       |Your entire response must be either "yes: py", "yes: java", "yes: cpp", "yes: scala", or "no".
       |Do not include any other text in your response.""".stripMargin
