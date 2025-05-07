@@ -1,7 +1,7 @@
 [![Code CI](https://github.com/DiamondLightSource/pytac/actions/workflows/code.yml/badge.svg)](https://github.com/DiamondLightSource/pytac/actions/workflows/code.yml)
-[![Docs CI](https://github.com/atomwalk12/PPS-22-git-insp/actions/workflows/gh-pages.yml/badge.svg)](https://github.com/atomwalk12/PPS-22-git-insp/actions/workflows/gh-pages.yml)
+![Docs CI](https://github.com/atomwalk12/PPS-22-git-insp/actions/workflows/gh-pages.yml/badge.svg?branch=main)
 [![codecov](https://codecov.io/gh/atomwalk12/pps-22-git-insp/branch/main/graph/badge.svg)](https://codecov.io/gh/atomwalk12/pps-22-git-insp)
-[![release](https://img.shields.io/github/v/tag/atomwalk12/pps-22-git-insp.svg?label=release)](https://github.com/atomwalk12/pps-22-git-insp/releases)
+[![release](https://img.shields.io/github/v/release/atomwalk12/pps-22-git-insp.svg?label=release)](https://github.com/atomwalk12/pps-22-git-insp/releases)
 
 # Git Inspector
 
@@ -10,6 +10,9 @@ LLM powered agent for answering questions about Github Repositories.
 Checkout out the [report](docs/report/report.pdf), [poster](docs/report/poster.pdf), [website](https://atomwalk12.github.io/PPS-22-git-insp/) and the documentation of the [development process](https://atomwalk12.github.io/PPS-22-git-insp/process).
 
 ![poster](https://github.com/user-attachments/assets/50a20106-5bf8-40d3-9725-a7dc16ea6aa1)
+
+## Directory structure
+To visualize the directory structure of the repository see [this link](https://uithub.com/atomwalk12/PPS-22-git-insp?accept=text%2Fhtml&maxTokens=50000&ext=scala).
 
 ## Features
 
