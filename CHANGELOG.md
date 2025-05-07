@@ -1,3 +1,9 @@
+## [2.2.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v2.1.0...v2.2.0) (2025-05-07)
+
+### Features
+
+* **release:** zip the frontend optimized directory and release it via semantic-release ([e90f514](https://github.com/atomwalk12/PPS-22-git-insp/commit/e90f514657633273fd258e097fa7e5b6aef29f06))
+
 ## [2.1.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v2.0.0...v2.1.0) (2025-05-07)
 
 ### Features
