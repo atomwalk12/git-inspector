@@ -1,3 +1,13 @@
+## [2.0.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.9.0...v2.0.0) (2025-05-07)
+
+### ⚠ BREAKING CHANGES
+
+* **report:** upload the final report PDF document
+
+### Features
+
+* **report:** upload the final report PDF document ([2bb78bd](https://github.com/atomwalk12/PPS-22-git-insp/commit/2bb78bd67ea2a0799fe3d91dacd6418550a012a6))
+
 ## [1.9.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.8.0...v1.9.0) (2025-05-05)
 
 ### Features
