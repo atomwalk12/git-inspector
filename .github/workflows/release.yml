@@ -42,6 +42,9 @@ jobs:
       - name: Build optimized JavaScript for frontend
         run: sbt "frontend/fullLinkJS"
 
+      - name: Zip frontend build output
+        run: npm run zip-frontend
+
       - name: Upload report as artifact
         uses: actions/upload-artifact@v4
         with:

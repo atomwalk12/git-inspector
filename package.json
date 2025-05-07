@@ -22,7 +22,8 @@
     "fmt": "trunk fmt",
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "zip-frontend": "cd frontend && zip -r ../gitinsp-frontend-opt.zip target"
   },
   "repository": {
     "type": "git",
@@ -51,7 +52,7 @@
               "name": "gitinsp-backend-v${nextRelease.version}.jar"
             },
             {
-              "path": "frontend/target/scala-*/gitinsp-frontend-opt/**",
+              "path": "gitinsp-frontend-opt.zip",
               "label": "Frontend Build",
               "name": "frontend-v${nextRelease.version}.zip"
             },
