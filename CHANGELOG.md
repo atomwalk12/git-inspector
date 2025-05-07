@@ -1,3 +1,9 @@
+## [2.1.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v2.0.0...v2.1.0) (2025-05-07)
+
+### Features
+
+* **release:** simplify frontend asset configuration in package.json by consolidating multiple entries into a single zip file ([63032fc](https://github.com/atomwalk12/PPS-22-git-insp/commit/63032fcac603b227b9fa7c5342f96475f882b79f))
+
 ## [2.0.0](https://github.com/atomwalk12/PPS-22-git-insp/compare/v1.9.0...v2.0.0) (2025-05-07)
 
 ### ⚠ BREAKING CHANGES
