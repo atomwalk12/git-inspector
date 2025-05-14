@@ -3,7 +3,10 @@ name: Deploy to Codecov
 permissions:
   contents: read
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ main, docs/website ]
+  workflow_dispatch:
 
 jobs:
   build:
