@@ -79,67 +79,57 @@ Here is a brief summary of the code:
     │   ├── main
     │       └── scala
     │       │   └── gitinsp
-    │       │       ├── application                        // High-level module
-    │       │           ├── LangchainCoordinator.scala     // Coordinator for RAG pipeline and LLM interactions
-    │       │           └── Main.scala                     // Entry point for the backend server
-    │       │       ├── domain                             // Business logic
-    │       │           ├── ChatService.scala              // Chat functionality
-    │       │           ├── IngestorService.scala          // Used for generating indices from code and text
-    │       │           ├── PipelineService.scala          // Key entry point that communicates with the application layer
+    │       │       ├── application                      // High-level module
+    │       │           ├── LangchainCoordinator.scala   // Coordinator for RAG pipeline and LLM interactions
+    │       │           └── Main.scala                   // Entry point for the backend server
+    │       │       ├── domain                           // Business logic
+    │       │           ├── ChatService.scala            // Chat functionality
+    │       │           ├── IngestorService.scala        // Used for generating indices from code and text
+    │       │           ├── PipelineService.scala        // Key entry point that communicates with the app. layer
     │       │           ├── interfaces
-    │       │           │   ├── application                // Interfaces for application layer services
+    │       │           │   ├── application              // Interfaces for application layer services
     │       │           │   │   ├── ...
-    │       │           │   └── infrastructure             // Interfaces for infrastructure layer components
+    │       │           │   └── infrastructure           // Interfaces for infrastructure layer components
     │       │           │   │   ├── ...
-    │       │           └── models                         // Entities that define the domain model
-    │       │           │   ├── Assistant.scala
-    │       │           │   ├── Extensions.scala
-    │       │           │   ├── Language.scala
-    │       │           │   ├── Repository.scala
-    │       │           │   ├── Types.scala
-    │       │           │   └── URLs.scala
-    │       │       └── infrastructure                     // External services
-    │       │           ├── CacheService.scala             // Handles caching of expensive operations
-    │       │           ├── ContentService.scala           // For formatting the content
-    │       │           ├── FetchingService.scala          // HTTP wrapper used for fetching data
-    │       │           ├── GithubWrapperService.scala     // Uses the FetchingService to fetch data from Github
+    │       │           └── models                       // Entities that define the domain model
+    │       │           │   ├── ...
+    │       │       └── infrastructure                   // External services
+    │       │           ├── CacheService.scala           // Handles caching of expensive operations
+    │       │           ├── ContentService.scala         // For formatting the content
+    │       │           ├── FetchingService.scala        // HTTP wrapper used for fetching data
+    │       │           ├── GithubWrapperService.scala   // Uses the FetchingService to fetch data from Github
     │       │           ├── QueryFilterService.scala
-    │       │           ├── factories                      // Factory implementations for creating various objects
+    │       │           ├── factories                    // Factory implementations for creating various objects
     │       │               ├── ...
-    │       │           ├── parser                         // Utilities for parsing text and code
+    │       │           ├── parser                       // Utilities for parsing text and code
     │       │               ├── ...
-    │       │           └── strategies                     // Implementations of various strategies
+    │       │           └── strategies                   // Implementations of various strategies
     │       │               ├── ...
     │   └── test
     │       └── scala
-    │           ├── ArchUnit.scala                         // Tests enforcing architectural design
-    │           ├── Shared.scala
+    │           ├── ArchUnit.scala                       // Tests enforcing architectural design
     │           ├── domain
     │               ├── ...
-    │           ├── external
+    │           ├── external                             // Tests relying on external services (Ollama)
     │               ├── ...
-    │           ├── infrastructure
+    │           ├── infrastructure                       // Tests for infrastructure (API wrapper)
     │               ├── ...
-    │           └── requirements                           // Acceptance tests verifying project requirements
+    │           └── requirements                         // Acceptance tests verifying project requirements
     │               ├── ...
 └── frontend
     └── src
         └── main
             └── scala
                 └── gitinsp
-                    ├── Main.scala                         // Entry point for the Scala.js frontend application
-                    ├── api                                // Handles API communication with the backend services
+                    ├── Main.scala                       // Entry point for the Scala.js frontend application
+                    ├── api                              // Handles API communication with the backend services
                         └── HttpClient.scala
-                    ├── components                         // Reusable UI elements for building the web interface
-                        ├── ChatInterface.scala
-                        ├── IndexSelector.scala
-                        ├── LinkViewer.scala
-                        ├── StatusBar.scala
-                        └── TabContainer.scala
+                    ├── components                       // Reusable UI elements for building the web interface
+                        ├── ...
                     ├── models
-                        └── Models.scala                   // Frontend-specific data models
+                        └── Models.scala                 // Frontend-specific data models
                     ├── services
-                        └── ContentService.scala           // Service that coordinates communication with the backend
+                        └── ContentService.scala         // Service that coordinates communication with the backend
                     └── util
                         └── IDGenerator.scala
 ```
