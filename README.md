@@ -11,6 +11,10 @@ Checkout out the [report](docs/report/report.pdf), [poster](docs/report/poster.p
 
 ![poster](https://github.com/user-attachments/assets/50a20106-5bf8-40d3-9725-a7dc16ea6aa1)
 
+
+## Directory structure
+To visualize the directory structure of the repository see [this link](https://uithub.com/atomwalk12/PPS-22-git-insp?accept=text%2Fhtml&maxTokens=50000&ext=scala).
+
 ## Features
 
 - **RAG Pipeline for Code:** Implements a Retrieval Augmented Generation (RAG) pipeline specifically designed to query and understand code within Github repositories.
@@ -65,71 +69,4 @@ sbt "backend/testOnly gitinsp.tests.requirements.*"
 
 # Run only the ArchUnit tests
 sbt "backend/testOnly gitinsp.tests.HexagonalTest gitinsp.tests.DesignPatternsTest gitinsp.tests.FunctionalProgrammingTest"
-```
-
-
-## Directory structure
-To visualize the directory structure of the repository see [this link](https://uithub.com/atomwalk12/PPS-22-git-insp?accept=text%2Fhtml&maxTokens=50000&ext=scala).
-
-Here is a brief summary of the code:
-
-```plaintext
-├── backend
-    └── src
-    │   ├── main
-    │       └── scala
-    │       │   └── gitinsp
-    │       │       ├── application                      // High-level module
-    │       │           ├── LangchainCoordinator.scala   // Coordinator for RAG pipeline and LLM interactions
-    │       │           └── Main.scala                   // Entry point for the backend server
-    │       │       ├── domain                           // Business logic
-    │       │           ├── ChatService.scala            // Chat functionality
-    │       │           ├── IngestorService.scala        // Used for generating indices from code and text
-    │       │           ├── PipelineService.scala        // Key entry point that communicates with the app. layer
-    │       │           ├── interfaces
-    │       │           │   ├── application              // Interfaces for application layer services
-    │       │           │   │   ├── ...
-    │       │           │   └── infrastructure           // Interfaces for infrastructure layer components
-    │       │           │   │   ├── ...
-    │       │           └── models                       // Entities that define the domain model
-    │       │           │   ├── ...
-    │       │       └── infrastructure                   // External services
-    │       │           ├── CacheService.scala           // Handles caching of expensive operations
-    │       │           ├── ContentService.scala         // For formatting the content
-    │       │           ├── FetchingService.scala        // HTTP wrapper used for fetching data
-    │       │           ├── GithubWrapperService.scala   // Uses the FetchingService to fetch data from Github
-    │       │           ├── QueryFilterService.scala
-    │       │           ├── factories                    // Factory implementations for creating various objects
-    │       │               ├── ...
-    │       │           ├── parser                       // Utilities for parsing text and code
-    │       │               ├── ...
-    │       │           └── strategies                   // Implementations of various strategies
-    │       │               ├── ...
-    │   └── test
-    │       └── scala
-    │           ├── ArchUnit.scala                       // Tests enforcing architectural design
-    │           ├── domain
-    │               ├── ...
-    │           ├── external                             // Tests relying on external services (Ollama)
-    │               ├── ...
-    │           ├── infrastructure                       // Tests for infrastructure (API wrapper)
-    │               ├── ...
-    │           └── requirements                         // Acceptance tests verifying project requirements
-    │               ├── ...
-└── frontend
-    └── src
-        └── main
-            └── scala
-                └── gitinsp
-                    ├── Main.scala                       // Entry point for the Scala.js frontend application
-                    ├── api                              // Handles API communication with the backend services
-                        └── HttpClient.scala
-                    ├── components                       // Reusable UI elements for building the web interface
-                        ├── ...
-                    ├── models
-                        └── Models.scala                 // Frontend-specific data models
-                    ├── services
-                        └── ContentService.scala         // Service that coordinates communication with the backend
-                    └── util
-                        └── IDGenerator.scala
 ```
