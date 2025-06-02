@@ -12,6 +12,15 @@ Checkout out the [report](docs/report/report.pdf), [poster](docs/report/poster.p
 ![poster](https://github.com/user-attachments/assets/50a20106-5bf8-40d3-9725-a7dc16ea6aa1)
 
 
+<details open>
+<summary>🎬 GitInspector Demo</summary>
+
+| The video illustrates fetching files, generating an index and asking 3 questions about a Github repository  |
+|---------|
+| [![GitInspector Demo - Click to Play](https://github.com/user-attachments/assets/2af81da5-91dd-4ad4-bc44-409d46e50dd1)](https://www.youtube.com/watch?v=8_mIuLwlVn8) |
+
+</details>
+
 ## Directory structure
 To visualize the directory structure of the repository see [this link](https://uithub.com/atomwalk12/PPS-22-git-insp?accept=text%2Fhtml&maxTokens=50000&ext=scala).
 
