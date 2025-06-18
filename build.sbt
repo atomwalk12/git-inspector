@@ -177,7 +177,7 @@ lazy val root = project
   .in(file("."))
   .aggregate(backend, frontend)
   .settings(
-    name := "pps-22-git-insp",
+    name := "git-inspector",
 
     // Don't publish the root
     publish := {},
