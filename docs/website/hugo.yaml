@@ -1,6 +1,6 @@
 # If your site is in 'https', then make sure your base url isn't written using 'http' otherwise your sitemap would
 # contain http (as opposeed to https) URLs. This would affect Google indexing of your URLs.
-baseURL: https://atomwalk12.github.io/PPS-22-git-insp/
+baseURL: https://atomwalk12.github.io/git-inspector/
 title: Git Inspector
 pagination:
   pagerSize: 8
@@ -46,7 +46,7 @@ languages:
           url: ../backend/scaladoc
           weight: 15
         - name: Coverage
-          url: https://app.codecov.io/gh/atomwalk12/pps-22-git-insp
+          url: https://app.codecov.io/gh/atomwalk12/git-inspector
           weight: 16
 
 outputs:
@@ -57,7 +57,7 @@ outputs:
 
 params:
   env: production # to enable google analytics, opengraph, twitter-cards and schema.
-  description: Theme PaperMod - https://atomwalk12.github.io/pps-22-git-insp/
+  description: Theme PaperMod - https://atomwalk12.github.io/git-inspector/
   author: Theme PaperMod
   # author: ["Me", "You"] # multiple authors
   mainSections: [] # [process]
@@ -110,23 +110,23 @@ params:
           <tbody>
             <tr style="text-align: left;">
               <td><strong>Source code</strong></td>
-              <td><a href="https://github.com/atomwalk12/pps-22-git-insp">https://github.com/atomwalk12/pps-22-git-insp/</a></td>
+              <td><a href="https://github.com/atomwalk12/git-inspector">https://github.com/atomwalk12/git-inspector/</a></td>
           </tr>
           <tr>
             <td><strong>Report</strong></td>
-            <td><a href="https://github.com/atomwalk12/pps-22-git-insp/releases/">https://github.com/atomwalk12/pps-22-git-insp/releases/</a></td>
+            <td><a href="https://github.com/atomwalk12/git-inspector/releases/">https://github.com/atomwalk12/git-inspector/releases/</a></td>
           </tr>
           <tr>
             <td><strong>Backend ScalaDoc</strong></td>
-            <td><a href="https://atomwalk12.github.io/PPS-22-git-insp/backend/scaladoc/">https://atomwalk12.github.io/PPS-22-git-insp/backend/scaladoc/</a></td>
+            <td><a href="https://atomwalk12.github.io/git-inspector/backend/scaladoc/">https://atomwalk12.github.io/git-inspector/backend/scaladoc/</a></td>
           </tr>
           <tr>
             <td><strong>Frontend ScalaDoc</strong></td>
-            <td><a href="https://atomwalk12.github.io/PPS-22-git-insp/frontend/scaladoc/">https://atomwalk12.github.io/PPS-22-git-insp/frontend/scaladoc/</a></td>
+            <td><a href="https://atomwalk12.github.io/git-inspector/frontend/scaladoc/">https://atomwalk12.github.io/git-inspector/frontend/scaladoc/</a></td>
           </tr>
           <tr>
             <td><strong>Coverage</strong></td>
-              <td><a href="https://app.codecov.io/gh/atomwalk12/pps-22-git-insp">https://app.codecov.io/gh/atomwalk12/pps-22-git-insp/</a></td>
+              <td><a href="https://app.codecov.io/gh/atomwalk12/git-inspector">https://app.codecov.io/gh/atomwalk12/git-inspector/</a></td>
             </tr>
           </tbody>
         </table>
@@ -134,10 +134,10 @@ params:
   socialIcons:
     - name: github
       title: View Source on Github
-      url: https://github.com/atomwalk12/PPS-22-git-insp
+      url: https://github.com/atomwalk12/git-inspector
     - name: Website
       title: Go to main website
-      url: https://atomwalk12.github.io/PPS-22-git-insp/
+      url: https://atomwalk12.github.io/git-inspector/
 
   editPost:
     URL: https://github.com/adityatelange/hugo-PaperMod/tree/exampleSite/content

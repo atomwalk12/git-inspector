@@ -73,7 +73,7 @@
             <div class="publication-links">
               <!-- PDF Link. -->
               <span class="link-block">
-                <a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/docs/report/report.pdf"
+                <a href="https://github.com/atomwalk12/git-inspector/blob/main/docs/report/report.pdf"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-file-pdf"></i>
@@ -82,7 +82,7 @@
                 </a>
               </span>
               <span class="link-block">
-                <a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/docs/report/poster.pdf"
+                <a href="https://github.com/atomwalk12/git-inspector/blob/main/docs/report/poster.pdf"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-image"></i>
@@ -91,7 +91,7 @@
                 </a>
               </span>
               <span class="link-block">
-                <a href="https://atomwalk12.github.io/PPS-22-git-insp/process"
+                <a href="https://atomwalk12.github.io/git-inspector/process"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-project-diagram"></i>
@@ -101,7 +101,7 @@
               </span>
               <!-- Video Link. -->
               <span class="link-block">
-                <a href="https://app.codecov.io/gh/atomwalk12/pps-22-git-insp"
+                <a href="https://app.codecov.io/gh/atomwalk12/git-inspector"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-chart-line"></i>
@@ -111,7 +111,7 @@
               </span>
               <!-- Documentation Link. -->
               <span class="link-block">
-                <a href="https://atomwalk12.github.io/PPS-22-git-insp/backend/scaladoc"
+                <a href="https://atomwalk12.github.io/git-inspector/backend/scaladoc"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-book"></i>
@@ -121,7 +121,7 @@
               </span>
               <!-- Code Link. -->
               <span class="link-block">
-                <a href="https://github.com/atomwalk12/PPS-22-git-insp"
+                <a href="https://github.com/atomwalk12/git-inspector"
                    class="external-link button is-normal is-rounded is-dark">
                   <span class="icon">
                       <i class="fas fa-code"></i>
@@ -187,7 +187,7 @@
             and provide insightful explanations for complex coding concepts. The library is built in Scala, on
             top of the Langchain4j framework, and facilitates the integration with the LLM through interfaces
             built with Gradio and Scala.js. The library is available at
-            <a href="https://github.com/atomwalk12/PPS-22-git-insp">https://github.com/atomwalk12/PPS-22-git-insp</a>.
+            <a href="https://github.com/atomwalk12/git-inspector">https://github.com/atomwalk12/git-inspector</a>.
           </p>
         </div>
       </div>
@@ -273,7 +273,7 @@
       <div class="column is-full-width">
         <h2 class="title is-3">Requirements</h2>
         <p>
-          Below are the summarized requirements, while the full requirements document is <a href="https://atomwalk12.github.io/PPS-22-git-insp/process/docs/requirements/">available here</a>.
+          Below are the summarized requirements, while the full requirements document is <a href="https://atomwalk12.github.io/git-inspector/process/docs/requirements/">available here</a>.
         </p>
 
         <div class="container is-max-desktop">
@@ -296,7 +296,7 @@
         <div class="content has-text-justified">
           <p>
             Acceptance tests that verify correct behavior according to the specification document are present under the
-            <a href="https://github.com/atomwalk12/PPS-22-git-insp/tree/main/backend/src/test/scala/requirements">test directory</a>, and the traceability matrix is <a href="https://atomwalk12.github.io/PPS-22-git-insp/process/docs/product_backlog/#traceability-matrix">available here</a>.
+            <a href="https://github.com/atomwalk12/git-inspector/tree/main/backend/src/test/scala/requirements">test directory</a>, and the traceability matrix is <a href="https://atomwalk12.github.io/git-inspector/process/docs/product_backlog/#traceability-matrix">available here</a>.
           </p>
         </div>
         <!--/ Re-rendering. -->
@@ -313,7 +313,7 @@
         <div class="content has-text-justified">
           <p>
             Two indexes are produced for each Git Repositories containing the two data modalities (code and natural language instructions). The user can query at runtime whether to retrieve information from either collection using
-            the <i><a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/scala/gitinsp/infrastructure/strategies/QueryRoutingStrategy.scala">QueryRoutingStrategy</a></i> class. This is done by assessing the query using a separate LLM.
+            the <i><a href="https://github.com/atomwalk12/git-inspector/blob/main/backend/src/main/scala/gitinsp/infrastructure/strategies/QueryRoutingStrategy.scala">QueryRoutingStrategy</a></i> class. This is done by assessing the query using a separate LLM.
           </p>
         </div>
         <br/>
@@ -324,7 +324,7 @@
         <div class="content has-text-justified">
           <p>
             The code index supports multiple extension types. To narrow down the search to specific code file types, it is possible to use the
-            <i><a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/scala/gitinsp/infrastructure/strategies/LLMClassificationFilterStrategy.scala">LLMClassificationFilterStrategy</a></i> class. This class enables runtime filtering to include one specific extension type in the search.
+            <i><a href="https://github.com/atomwalk12/git-inspector/blob/main/backend/src/main/scala/gitinsp/infrastructure/strategies/LLMClassificationFilterStrategy.scala">LLMClassificationFilterStrategy</a></i> class. This class enables runtime filtering to include one specific extension type in the search.
           </p>
         </div>
         <br/>
@@ -375,7 +375,7 @@
           <p>
             The application allows for local inference using the Ollama backend with minimal configuration,
             however there is also the posibility to use it with a pay-to-use API using Gemini or Anthropic. This requires
-            setting the correct API key in the <i><a href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/backend/src/main/resources/application.conf">application.conf</a></i> file.
+            setting the correct API key in the <i><a href="https://github.com/atomwalk12/git-inspector/blob/main/backend/src/main/resources/application.conf">application.conf</a></i> file.
           </p>
         </div>
         <!--/ Re-rendering. -->
@@ -514,10 +514,10 @@
 
         <div class="content has-text-justified">
           <p>
-            The release folder on Github contains the necessary files to run the application, however setting up the environment by installing dependencies listed <a href="https://github.com/atomwalk12/PPS-22-git-insp?tab=readme-ov-file#prerequisites">under the prerequisites section</a> is still necessary.
+            The release folder on Github contains the necessary files to run the application, however setting up the environment by installing dependencies listed <a href="https://github.com/atomwalk12/git-inspector?tab=readme-ov-file#prerequisites">under the prerequisites section</a> is still necessary.
           </p>
           <p>
-            The release files are available in the <a href="https://github.com/atomwalk12/PPS-22-git-insp/releases">releases section</a>.
+            The release files are available in the <a href="https://github.com/atomwalk12/git-inspector/releases">releases section</a>.
           </p>
 
         </div>
@@ -554,10 +554,10 @@
   <div class="container">
     <div class="content has-text-centered">
       <a class="icon-link"
-         href="https://github.com/atomwalk12/PPS-22-git-insp/blob/main/docs/report/report.pdf">
+         href="https://github.com/atomwalk12/git-inspector/blob/main/docs/report/report.pdf">
         <i class="fas fa-file-pdf"></i>
       </a>
-      <a class="icon-link" href="https://github.com/atomwalk12/PPS-22-git-insp" class="external-link" disabled>
+      <a class="icon-link" href="https://github.com/atomwalk12/git-inspector" class="external-link" disabled>
         <i class="fab fa-github"></i>
       </a>
     </div>
