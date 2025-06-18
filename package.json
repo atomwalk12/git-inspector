@@ -27,7 +27,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/atomwalk12/PPS-22-git-insp.git"
+    "url": "git+https://github.com/atomwalk12/git-inspector.git"
   },
   "release": {
     "branches": [
