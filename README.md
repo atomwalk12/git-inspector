@@ -1,4 +1,4 @@
-[![Code CI](https://github.com/DiamondLightSource/pytac/actions/workflows/code.yml/badge.svg)](https://github.com/DiamondLightSource/pytac/actions/workflows/code.yml)
+[![Code CI](https://github.com/atomwalk12/git-inspector/actions/workflows/BuildAndTest.yml/badge.svg)](https://github.com/atomwalk12/git-inspector/actions/workflows/BuildAndTest.yml)
 ![Docs CI](https://github.com/atomwalk12/git-inspector/actions/workflows/gh-pages.yml/badge.svg?branch=main)
 [![codecov](https://codecov.io/gh/atomwalk12/git-inspector/branch/main/graph/badge.svg)](https://codecov.io/gh/atomwalk12/git-inspector)
 [![release](https://img.shields.io/github/v/release/atomwalk12/git-inspector.svg?label=release)](https://github.com/atomwalk12/git-inspector/releases)
