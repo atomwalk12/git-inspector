@@ -119,7 +119,7 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
 
     val pipe =
       PipelineService(mockChatService, mockCacheService, mockIngestorService, mockGithubWrapper)
-    val url = URL("https://github.com/atomwalk12/PPS-22-git-insp")
+    val url = URL("https://github.com/rfvasile/PPS-22-git-insp")
     val repository = GitRepository(
       url,
       List(Language.SCALA, Language.MARKDOWN),
@@ -191,7 +191,7 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
     val doc1      = CodeFile("def test()", Language.SCALA, "test.scala", 1000, 100)
     val doc2      = CodeFile("# Hello, world!", Language.MARKDOWN, "test.md", 1000, 100)
     val docs      = List(doc1, doc2, doc1, doc2)
-    val url       = URL("https://github.com/atomwalk12/PPS-22-git-insp")
+    val url       = URL("https://github.com/rfvasile/PPS-22-git-insp")
     val repo      = GitRepository(url, languages, docs)
 
     // Execute
@@ -208,7 +208,7 @@ class PipelineTest extends AnyFlatSpec with Matchers with MockitoSugar with Befo
 
   it should "list indexes" in:
     // Setup data
-    val url1      = URL("https://github.com/atomwalk12/PPS-22-git-insp")
+    val url1      = URL("https://github.com/rfvasile/PPS-22-git-insp")
     val url2      = URL("https://github.com/atom/PPS-22-git-insp")
     val index1    = url1.toQdrantURL(Category.TEXT)
     val index2    = url2.toQdrantURL(Category.CODE)

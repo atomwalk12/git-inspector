@@ -53,7 +53,7 @@ class GithubWrapperServiceSuite
     val testService = spy(GithubWrapperService(mockConfig, urlClient))
 
     // Setup test data
-    val testUrl   = URL("https://test-github-url.com/atomwalk12")
+    val testUrl   = URL("https://test-github-url.com/rfvasile")
     val testJson  = """
       {
         "files": {

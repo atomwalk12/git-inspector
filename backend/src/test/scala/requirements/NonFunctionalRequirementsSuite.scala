@@ -86,7 +86,7 @@ class NonFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThen w
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
 
       And("A repository has been successfully built")
-      val validUrl  = URL("https://github.com/atomwalk12/deep-bridge-survey")
+      val validUrl  = URL("https://github.com/rfvasile/deep-bridge-survey")
       val languages = GitRepository.detectLanguages("scala,md")
       val repository = githubService.buildRepository(
         validUrl,

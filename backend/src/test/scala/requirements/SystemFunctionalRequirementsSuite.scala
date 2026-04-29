@@ -92,7 +92,7 @@ class SystemFunctionalRequirementsSuite extends AnyFeatureSpec with GivenWhenThe
       val ingestorService = IngestorService(cacheService, config, IngestionStrategyFactory)
       val pipeline = PipelineService(chatService, cacheService, ingestorService, githubService)
 
-      val validUrl  = URL("https://github.com/atomwalk12/deep-bridge-survey")
+      val validUrl  = URL("https://github.com/rfvasile/deep-bridge-survey")
       val languages = GitRepository.detectLanguages("py,md")
 
       And("A repository has been successfully built")

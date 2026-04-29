@@ -194,7 +194,7 @@ class ChatInterface:
                     link_input = gr.Textbox(
                         label="Enter URL",
                         placeholder="Github repository or any other URL",
-                        value="https://github.com/atomwalk12/PPS-22-git-insp",
+                        value="https://github.com/rfvasile/PPS-22-git-insp",
                     )
                     options_dropdown = gr.Dropdown(
                         choices=["Github", "Plain Text", "Markdown", "Summary"],

@@ -65,7 +65,7 @@ class CoordinatorSuite extends AnyFlatSpec with Matchers with MockitoSugar with 
     // First we generate an index
     // ==========================
     // Data setup
-    val index = "https://github.com/atomwalk12/PPS-22-git-insp"
+    val index = "https://github.com/rfvasile/PPS-22-git-insp"
 
     // Execute
     val indexTry = coordinator.generateIndex(index, "scala,md")
