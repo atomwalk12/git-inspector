@@ -47,12 +47,6 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
 
-      - name: Get Theme
-        run: git submodule update --init --recursive
-
-      - name: Update theme to Latest commit
-        run: git submodule update --remote --merge
-
       - name: Generate ScalaDoc for the backend
         run: sbt backend/doc && echo "ScalaDoc generation successful" || (echo "ScalaDoc generation failed" && exit 1)
 
