@@ -1,3 +1,9 @@
+## [2.2.1](https://github.com/rfvasile/git-inspector/compare/v2.2.0...v2.2.1) (2026-04-29)
+
+### Bug Fixes
+
+* rely on actions/checkout for recursive update ([31cb68e](https://github.com/rfvasile/git-inspector/commit/31cb68e741332ecb33d6b7322a3df022a8bcbe8c))
+
 ## [2.2.0](https://github.com/rfvasile/PPS-22-git-insp/compare/v2.1.0...v2.2.0) (2025-05-07)
 
 ### Features
